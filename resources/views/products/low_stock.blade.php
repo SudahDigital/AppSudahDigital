@@ -33,7 +33,7 @@
 					<a href="{{route('products.index', [$vendor,'status' =>'draft'])}}">DRAFT</a>
 				</li>
 				<li role="presentation" class="active">
-					<a href="{{route('products.low_stock',[$vendor])}}">LOW STOCK</a>
+					<a href="{{route('products.low_stock',[$vendor])}}">STOCK TRESHOLD</a>
 				</li>
 				<li role="presentation" class="{{Request::get('status') == 'inactive' ?'active' : '' }}">
 					<a href="{{route('products.index', [$vendor,'status' =>'inactive'])}}">INACTIVE</a>
@@ -78,7 +78,7 @@
 				<th>Product Name</th>
 				<th>Category</th>
 				<th>Stock</th>
-				<th>Low Stock Treshold</th>
+				<th>Treshold</th>
 				<th>Price</th>
 				<th>Status</th>
 				@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
