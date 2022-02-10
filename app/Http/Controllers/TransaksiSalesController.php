@@ -350,7 +350,8 @@ $no=$count_nt_paket;
             ->subject('Cancel Order')
             ->setBody($mail_cncl, 'text/html');
         }); 
-    
+        //=============end send email=============//
+        
         $url = "https://api.whatsapp.com/send?phone=62$wa_numb&text=$text_wa";
         return Redirect::to($url);
         }

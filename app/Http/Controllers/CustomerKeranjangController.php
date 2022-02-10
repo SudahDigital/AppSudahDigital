@@ -526,12 +526,14 @@ Email            : '.$customer->email.',
                 
 $ttle_nonpkt='*'.$message->o_tittle.'*
 ';              
+                $ttle_mail_nonpkt = '';
                 if(count($pesan) > 0){    
                     $no_urt=0;
                     foreach($pesan as $key=>$tele){
                         $no_urt++;
                         $ttle_nonpkt.= $no_urt.'. '.$tele->Product_name.' = (Qty :'.$tele->quantity.')
 ';
+                        $ttle_mail_nonpkt .='<tr><td height="1" colspan="3">'. $no_urt.'. '.$tele->Product_name.' = (Qty :'.$tele->quantity.')</td></tr>';
                     }
                 }
                 
@@ -545,6 +547,7 @@ $ttle_nonpkt='*'.$message->o_tittle.'*
                 $krj_paket=count($groupby_paket);
                 if($krj_paket > 0){
 $ttle_pesan_pkt='';
+$ttl_email_pkt='';
 $ttle_bns='*Bonus*
 ';
 $count_nt_paket = $pesan->count();
@@ -557,6 +560,9 @@ $no=$count_nt_paket;
                                     ->first();
                         $ttle_pesan_pkt.= $no.'. '.$paket_name->display_name.' - '.$group_name->display_name.' :
 ';
+                        
+                        $ttl_email_pkt .='<tr><td height="1" colspan="3">'. $no.'. '.$paket_name->display_name.' - '.$group_name->display_name.' :</td></tr>';
+
                         $data_paket = DB::table('order_product')
                                     ->join('products','order_product.product_id','=','products.id')
                                     ->where('order_id','=',"$id")
@@ -570,6 +576,7 @@ $no=$count_nt_paket;
                             $no_pkt++;
                             $ttle_pesan_pkt.=strtolower($this->number_to_alphabet($no_pkt)).'. '.$dp->Product_name.' = ( Qty :'.$dp->quantity.')
 ';
+                            $ttl_email_pkt .='<tr><td height="1" colspan="3">'. strtolower($this->number_to_alphabet($no_pkt)).'. '.$dp->Product_name.' = ( Qty :'.$dp->quantity.')</td></tr>';
                         }
 
                         $data_bonus = DB::table('order_product')
@@ -586,8 +593,11 @@ $no=$count_nt_paket;
                             $no_bns++;
                             $ttle_pesan_pkt.= strtolower($this->number_to_alphabet($no_bns)).'. '.$db->Product_name.' = (Qty :'.$db->quantity.'~ Bonus)
 ';
+                            $ttl_email_pkt .='<tr><td height="1" colspan="3">'. strtolower($this->number_to_alphabet($no_bns)).'. '.$db->Product_name.' = (Qty :'.$db->quantity.'~ Bonus)</td></tr>';
                         }
                     }
+                }else{
+                    $ttl_email_pkt='';
                 }
                 
 
@@ -624,6 +634,130 @@ $no=$count_nt_paket;
 
                 $note_sales = 'Notes            : '.$notes_wa;
                 $text_wa=$list_text.'%0A'.$info_harga.'%0A'.$note_sales;
+
+
+                //=============send mail =================//
+                $mailOrder= '<table width="836" border="0">
+                                <tbody>
+                                    <tr>
+                                        <td height="53" colspan="3"><h3><strong>PESANAN #'.$orders->invoice_number.'</strong></h3></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3"><strong>'.$message->s_tittle.'</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="230">Nama</td>
+                                        <td width="4">:</td>
+                                        <td width="680">'.$user->name.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Email</td>
+                                        <td width="4">:</td>
+                                        <td width="680">'.$user->email.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td>No. Hp</td>
+                                        <td width="4">:</td>
+                                        <td width="680">'.$user->phone.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sales Area</td>
+                                        <td width="4">:</td>
+                                        <td width="680">'.$user->sales_area.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td height="22">&nbsp;</td>
+                                        <td width="4">&nbsp;</td>
+                                        <td width="680">&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td height="22"><strong>'.$message->c_tittle.'</strong></td>
+                                        <td width="4">&nbsp;</td>
+                                        <td width="680">&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td height="22">Nama Toko</td>
+                                        <td width="4">:</td>
+                                        <td width="680">'.$customer->store_name.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td height="22">Kode Toko</td>
+                                        <td width="4">:</td>
+                                        <td width="680">'.$customer->store_code.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td height="22">Alamat</td>
+                                        <td width="4">:</td>
+                                        <td width="680">'.$customer->address.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td height="22">Nama</td>
+                                        <td width="4">:</td>
+                                        <td width="680">'.$customer->name.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td height="22">No. Wa</td>
+                                        <td width="4">:</td>
+                                        <td width="680">'.$customer->phone.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td height="22">No. Owner</td>
+                                        <td width="4">:</td>
+                                        <td width="680">'.$customer->phone_owner.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td height="22">No. Toko</td>
+                                        <td width="4">:</td>
+                                        <td width="680">'.$customer->phone_store.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td height="22">Email</td>
+                                        <td width="4">:</td>
+                                        <td width="680">'.$customer->email.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td height="10">&nbsp;</td>
+                                        <td width="4">&nbsp;</td>
+                                        <td width="680">&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td height="4"><strong>'.$message->o_tittle.'</strong></td>
+                                        <td width="4">&nbsp;</td>
+                                        <td width="680">&nbsp;</td>
+                                    </tr>'.$ttle_mail_nonpkt. $ttl_email_pkt.'
+                                    
+                                    <tr>
+                                        <td height="8" colspan="3">&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td height="1">Pembayaran</td>
+                                        <td height="1">:</td>
+                                        <td height="1">'.$payment_method.'</td>
+                                    </tr>
+                                    <tr>
+                                        <td height="1">Notes</td>
+                                        <td height="1">:</td>
+                                        <td height="1">'.$notes_wa.'</td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>';
+                $spv = \App\Spv_sales::where('sls_id',$user_id)
+                    ->where('status','ACTIVE')->first();
+                if($spv){
+                    $email = \App\User::findOrFail($spv->spv_id);
+                    $email_spv = $email->email;
+                }else{
+                    $email_spv = 'admin@sudahonline.com';
+                }
+                $orderNumber = $orders->invoice_number;
+
+                \Mail::send([], [], function ($message) use ($mailOrder,$email_spv,$orderNumber) {
+                $message->to($email_spv)
+                ->subject('Order '.$orderNumber)
+                ->setBody($mailOrder, 'text/html');
+                }); 
+                //=============end send email=============//
             
                 $url = "https://api.whatsapp.com/send?phone=62$wa_numb&text=$text_wa";
                 return Redirect::to($url);
