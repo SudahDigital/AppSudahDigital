@@ -1,7 +1,7 @@
 FROM php:8.0-fpm
 
 # Arguments defined in docker-compose.yml
-ARG www-data
+ARG user
 ARG uid
 
 # Install system dependencies
