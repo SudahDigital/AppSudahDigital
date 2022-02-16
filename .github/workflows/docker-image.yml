@@ -41,3 +41,7 @@ jobs:
         docker push 374265332567.dkr.ecr.ap-southeast-1.amazonaws.com/sudahdigital:latest
         docker push 374265332567.dkr.ecr.ap-southeast-1.amazonaws.com/sudahdigital:php
         docker push 374265332567.dkr.ecr.ap-southeast-1.amazonaws.com/sudahdigital:composer
+        
+    - name: execute command
+      run: |
+         sshpass -p "${{secrets.SSH_PASSWORD}}" ssh -p 65432 -o StrictHostKeyChecking=no root@13.212.238.116 sh /opt/script/docker-pull.sh
