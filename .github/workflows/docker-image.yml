@@ -38,9 +38,6 @@ jobs:
         docker tag sudahdigital:latest 374265332567.dkr.ecr.ap-southeast-1.amazonaws.com/sudahdigital:latest
         docker tag composer:latest 374265332567.dkr.ecr.ap-southeast-1.amazonaws.com/composer:latest
         docker tag php:8.0-fpm 374265332567.dkr.ecr.ap-southeast-1.amazonaws.com/php:latest
-        docker tag nginx:alpine 374265332567.dkr.ecr.ap-southeast-1.amazonaws.com/nginx:alpine
         docker push 374265332567.dkr.ecr.ap-southeast-1.amazonaws.com/sudahdigital:latest
         docker push 374265332567.dkr.ecr.ap-southeast-1.amazonaws.com/composer:latest
         docker push 374265332567.dkr.ecr.ap-southeast-1.amazonaws.com/php:latest
-        docker push 374265332567.dkr.ecr.ap-southeast-1.amazonaws.com/nginx:latest
-        
