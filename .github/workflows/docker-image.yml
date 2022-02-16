@@ -34,5 +34,12 @@ jobs:
         ECR_REPOSITORY: sudahdigital
         IMAGE_TAG: latest
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker compose build
+        docker tag sudahdigital:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker tag composer:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker tag php:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker tag nginx:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker push $ECR_REGISTRY/sudahdigital:$IMAGE_TAG
+        docker push $ECR_REGISTRY/composer:$IMAGE_TAG
+        docker push $ECR_REGISTRY/php:$IMAGE_TAG
+        docker push $ECR_REGISTRY/nginx:$IMAGE_TAG
