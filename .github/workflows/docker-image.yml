@@ -44,4 +44,4 @@ jobs:
         
     - name: execute command
       run: |
-         sshpass -p "${{secrets.SSH_PASSWORD}}" ssh -p 65432 -o StrictHostKeyChecking=no root@13.212.238.116 sh /opt/script/docker-pull.sh
+         sshpass -p "${{secrets.SSH_PASSWORD}}" ssh -o StrictHostKeyChecking=no root@13.212.238.116 sh /opt/script/docker-pull.sh
