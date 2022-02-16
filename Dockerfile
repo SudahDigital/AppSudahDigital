@@ -1,8 +1,8 @@
 FROM php:8.0-fpm
 
 # Arguments defined in docker-compose.yml
-ARG user
-ARG uid
+ARG root
+ARG 0
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
