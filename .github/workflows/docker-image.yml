@@ -35,9 +35,9 @@ jobs:
         IMAGE_TAG: latest
       run: |
         docker compose build
-        docker tag -f sudahdigital:latest 374265332567.dkr.ecr.ap-southeast-1.amazonaws.com/sudahdigital:laravel
-        docker tag -f php:8.0-fpm 374265332567.dkr.ecr.ap-southeast-1.amazonaws.com/sudahdigital:php
-        docker tag -f composer:latest 374265332567.dkr.ecr.ap-southeast-1.amazonaws.com/sudahdigital:composer
+        docker tag sudahdigital:latest 374265332567.dkr.ecr.ap-southeast-1.amazonaws.com/sudahdigital:laravel
+        docker tag php:8.0-fpm 374265332567.dkr.ecr.ap-southeast-1.amazonaws.com/sudahdigital:php
+        docker tag composer:latest 374265332567.dkr.ecr.ap-southeast-1.amazonaws.com/sudahdigital:composer
         docker push 374265332567.dkr.ecr.ap-southeast-1.amazonaws.com/sudahdigital:laravel
         docker push 374265332567.dkr.ecr.ap-southeast-1.amazonaws.com/sudahdigital:php
         docker push 374265332567.dkr.ecr.ap-southeast-1.amazonaws.com/sudahdigital:composer
