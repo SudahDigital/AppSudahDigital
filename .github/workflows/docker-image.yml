@@ -38,6 +38,6 @@ jobs:
         docker tag php:8.0-fpm 374265332567.dkr.ecr.ap-southeast-1.amazonaws.com/sudahdigital:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         
-    - name: execute command
+    - name: Execute command on remote server
       run: |
          sshpass -p "${{secrets.SSH_PASSWORD}}" ssh -o StrictHostKeyChecking=no root@13.212.238.116 sh /opt/script/docker-pull.sh
