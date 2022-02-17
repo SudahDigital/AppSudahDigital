@@ -18,7 +18,6 @@ RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     locales \
     zip \
-<<<<<<< HEAD
     jpegoptim optipng pngquant gifsicle \
     unzip \
     git \
@@ -32,10 +31,6 @@ RUN apt-get install -y supervisor
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-=======
-    unzip \
-    apt-utils
->>>>>>> 45443981db29f4e41af38649321ed97b09335812
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -63,9 +58,5 @@ RUN touch /var/log/php/errors.log && chmod 777 /var/log/php/errors.log
 RUN composer install --optimize-autoloader --no-dev
 RUN chmod +x /var/www/docker/run.sh
 
-<<<<<<< HEAD
 EXPOSE 80
 ENTRYPOINT ["/var/www/docker/run.sh"]
-=======
-USER $user
->>>>>>> 45443981db29f4e41af38649321ed97b09335812
