@@ -35,8 +35,8 @@ jobs:
         IMAGE_TAG: latest
       run: |
         docker build -t sudahdigital .
-        docker tag sudahdigital 374265332567.dkr.ecr.ap-southeast-1.amazonaws.com/sudahdigital:$IMAGE_TAG
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker tag sudahdigital $ECR_REGISTRY/$ECR_REPOSITORY:${IMAGE_TAG}
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:${IMAGE_TAG}
         
     - name: Execute command on remote server
       run: |
