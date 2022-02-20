@@ -39,5 +39,8 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:${IMAGE_TAG}
         
     - name: Execute command on remote server
+      env:
+         IP: $(aws --region ap-southeast-1 ec2 describe-instances --filters "Name=instance-state-name,Values=running" "Name=instance-id,Values=i-00d506ac6bfb8d477" --query 'Reservations[*].Instances[*].[PublicIpAddress]' --output text)
       run: |
-         sshpass -p "${{secrets.SSH_PASSWORD}}" ssh -o StrictHostKeyChecking=no root@13.212.238.116 sh /opt/script/docker-pull.sh
+         sshpass -p "${{secrets.SSH_PASSWORD}}" ssh -o StrictHostKeyChecking=no root@IP sh /opt/script/docker-pull.sh
+      
