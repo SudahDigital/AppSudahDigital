@@ -69,5 +69,7 @@ RUN chown -R www:www-data storage/logs/
 RUN ls -lah storage
 RUN ls -lah storage/logs/
 
+RUN whoami
+
 EXPOSE 80
 ENTRYPOINT ["/var/www/docker/run.sh"]
