@@ -1,5 +1,7 @@
 #!/bin/sh
 
+umask 0002
+
 cd /var/www
 
 # php artisan migrate:fresh --seed
