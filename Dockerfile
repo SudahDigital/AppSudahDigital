@@ -58,7 +58,7 @@ RUN touch /var/log/php/errors.log && chmod 777 /var/log/php/errors.log
 RUN composer install --optimize-autoloader --no-dev
 RUN chmod +x /var/www/docker/run.sh
 
-RUN curl --header "X-Consul-Token:${{CONSUL_TOKEN}}" \
+RUN curl --header "X-Consul-Token:${{env.CONSUL_TOKEN}}" \
 -XGET https://consul.sudahdigital.com/v1/kv/dev/apptest.sudahdigital.com?raw=true > /var/www/.env
 
 EXPOSE 80
