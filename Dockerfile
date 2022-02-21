@@ -58,9 +58,8 @@ RUN touch /var/log/php/errors.log && chmod 777 /var/log/php/errors.log
 RUN composer install --optimize-autoloader --no-dev
 RUN chmod +x /var/www/docker/run.sh
 
-# consul access
-RUN curl --header "X-Consul-Token:${secrets.CONSUL_TOKEN}" \
--XGET https://consul.sudahdigital.com/v1/kv/dev/apptest.sudahdigital.com?raw=true > /var/www/.env
+RUN export CONSUL_HTTP_ADDR=${{ secrets.CONSUL_HTTP_ADDR }}
+RUN export CONSUL_HTTP_ADDR=${{ secrets.CONSUL_HTTP_TOKEN }}
 
 EXPOSE 80
 ENTRYPOINT ["/var/www/docker/run.sh"]
