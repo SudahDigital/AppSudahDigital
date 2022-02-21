@@ -58,8 +58,6 @@ ARG CONSUL_TOKEN
 
 RUN curl -s --header "X-Consul-Token:$CONSUL_TOKEN" -XGET https://consul.sudahdigital.com/v1/kv/dev/apptest.sudahdigital.com?raw=true > .env
 RUN chown www:www-data .env
-RUN chown -R www:www-data /var/www/storage/logs/laravel.log
-RUN chmod -R 777 /var/www/storage/logs/laravel.log
 
 # Deployment steps
 RUN composer install --optimize-autoloader --no-dev
