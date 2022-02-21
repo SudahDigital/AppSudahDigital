@@ -68,6 +68,8 @@ RUN chmod +x /var/www/docker/run.sh
 RUN chown -R root:root vendor
 RUN chown -R root:root storage/logs/
 RUN chmod -R 777 /var/www/storage/framework/sessions
+RUN chmod -R 777 /var/www/storage/framework/views
+RUN chmod -R 777 /var/www/storage/framework/cache
 
 EXPOSE 80
 ENTRYPOINT ["/var/www/docker/run.sh"]
