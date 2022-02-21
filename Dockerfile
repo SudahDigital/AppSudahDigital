@@ -62,6 +62,7 @@ RUN chown www:www-data .env
 # Deployment steps
 RUN composer install --optimize-autoloader --no-dev
 RUN chmod +x /var/www/docker/run.sh
+RUN chown -R www:www-data storages/logs/
 
 EXPOSE 80
 ENTRYPOINT ["/var/www/docker/run.sh"]
