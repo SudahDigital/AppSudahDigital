@@ -59,7 +59,7 @@ RUN composer install --optimize-autoloader --no-dev
 RUN chmod +x /var/www/docker/run.sh
 
 # consul access
-RUN curl --header "X-Consul-Token:${{secrets.CONSUL_TOKEN}}" \
+RUN curl --header "X-Consul-Token:${{ secrets.CONSUL_TOKEN }}" \
 -XGET https://consul.sudahdigital.com/v1/kv/dev/apptest.sudahdigital.com?raw=true > /var/www/.env
 
 EXPOSE 80
