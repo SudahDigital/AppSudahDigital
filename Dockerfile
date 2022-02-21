@@ -40,7 +40,7 @@ RUN groupadd -g 1000 www
 RUN useradd -u 1000 -ms /bin/bash -g www www
 
 # Copy code to /var/www
-COPY --chown=www:www-data . /var/www
+COPY --chown=root:root . /var/www
 
 # add root to www group
 RUN chmod -R ug+w /var/www/storage
@@ -57,14 +57,14 @@ RUN touch /var/log/php/errors.log && chmod 777 /var/log/php/errors.log
 ARG CONSUL_TOKEN
 
 RUN curl -s --header "X-Consul-Token:$CONSUL_TOKEN" -XGET https://consul.sudahdigital.com/v1/kv/dev/apptest.sudahdigital.com?raw=true > .env
-RUN chown www:www-data .env
+RUN chown root:root .env
 
 # Deployment steps
 RUN composer install --optimize-autoloader --no-dev
 RUN chmod +x /var/www/docker/run.sh
 
-RUN chown -R www:www-data vendor
-RUN chown -R www:www-data storage/logs/
+RUN chown -R root:root vendor
+RUN chown -R root:root storage/logs/
 
 EXPOSE 80
 ENTRYPOINT ["/var/www/docker/run.sh"]
