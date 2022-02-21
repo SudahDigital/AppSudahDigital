@@ -72,4 +72,4 @@ RUN ls -lah storage/logs/
 RUN whoami
 
 EXPOSE 80
-ENTRYPOINT ["/var/www/docker/run.sh"]
+ENTRYPOINT ["su - www", "/var/www/docker/run.sh"]
