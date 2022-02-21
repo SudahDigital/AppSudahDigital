@@ -68,4 +68,3 @@ RUN chown -R www:www-data storage/logs/
 
 EXPOSE 80
 ENTRYPOINT ["/var/www/docker/run.sh"]
-USER www
