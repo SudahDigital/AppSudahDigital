@@ -54,11 +54,11 @@ RUN cp docker/nginx.conf /etc/nginx/sites-enabled/default
 RUN mkdir /var/log/php
 RUN touch /var/log/php/errors.log && chmod 777 /var/log/php/errors.log
 
-ARG token
+ARG CONSUL_TOKEN
 
 RUN pwd
 RUN ls -lah
-RUN curl -s --header "X-Consul-Token:$token" -XGET https://consul.sudahdigital.com/v1/kv/dev/apptest.sudahdigital.com?raw=true > .env
+RUN curl -s --header "X-Consul-Token:$CONSUL_TOKEN" -XGET https://consul.sudahdigital.com/v1/kv/dev/apptest.sudahdigital.com?raw=true > .env
 RUN chown www:www-data .env
 RUN ls -lah
 RUN cat .env
