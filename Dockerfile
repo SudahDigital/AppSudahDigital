@@ -60,7 +60,6 @@ ENV token=${token}
 RUN curl --header "X-Consul-Token:$token" \
 -XGET https://consul.sudahdigital.com/v1/kv/dev/apptest.sudahdigital.com?raw=true > .env
 
-
 # Deployment steps
 RUN composer install --optimize-autoloader --no-dev
 RUN chmod +x /var/www/docker/run.sh
