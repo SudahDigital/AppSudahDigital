@@ -35,7 +35,7 @@ jobs:
         CONSUL_TOKEN: ${{ secrets.CONSUL_HTTP_TOKEN }}
         IMAGE_TAG: latest
       run: |
-        docker build --build-arg token=${{ secrets.CONSUL_HTTP_TOKEN }} -t sudahdigital .
+        docker build --build-arg CONSUL_TOKEN=${{ secrets.CONSUL_TOKEN }} -t sudahdigital .
         docker tag sudahdigital $ECR_REGISTRY/$ECR_REPOSITORY:${IMAGE_TAG}
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:${IMAGE_TAG}
         
