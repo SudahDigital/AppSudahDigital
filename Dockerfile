@@ -58,12 +58,13 @@ ARG CONSUL_TOKEN
 
 RUN curl -s --header "X-Consul-Token:$CONSUL_TOKEN" -XGET https://consul.sudahdigital.com/v1/kv/dev/apptest.sudahdigital.com?raw=true > .env
 RUN chown www:www-data .env
-RUN chown -R www:www-data vendor
-RUN chown -R www:www-data storage/logs/
 
 # Deployment steps
 RUN composer install --optimize-autoloader --no-dev
 RUN chmod +x /var/www/docker/run.sh
+
+RUN chown -R www:www-data vendor
+RUN chown -R www:www-data storage/logs/
 
 EXPOSE 80
 ENTRYPOINT ["/var/www/docker/run.sh"]
