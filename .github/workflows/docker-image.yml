@@ -32,6 +32,7 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: sudahdigital
+        CONSUL_TOKEN: ${{ secrets.CONSUL_HTTP_TOKEN }}
         IMAGE_TAG: latest
       run: |
         docker build -t sudahdigital .
