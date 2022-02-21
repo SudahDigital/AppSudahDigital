@@ -66,10 +66,6 @@ RUN chmod +x /var/www/docker/run.sh
 RUN chown -R www:www-data vendor
 RUN chown -R www:www-data storage/logs/
 
-RUN ls -lah storage
-RUN ls -lah storage/logs/
-
-RUN whoami
-
 EXPOSE 80
-ENTRYPOINT ["su www", "/var/www/docker/run.sh"]
+ENTRYPOINT ["/var/www/docker/run.sh"]
+USER www
