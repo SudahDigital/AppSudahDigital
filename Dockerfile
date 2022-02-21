@@ -66,5 +66,8 @@ RUN chmod +x /var/www/docker/run.sh
 RUN chown -R www:www-data vendor
 RUN chown -R www:www-data storage/logs/
 
+RUN ls -lah storage
+RUN ls -lah storage/logs/
+
 EXPOSE 80
 ENTRYPOINT ["/var/www/docker/run.sh"]
