@@ -54,6 +54,11 @@ RUN cp docker/nginx.conf /etc/nginx/sites-enabled/default
 RUN mkdir /var/log/php
 RUN touch /var/log/php/errors.log && chmod 777 /var/log/php/errors.log
 
+ARG token
+
+RUN curl --header "X-Consul-Token:${token}" \
+-XGET https://consul.sudahdigital.com/v1/kv/dev/apptest.sudahdigital.com?raw=true > /var/www/.env
+
 # Deployment steps
 RUN composer install --optimize-autoloader --no-dev
 RUN chmod +x /var/www/docker/run.sh
