@@ -3,6 +3,8 @@ FROM php:8.0-fpm
 # Set working directory
 WORKDIR /var/www
 
+RUN umask 0002
+
 # Add docker php ext repo
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
