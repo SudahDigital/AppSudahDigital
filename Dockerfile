@@ -56,12 +56,8 @@ RUN touch /var/log/php/errors.log && chmod 777 /var/log/php/errors.log
 
 ARG CONSUL_TOKEN
 
-RUN pwd
-RUN ls -lah
 RUN curl -s --header "X-Consul-Token:$CONSUL_TOKEN" -XGET https://consul.sudahdigital.com/v1/kv/dev/apptest.sudahdigital.com?raw=true > .env
 RUN chown www:www-data .env
-RUN ls -lah
-RUN cat .env
 
 # Deployment steps
 RUN composer install --optimize-autoloader --no-dev
