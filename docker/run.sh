@@ -7,7 +7,7 @@ cd /var/www
 # php artisan migrate:fresh --seed
 php artisan cache:clear
 php artisan route:cache
-php artisan migrate:reset
+php artisan migrate
 
 /usr/bin/supervisord -c /etc/supervisord.conf
 chown -R root:root storage/
