@@ -7,13 +7,13 @@
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <title>{{$client->client_name}} | @yield('title')</title>
 
-    <link rel="icon" href="{{asset('assets/image'.$client->client_image)}}" type="image/x-icon">
+    <link rel="icon" href="{{secure_asset('assets/image'.$client->client_image)}}" type="image/x-icon">
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css" >
     <!-- Our Custom CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/css/style-r_1.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/css/responsive-r_1.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/css/select2.min.css')}}">
+    <link rel="stylesheet" href="{{secure_asset('assets/css/style-r_1.css')}}">
+    <link rel="stylesheet" href="{{secure_asset('assets/css/responsive-r_1.css')}}">
+    <link rel="stylesheet" href="{{secure_asset('assets/css/select2.min.css')}}">
     <!-- Scrollbar Custom CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
     <!-- Font Awesome JS -->
