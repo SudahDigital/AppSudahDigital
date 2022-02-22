@@ -14,7 +14,7 @@ class ChangeUniqueColumnPhoneOnCustomers extends Migration
     public function up()
     {
         Schema::table('customers', function (Blueprint $table) {
-            $table->string('phone')->after('address')->nullable();
+            $table->string('phone')->after('address')->nullable()->change();
         });
     }
 
@@ -25,8 +25,9 @@ class ChangeUniqueColumnPhoneOnCustomers extends Migration
      */
     public function down()
     {
-        Schema::table('customers', function(Blueprint $table){
+        /*Schema::table('customers', function(Blueprint $table){
             $table->dropColumn('phone');
-        });
+        });*/
+
     }
 }
