@@ -5,6 +5,7 @@ use Carbon\Carbon;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Routing\UrlGenerator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,7 +16,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        if(env('REDIRECT_HTTPS')) {
+            $this->app['request']->server->set('HTTPS', true);
+        }
     }
 
     /**
@@ -23,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(UrlGenerator $url)
     {
         Gate::define('isAdmin', function($user) {
             //return in_array("ADMIN", json_decode($user->roles));
@@ -54,6 +57,10 @@ class AppServiceProvider extends ServiceProvider
             //return in_array("SALES", json_decode($user->roles));
             return $user->roles == 'SALES-COUNTER';
         });
+
+        if(env('REDIRECT_HTTPS')) {
+            $url->formatScheme('https');
+        }
         
         config(['app.locale' => 'id']);
         Carbon::setLocale('id');
