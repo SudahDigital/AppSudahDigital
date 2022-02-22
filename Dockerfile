@@ -48,9 +48,9 @@ COPY --chown=root:root . /var/www
 RUN chmod -R ug+w /var/www/storage
 
 # Copy nginx/php/supervisor configs
-RUN cp docker/supervisor.conf /etc/supervisord.conf
-RUN cp docker/php.ini /usr/local/etc/php/conf.d/app.ini
-RUN cp docker/nginx.conf /etc/nginx/sites-enabled/default
+#RUN cp docker/supervisor.conf /etc/supervisord.conf
+#RUN cp docker/php.ini /usr/local/etc/php/conf.d/app.ini
+#RUN cp docker/nginx.conf /etc/nginx/sites-enabled/default
 
 # PHP Error Log Files
 RUN mkdir /var/log/php
