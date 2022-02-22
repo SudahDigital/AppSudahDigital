@@ -39,9 +39,9 @@
 			<tr>
 				<td>{{$v->name}}</td>
 				<td>
-					@if ($v->type == 1)
+					@if ($v->type == 1)<!--1 == Combine -->
 					Combine
-					@elseif($v->type == 2)
+					@elseif($v->type == 2)<!--2 == Item -->
 					Item
 					@endif
 				</td>

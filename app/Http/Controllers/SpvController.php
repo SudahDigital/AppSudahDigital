@@ -116,6 +116,20 @@ class Spvcontroller extends Controller
                     $new_member->save();
                 }
             }
+
+            /*if($request->get('emailSenior1') != ''){
+                $new_senior1 = new \App\SpvSuperiorOfc();
+                $new_senior1->spv_id = $new_user->id;
+                $new_senior1->email = $request->get('emailSenior1');
+                $new_senior1->save();
+            }
+
+            if($request->get('emailSenior2') != ''){
+                $new_senior2 = new \App\SpvSuperiorOfc();
+                $new_senior2->spv_id = $new_user->id;
+                $new_senior2->email = $request->get('emailSenior2');
+                $new_senior2->save();
+            }*/
         }
         
         if ( $new_user->save()){

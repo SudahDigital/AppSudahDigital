@@ -265,11 +265,28 @@
             <div class="form-group form-float">
                 <div class="form-line" id="email_" class="email_">
                     <input type="email" class="form-control" id="email"  name="email" autocomplete="off" required>
-                    <label class="form-label">Email</label>
+                    <label class="form-label">SPV Email</label>
                 </div>
                 <small class="err_exist"></small>
             </div>
 
+            <!--
+            <div class="form-group form-float">
+                <div class="form-line" id="email_" class="email_">
+                    <input type="email" class="form-control" id="emailSenior1"  name="emailSenior1" autocomplete="off">
+                    <label class="form-label">Senior Officer's Email 1</label>
+                </div>
+                <small class="err_exist"></small>
+            </div>
+
+            <div class="form-group form-float">
+                <div class="form-line" id="email_" class="email_">
+                    <input type="email" class="form-control" id="emailSenior2"  name="emailSenior2" autocomplete="off">
+                    <label class="form-label">Senior Officer's Email 2</label>
+                </div>
+                <small class="err_exist"></small>
+            </div>
+            -->
             <!--
             <h2 class="card-inside-title">Sales Area</h2>
             <select name="city_id"  id="city_id" class="form-control"></select>

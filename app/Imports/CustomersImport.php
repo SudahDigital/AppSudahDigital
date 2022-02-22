@@ -49,6 +49,9 @@ class CustomersImport implements ToModel,  WithHeadingRow, WithValidation
             if(!empty( $rows['customer_type'])){
                 $customer->cust_type = $rows['customer_type'];
             }
+            if(!empty( $rows['customer_price_id'])){
+                $customer->pricelist_id = $rows['customer_price_id'];
+            }
             if(!empty( $rows['whatsapp'])){
                 $customer->phone = $rows['whatsapp'];
             }
@@ -95,6 +98,9 @@ class CustomersImport implements ToModel,  WithHeadingRow, WithValidation
             }
             if(!empty( $rows['customer_type'])){
                 $customer->cust_type = $rows['customer_type'];
+            }
+            if(!empty( $rows['customer_price_id'])){
+                $customer->pricelist_id = $rows['customer_price_id'];
             }
             if(!empty( $rows['whatsapp'])){
                 $customer->phone = $rows['whatsapp'];

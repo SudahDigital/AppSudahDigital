@@ -224,6 +224,19 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::get('/volume-discount-status/{id}/{status}', 'volumeDiscountController@editStatus')->name('vDiscount.status');
     Route::get('/volume-discount-item-export/{id}', 'volumeDiscountController@itemExport')->name('vDiscItemExport');
 
+    //customer discount
+    Route::get('/customer-discount','customerDiscountController@index')->name('customer_discount.index');
+    Route::get('/customer-discount/create/{success?}', 'customerDiscountController@create')->name('cDiscount.create');
+    Route::post('/customer-discount/store', 'customerDiscountController@store')->name('cDiscount.store');
+    Route::get('/customer-discount/create/{id}/import-product', 'customerDiscountController@createImport')->name('cDiscount.createImport');
+    Route::post('/customer-discount/store/import-product', 'customerDiscountController@storeImport')->name('cDiscount.storeImport');
+    Route::get('/customer-discount/{id}/detail', 'customerDiscountController@detail')->name('cDiscount.detail');
+    Route::put('/customer-discount/{id}/update', 'customerDiscountController@update')->name('cDiscount.update');
+    Route::post('/customer-discount/item-import', 'customerDiscountController@updateItem')->name('cDiscount.updateItem');
+    Route::get('/customer-discount/{itemId}/{cust_disc_id}/delete', 'customerDiscountController@deleteItem')->name('cDiscount.itemDelete');
+    Route::get('/customer-discount-item-export/{id}', 'customerDiscountController@itemExport')->name('cDiscItemExport');
+    Route::get('/customer-discount-status/{id}/{status}', 'customerDiscountController@editStatus')->name('cDiscount.status');
+
     //Group-paket
     Route::get('/groups', 'GroupController@index')->name('groups.index');
     Route::get('/groups/create', 'GroupController@create')->name('groups.create');
@@ -409,6 +422,7 @@ Route::get('/ajax/cekForFinish/order', 'AjaxAdminSearch@cekForFinishOrder');
 Route::get('/ajax/cekFinish/notPreorder', 'AjaxAdminSearch@cekFinishNotPreorder');
 Route::post('/ajax/deliveryDay','AjaxAdminSearch@salesCheckDelivery');
 Route::post('/ajax/deliveryDaySales','AjaxAdminSearch@salesDelivery');
+Route::get('/ajax/custTypeDisc/search', 'AjaxAdminSearch@custTypeDiscSearch');
 
 /*===route group unique product===*/
 //Route::get('/ajax/groups/search', 'GroupController@ajaxSearch');

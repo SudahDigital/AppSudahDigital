@@ -30,6 +30,7 @@ class CustomerExport implements FromCollection, WithMapping, WithHeadings, WithC
                 $customer->address,
                 $customer->lat.', '.$customer->lng,
                 $customer->cust_type,
+                $customer->pricelist_id,
                 $customer->phone,
                 $customer->phone_owner,
                 $customer->phone_store,
@@ -41,6 +42,7 @@ class CustomerExport implements FromCollection, WithMapping, WithHeadings, WithC
     }
 
     public function headings() : array {
+
         return [
            'Cust_Code',
            'Name',
@@ -49,6 +51,7 @@ class CustomerExport implements FromCollection, WithMapping, WithHeadings, WithC
            'Address',
            'Coordinate',
            'Customer_Type',
+           'Customer_Price_ID',
            'Whatsapp',
            'Owner_Phone',
            'Office_Phone',
@@ -64,7 +67,7 @@ class CustomerExport implements FromCollection, WithMapping, WithHeadings, WithC
         return [
             'F' =>'0',
             'G' =>'0',
-            'H' =>'0',
+            'I' =>'0',
         ];
         
     }

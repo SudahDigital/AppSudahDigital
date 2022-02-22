@@ -66,12 +66,12 @@
 			<tr>
 				<th>Status</th>
 				<th>Customer Code</th>
-				<th>Name/Email</th>
-				<th>Address</th>
-				<th >Phone</th>
-				<th>Customer Type</th>
+				<th>Name/Email/Type</th>
+				<th width="20%">Address</th>
+				<th>Phone</th>
+				<!--<th>Customer</th>-->
 				<th>Sales Rep</th>
-				<th>#Act </th>
+				<th>#</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -105,9 +105,18 @@
 
 				</td>
 				<td>
-					<small class="text-primary"><b> Name : </b>{{$c->store_name ? "$c->store_name" : '-'}}</small><br>
-					<small class="text-secondary"><b> Email : </b>{{$c->email ? "$c->email" : '-'}}</small><br>
-					<small class="text-success"><b> Contact Person : </b>{{$c->name ? $c->name : '-'}}</small>
+					<small><b> Name : </b>{{$c->store_name ? "$c->store_name" : '-'}}</small><br>
+					<small><b> Email : </b>{{$c->email ? "$c->email" : '-'}}</small><br>
+					<small><b> Contact Person : </b>{{$c->name ? $c->name : '-'}}</small><br>
+					@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+						<small><b>Type</b> : {{$c->type_cust ? $c->type_cust->name : ''}}</small><br>
+						<small><b>Price Type</b> : {{$c->pricelist_id ? $c->CustomerPrice->name : ''}}</small>
+					@else
+						@if(Gate::check('isSpv'))
+							<small><b>Type</b> :{{$c->cust_type ? $c->tp_name : ''}}</b></small>
+							<small><b>Price Type</b> : {{$c->pricelist_id ? $c->cd_name : ''}}</small>
+						@endif
+					@endif
 				</td>
 				<td>
 					{{$c->address}}<br>
@@ -127,15 +136,16 @@
 					<small class="text-warning"><b> Owner : </b>{{$c->phone_owner != NULL ? "$c->phone_owner" : '-'}}</small><br>
 					<small class="text-danger"><b> Office : </b>{{$c->phone_store != NULL ? "$c->phone_store" : '-'}}</small>
 				</td>
-				<td>
+				<!--<td>
 					@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
-						{{$c->type_cust ? $c->type_cust->name : ''}}
+						<small>Type : {{$c->type_cust ? $c->type_cust->name : ''}}</small><br>
+						<small>Price Type : {{$c->type_cust ? $c->type_cust->name : ''}}</small>
 					@else
 						@if(Gate::check('isSpv'))
 							{{$c->cust_type ? $c->tp_name : ''}}
 						@endif
 					@endif
-				</td>
+				</td>-->
 				@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
 					<td>@if($c->user_id > 0)
 							@php

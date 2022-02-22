@@ -129,7 +129,7 @@
             <thead>
                 <tr>
                     <th>Product</th>
-                    <th>Discount Price (IDR)</th>
+                    <th>Netto Price (IDR)</th>
                     <th>#</th>
                 </tr>
             </thead>

@@ -115,6 +115,15 @@ class AjaxAdminSearch extends Controller
     return $user;
   }
 
+  public function custTypeDiscSearch(Request $request){
+    $keyword = $request->get('q');
+    $custType = \App\TypeCustomer::where('client_id',\Auth::user()->client_id)
+          ->where('status','ACTIVE')
+          ->where('name','LIKE',"%$keyword%")
+          ->doesntHave('customerDiscount')->get();
+    return $custType;
+  }
+
   public function CustomerajaxCitySearch(Request $request){
     $keyword = $request->get('q');
     $cities = \App\City::where('type','=','Kota')

@@ -46,4 +46,8 @@ class Customer extends Model
         return $this->belongsTo('App\Sales_Targets','user_id','user_id');
     }
 
+    public function CustomerPrice(){
+        return $this->belongsTo('App\CustomerDiscount','pricelist_id');
+    }
+
 }

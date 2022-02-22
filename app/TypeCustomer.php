@@ -17,4 +17,8 @@ class TypeCustomer extends Model
     public function customers(){
       return $this->hasMany('App\Customer','type_cust');
     }
+
+    public function customerDiscount(){
+      return $this->hasOne('App\CustomerDiscount','type');
+    }
 }

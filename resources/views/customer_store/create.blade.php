@@ -37,7 +37,17 @@
             @endforeach
         </select>
 
-        <div class="form-group form-float m-t-30">
+        <div class="col-sm-12" style="padding:0;margin-top:30px;margin-bottom:20px;">
+            <b>Customer Price Type</b>
+            <select name="cust_price_type"  id="cust_price_type" class="form-control">
+                <option></option>
+                @foreach($custPrice as $cp)
+                    <option value="{{$cp->id}}">{{$cp->name}}</option>
+                @endforeach
+            </select>
+        </div>
+        
+        <div class="form-group form-float m-t-110">
             <div class="form-line">
                 <input type="email" class="form-control" value="{{old('email')}}" name="email" autocomplete="off">
                 <label class="form-label">Email</label>
@@ -176,6 +186,9 @@
 <script>
     $('#cust_type').select2({
         placeholder: 'Select a Customer Type',
+    });
+    $('#cust_price_type').select2({
+        placeholder: 'Select a Customer Price Type',
     });
     $('#pareto_id').select2({
         placeholder: 'Select a Pareto Code',

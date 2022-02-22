@@ -26,8 +26,9 @@ class CreateOrdersTable extends Migration
             $table->string('invoice_number');
             $table->enum('status', ['SUBMIT', 'PROCESS', 'FINISH','CANCEL']);
             $table->timestamps();
-            $table->foreign('customer_id')->references('id')->on('customers');
-            $table->foreign('user_id')->references('id')->on('users');
+            
+            //$table->foreign('customer_id')->references('id')->on('customers');
+            //$table->foreign('user_id')->references('id')->on('users');
         });
     }
 
@@ -38,9 +39,9 @@ class CreateOrdersTable extends Migration
      */
     public function down()
     {
-        Schema::table('orders', function(Blueprint $table){
+        /*Schema::table('orders', function(Blueprint $table){
             $table->dropForeign('orders_session_id_foreign');
-            });
+            });*/
         Schema::dropIfExists('orders');
     }
 }

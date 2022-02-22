@@ -46,4 +46,8 @@ class product extends Model
     public function volumeDiscProduct (){
         return $this->hasMany('App\VolumeDiscountProduct','product_id');
     }
+
+    public function customerDiscProd (){
+        return $this->hasMany('App\CustomerDiscProd','product_id');
+    }
 }

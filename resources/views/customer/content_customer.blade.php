@@ -200,7 +200,6 @@ Home
                                         <li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle" href="#">{{$category->name}}</a>
                                         
                                             @include('customer.subcategoryList-option',['subcategories' => $category->subcategory])
-                                        
                                     @endif
                                 @endforeach
                             @endif
@@ -240,27 +239,27 @@ Home
                             @if(session()->has('ses_order'))
                                 <?php $store_name = session()->get('ses_order');?>
                                 @if($store_name->customer_id != null)
-                                <?php
-                                    $targets = App\Http\Controllers\CustomerKeranjangController::targetItemInfo($value_top->id,$store_name->customer_id);
-                                    [$totalQtys,$totalNmls]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($value_top->id,$store_name->customer_id);
-                                    $targetOrderTop = 0;
-                                    if($targets != null){
-                                        foreach($targets->product_target as $pt){
-                                            /*if(($value_top->id == $pt->productId) && ($totalQtys > 0)){
-                                                $targetOrderTop = ((int)$pt->quantityValues / (int)$totalQtys);
-                                            }elseif($value_top->id == $pt->productId){
-                                                $targetOrderTop = (int)$pt->quantityValues + 0.1;
-                                            }*/
-                                            if($value_top->id == $pt->productId){
-                                                $targetOrderTop = ((int)$totalQtys - (int)$pt->quantityValues);
+                                    <?php
+                                        $targets = App\Http\Controllers\CustomerKeranjangController::targetItemInfo($value_top->id,$store_name->customer_id);
+                                        [$totalQtys,$totalNmls]= App\Http\Controllers\CustomerKeranjangController::achTargetItem($value_top->id,$store_name->customer_id);
+                                        $targetOrderTop = 0;
+                                        if($targets != null){
+                                            foreach($targets->product_target as $pt){
+                                                /*if(($value_top->id == $pt->productId) && ($totalQtys > 0)){
+                                                    $targetOrderTop = ((int)$pt->quantityValues / (int)$totalQtys);
+                                                }elseif($value_top->id == $pt->productId){
+                                                    $targetOrderTop = (int)$pt->quantityValues + 0.1;
+                                                }*/
+                                                if($value_top->id == $pt->productId){
+                                                    $targetOrderTop = ((int)$totalQtys - (int)$pt->quantityValues);
+                                                }
                                             }
+                                        //array_push($targetOrderTops, $targetOrderTop);
+                                        }else{
+                                            $targetOrderTop = 10000;
                                         }
-                                    //array_push($targetOrderTops, $targetOrderTop);
-                                    }else{
-                                        $targetOrderTop = 10000;
-                                    }
-                                    array_push($targetOrderTops, $targetOrderTop);
-                                ?>
+                                        array_push($targetOrderTops, $targetOrderTop);
+                                    ?>
                                 @else
                                 <?php
                                     $targetOrderTop = 0;

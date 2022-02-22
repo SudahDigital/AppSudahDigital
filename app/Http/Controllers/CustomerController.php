@@ -42,10 +42,12 @@ class CustomerController extends Controller
             $client_id = \Auth::user()->client_id;
             $spv_id = \Auth::user()->id;
             $customers = \DB::select("SELECT c.*, type_customer.name as tp_name, ct.city_name, 
-                        u.id as user_id, u.name as user_name, cat_pareto.pareto_code FROM customers c left outer join 
-                        type_customer ON type_customer.id = c.cust_type left outer join cat_pareto
-                        ON cat_pareto.id = c.pareto_id,
-                        cities ct, users u WHERE c.status != 'NEW' AND c.client_id = $client_id 
+                        u.id as user_id, u.name as user_name, cat_pareto.pareto_code, cd.name as cd_name
+                        FROM customers c 
+                        left outer join type_customer ON type_customer.id = c.cust_type 
+                        left outer join cat_pareto ON cat_pareto.id = c.pareto_id
+                        left join customer_discounts ON customers.pricelist_id = cd.id,
+                        cities ct, users u, customer_discounts cd WHERE c.status != 'NEW' AND c.client_id = $client_id 
                         AND c.user_id = u.id AND c.city_id = ct.id AND EXISTS
                             (
                                 SELECT * FROM  spv_sales
@@ -60,10 +62,12 @@ class CustomerController extends Controller
             if($status){
                 if($status == 'reg_point'){
                     $customers = \DB::select("SELECT c.*, type_customer.name as tp_name, ct.city_name, 
-                    u.id as user_id, u.name as user_name, cat_pareto.pareto_code FROM customers c left join 
-                    type_customer ON type_customer.id = c.cust_type left outer join cat_pareto
-                    ON cat_pareto.id = c.pareto_id,
-                    cities ct, users u WHERE c.status != 'NEW' AND c.client_id = $client_id 
+                    u.id as user_id, u.name as user_name, cat_pareto.pareto_code, cd.name as cd_name 
+                    FROM customers c 
+                    left join type_customer ON type_customer.id = c.cust_type 
+                    left outer join cat_pareto ON cat_pareto.id = c.pareto_id
+                    left join customer_discounts ON customers.pricelist_id = cd.id,
+                    cities ct, users u, customer_discounts cd WHERE c.status != 'NEW' AND c.client_id = $client_id 
                     AND c.user_id = u.id AND c.city_id = ct.id AND c.reg_point = 'Y' AND EXISTS
                         (
                             SELECT * FROM  spv_sales
@@ -73,10 +77,12 @@ class CustomerController extends Controller
                     ");
                 }else{
                     $customers = \DB::select("SELECT c.*, type_customer.name as tp_name, ct.city_name, 
-                    u.id as user_id, u.name as user_name, cat_pareto.pareto_code FROM customers c left join 
-                    type_customer ON type_customer.id = c.cust_type left outer join cat_pareto
-                    ON cat_pareto.id = c.pareto_id,
-                    cities ct, users u WHERE c.status != 'NEW' AND c.client_id = $client_id 
+                    u.id as user_id, u.name as user_name, cat_pareto.pareto_code, cd.name as cd_name
+                    FROM customers c 
+                    left join type_customer ON type_customer.id = c.cust_type 
+                    left outer join cat_pareto ON cat_pareto.id = c.pareto_id
+                    left join customer_discounts ON customers.pricelist_id = cd.id,
+                    cities ct, users u, customer_discounts cd WHERE c.status != 'NEW' AND c.client_id = $client_id 
                     AND c.user_id = u.id AND c.city_id = ct.id AND c.status LIKE '%$status%' AND EXISTS
                         (
                             SELECT * FROM  spv_sales
@@ -86,10 +92,12 @@ class CustomerController extends Controller
                     ");
                 }
                 $customers = \DB::select("SELECT c.*, type_customer.name as tp_name, ct.city_name, 
-                u.id as user_id, u.name as user_name, cat_pareto.pareto_code FROM customers c left join 
-                type_customer ON type_customer.id = c.cust_type left outer join cat_pareto
-                ON cat_pareto.id = c.pareto_id,
-                cities ct, users u WHERE c.status != 'NEW' AND c.client_id = $client_id 
+                u.id as user_id, u.name as user_name, cat_pareto.pareto_code, cd.name as cd_name
+                FROM customers c 
+                left join type_customer ON type_customer.id = c.cust_type 
+                left outer join cat_pareto ON cat_pareto.id = c.pareto_id
+                left join customer_discounts ON customers.pricelist_id = cd.id,
+                cities ct, users u, customer_discounts cd WHERE c.status != 'NEW' AND c.client_id = $client_id 
                 AND c.user_id = u.id AND c.city_id = ct.id AND c.status LIKE '%$status%' AND EXISTS
                     (
                         SELECT * FROM  spv_sales
@@ -158,11 +166,17 @@ class CustomerController extends Controller
     public function create($vendor)
     {
         if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){
+            $custPrice = \App\CustomerDiscount::where('client_id','=',auth()->user()->client_id)->get();
             $type = \App\TypeCustomer::where('client_id','=',auth()->user()->client_id)->get();
             $pareto = \App\CatPareto::where('client_id','=',auth()->user()->client_id)
                     ->orderBy('position', 'ASC')
                     ->get();
-            return view('customer_store.create',['vendor'=>$vendor,'type'=>$type,'pareto'=>$pareto]);
+            return view('customer_store.create',
+                            ['vendor'=>$vendor,
+                            'type'=>$type,
+                            'pareto'=>$pareto,
+                            'custPrice'=>$custPrice]
+                        );
         }
         else{
             abort(403, 'Anda tidak memiliki cukup hak akses');
@@ -234,6 +248,9 @@ class CustomerController extends Controller
         
         
         $new_cust->cust_type = $request->get('cust_type');
+        if($request->get('cust_price_type') != ''){
+            $new_cust->pricelist_id = $request->get('cust_price_type');
+        }
         //$new_cust->reg_point = $request->get('reg_point');
         $new_cust->save();
         if ( $new_cust->save()){
@@ -301,6 +318,7 @@ class CustomerController extends Controller
     public function edit($vendor,$id)
     {
         $id = \Crypt::decrypt($id);
+        $custPrice = \App\CustomerDiscount::where('client_id','=',auth()->user()->client_id)->get();
         $cust = \App\Customer::findOrFail($id);
         if(($cust->payment_term != null) && ($cust->payment_term != 'Cash')){
             $cust_term = 'TOP';
@@ -319,7 +337,14 @@ class CustomerController extends Controller
            
             return view('customer_store.edit',['cust' => $cust,'vendor'=>$vendor,'type'=>$type]);
         }else{
-            return view('customer_store.edit',['cust' => $cust,'vendor'=>$vendor,'cust_term'=>$cust_term,'pareto'=>$pareto,'type'=>$type]);
+            return view('customer_store.edit',
+                        ['cust' => $cust,
+                        'vendor'=>$vendor,
+                        'cust_term'=>$cust_term,
+                        'pareto'=>$pareto,
+                        'type'=>$type,
+                        'custPrice'=>$custPrice]
+                    );
         }
         
     }
@@ -394,6 +419,9 @@ class CustomerController extends Controller
             }
             
             $cust->cust_type = $request->get('cust_type');
+            if($request->get('cust_price_type') != ''){
+                $cust->pricelist_id = $request->get('cust_price_type');
+            }
         }
         else{
             $cust->cust_type = $request->get('cust_type');

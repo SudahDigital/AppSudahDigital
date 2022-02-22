@@ -244,7 +244,8 @@
                         <li class="{{request()->routeIs('products.index') || 
                                     request()->routeIs('groups.index') || 
                                     request()->routeIs('paket.index') || 
-                                    request()->routeIs('volume_discount.index') ? 'active' : ''}}">
+                                    request()->routeIs('volume_discount.index') || 
+                                    request()->routeIs('customer_discount.index') ? 'active' : ''}}">
                             <a href="javascript:void(0);" class="menu-toggle">
                                 <i class="material-icons">hardware</i>
                                 <span>{{Gate::check('isSpv') ? 'Pruducts' : 'Manage Products'}}</span>
@@ -256,6 +257,9 @@
                                 @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
                                     <li class="{{request()->routeIs('volume_discount.index') ? 'active' : '' }}">
                                         <a href="{{route('volume_discount.index',[$vendor])}}">Volume Discount</a>
+                                    </li>
+                                    <li class="{{request()->routeIs('customer_discount.index') ? 'active' : '' }}">
+                                        <a href="{{route('customer_discount.index',[$vendor])}}">Customer Price</a>
                                     </li>
                                     <li class="{{request()->routeIs('groups.index') ? 'active' : '' }}">
                                         <a href="{{route('groups.index',[$vendor])}}">Group</a>
@@ -663,7 +667,7 @@
         $(".alert").fadeTo(500, 0).slideUp(500, function(){
             $(this).remove(); 
         });
-        }, 3000);
+        }, 5000);
     </script>
     @yield('footer-scripts')
 </body>
