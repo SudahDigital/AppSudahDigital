@@ -30,7 +30,7 @@ class AddIdCityProvinceOnTableUser extends Migration
         Schema::table('users', function($table) {
             $table->dropColumn('city_id');
             //$table->dropColumn('province_id');
-            $table->text('profile_desc');
+            $table->dropColumn('profile_desc');
         });
     }
 }
