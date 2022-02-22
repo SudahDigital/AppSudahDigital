@@ -2203,4 +2203,17 @@ $no=$count_nt_paket;
         return $totalQtyOrders;
     }
     
+    public static function priceListCustomer($productId,$customerId){
+        $cekCustomer = \App\Customer::findOrFail($customerId);
+        if($cekCustomer->pricelist_id != null){
+            $cekProduct = \App\CustomerDiscProd::where('cust_disc_id',$cekCustomer->pricelist_id)
+                        ->where('product_id',$productId)->first();
+            if($cekProduct){
+                $customerPrice = $cekProduct->discount_price;
+            }else{
+                $customerPrice = $cekProduct->discount_price;
+            }
+        }
+
+    }
 }

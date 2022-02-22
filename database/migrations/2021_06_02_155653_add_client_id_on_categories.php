@@ -16,7 +16,7 @@ class AddClientIdOnCategories extends Migration
         Schema::table('categories', function (Blueprint $table) {
             $table->integer('client_id')->unsigned()->nullable()->after('image_category');
             
-            $table->foreign('client_id')->references('id')->on('b2b_client');
+            //$table->foreign('client_id')->references('id')->on('b2b_client');
         });
     }
 

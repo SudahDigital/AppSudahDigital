@@ -16,7 +16,7 @@ class AddClientIdOnBanners extends Migration
         Schema::table('banners', function (Blueprint $table) {
             $table->integer('client_id')->unsigned()->nullable()->after('image');
             
-            $table->foreign('client_id')->references('id')->on('b2b_client');
+            //$table->foreign('client_id')->references('id')->on('b2b_client');
         });
     }
 
