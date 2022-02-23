@@ -14,7 +14,7 @@ class AddTypeAndOverridePointsOnPointClaimTable extends Migration
     public function up()
     {
         Schema::table('point_claims', function (Blueprint $table) {
-            $table->integer('type');
+            //$table->integer('type');
             $table->float('override_points')->nullable();
         });
     }
@@ -27,7 +27,7 @@ class AddTypeAndOverridePointsOnPointClaimTable extends Migration
     public function down()
     {
         Schema::table('point_claims', function (Blueprint $table) {
-            $table->dropColumn('type');
+            //$table->dropColumn('type');
             $table->dropColumn('override_points');
         });
     }
