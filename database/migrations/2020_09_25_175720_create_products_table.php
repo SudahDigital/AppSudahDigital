@@ -19,7 +19,7 @@ class CreateProductsTable extends Migration
             $table->string('slug');
             $table->text('description');
             $table->string('image');
-            $table->float('price');
+            $table->double('price', 11,2);
             $table->integer('stock')->default(0)->unsigned();
             $table->integer('created_by');
             $table->integer('updated_by')->nullable();

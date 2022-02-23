@@ -22,7 +22,7 @@ class CreateOrdersTable extends Migration
             //$table->string('email')->nullable();
             //$table->text('address')->nullable();
             $table->string('phone')->nullable();
-            $table->float('total_price')->unsigned()->default(0);
+            $table->double('total_price', 11,2)->unsigned()->default(0);
             $table->string('invoice_number');
             $table->enum('status', ['SUBMIT', 'PROCESS', 'FINISH','CANCEL']);
             $table->timestamps();

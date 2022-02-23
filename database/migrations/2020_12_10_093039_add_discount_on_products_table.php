@@ -14,7 +14,7 @@ class AddDiscountOnProductsTable extends Migration
     public function up()
     {
         Schema::table('products', function($table) {
-            $table->float('price_promo')->after('price');
+            $table->double('price_promo',11,2)->after('price');
             $table->float('discount')->after('price_promo');
         });
     }

@@ -14,8 +14,8 @@ class AddPriceItemOnOrderProductTable extends Migration
     public function up()
     {
         Schema::table('order_product', function($table) {
-            $table->float('price_item')->nullable()->after('product_id');
-            $table->float('price_item_promo')->nullable()->after('price_item');
+            $table->double('price_item',11,2)->nullable()->after('product_id');
+            $table->double('price_item_promo',11,2)->nullable()->after('price_item');
             $table->float('discount_item')->nullable()->after('price_item_promo');
         });
     }
