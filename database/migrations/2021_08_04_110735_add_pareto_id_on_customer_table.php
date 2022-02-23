@@ -16,7 +16,7 @@ class AddParetoIdOnCustomerTable extends Migration
         Schema::table('customers', function (Blueprint $table) {
             $table->integer('pareto_id')->nullable();
 
-            $table->foreign('pareto_id')->references('id')->on('cat_pareto');
+            //$table->foreign('pareto_id')->references('id')->on('cat_pareto');
         });
     }
 

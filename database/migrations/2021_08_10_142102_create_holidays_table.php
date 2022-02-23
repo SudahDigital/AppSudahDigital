@@ -19,7 +19,7 @@ class CreateHolidaysTable extends Migration
             $table->date('date_holiday');
             $table->timestamps();
 
-            $table->foreign('wp_id')->references('id')->on('work_plans');
+            //$table->foreign('wp_id')->references('id')->on('work_plans');
         });
     }
 

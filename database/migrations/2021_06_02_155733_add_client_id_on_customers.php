@@ -16,7 +16,7 @@ class AddClientIdOnCustomers extends Migration
         Schema::table('customers', function (Blueprint $table) {
             $table->integer('client_id')->unsigned()->nullable()->after('user_id');
             
-           // $table->foreign('client_id')->references('id')->on('b2b_client');
+           //$table->foreign('client_id')->references('id')->on('b2b_client');
         });
     }
 

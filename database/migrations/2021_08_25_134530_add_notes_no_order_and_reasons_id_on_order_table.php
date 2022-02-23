@@ -17,7 +17,7 @@ class AddNotesNoOrderAndReasonsIdOnOrderTable extends Migration
             $table->bigInteger('reasons_id')->unsigned()->nullable();
             $table->text('notes_no_order')->nullable();
 
-            $table->foreign('reasons_id')->references('id')->on('reasons_checkouts');
+            //$table->foreign('reasons_id')->references('id')->on('reasons_checkouts');
         });
     }
 
