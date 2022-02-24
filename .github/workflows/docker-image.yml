@@ -33,7 +33,7 @@ jobs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: sudahdigital
         CONSUL_TOKEN: ${{ secrets.CONSUL_HTTP_TOKEN }}
-        IMAGE_TAG: latest
+        IMAGE_TAG: apptest
       run: |
         docker build --build-arg CONSUL_TOKEN=${{ secrets.CONSUL_TOKEN }} -t sudahdigital .
         docker tag sudahdigital $ECR_REGISTRY/$ECR_REPOSITORY:${IMAGE_TAG}
