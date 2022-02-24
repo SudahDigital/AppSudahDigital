@@ -63,8 +63,8 @@ class CustomerKeranjangController extends Controller
                 }*/
                 
 
-                $order_product->price_item = $cek_promo->price;
-                $order_product->price_item_promo = $cek_promo->price_promo;
+                $order_product->price_item = $price;
+                $order_product->price_item_promo = $price;
                 $order_product->discount_item = $cek_promo->discount;
                 $order_product->quantity += $quantity;
                 
@@ -102,8 +102,8 @@ class CustomerKeranjangController extends Controller
                         $new_order_product = new order_product;
                         $new_order_product->order_id =  $cek_order->id;
                         $new_order_product->product_id = $id_product;
-                        $new_order_product->price_item = $cek_promo->price;
-                        $new_order_product->price_item_promo = $cek_promo->price_promo;
+                        $new_order_product->price_item = $price;
+                        $new_order_product->price_item_promo = $price;
                         $new_order_product->discount_item = $cek_promo->discount;
                         $new_order_product->quantity = $quantity;
                         if($stock_status->stock_status == 'ON'){
@@ -149,8 +149,8 @@ class CustomerKeranjangController extends Controller
                 $order_product = new \App\order_product;
                 $order_product->order_id = $order->id;
                 $order_product->product_id = $request->get('Product_id');
-                $order_product->price_item = $cek_promo->price;
-                $order_product->price_item_promo = $cek_promo->price_promo;
+                $order_product->price_item = $price;
+                $order_product->price_item_promo = $price;
                 $order_product->discount_item = $cek_promo->discount;
                 $order_product->quantity = $request->get('quantity');
                 if($stock_status->stock_status == 'ON'){
@@ -217,6 +217,7 @@ class CustomerKeranjangController extends Controller
         $client_id =  \Auth::user()->client_id;  
         $id = $request->get('id_detil');
         $order_id = $request->get('order_id');
+        $price=$request->get('price');
         $order_product = order_product::findOrFail($id);
         $cek_promo = product::findOrFail($order_product->product_id);
         $stock_status= \DB::table('product_stock_status')
@@ -243,13 +244,13 @@ class CustomerKeranjangController extends Controller
             $order_product->available = 0;
             $order_product->preorder = 0;
         }
-        $order_product->price_item = $cek_promo->price;
-        $order_product->price_item_promo = $cek_promo->price_promo;
+        $order_product->price_item = $price;
+        $order_product->price_item_promo = $price;
         $order_product->discount_item = $cek_promo->discount;
         $order_product->save();
         if($order_product->save()){
                 $order = Order::findOrFail($order_id);
-                $order->total_price += $request->get('price');
+                $order->total_price += $price;
                 $order->save();
         }
            
@@ -300,8 +301,8 @@ class CustomerKeranjangController extends Controller
                 $preOrder = $qtyOrder - $prevstock;
             }
 
-            $order_product->price_item = $cek_promo->price;
-            $order_product->price_item_promo = $cek_promo->price_promo;
+            $order_product->price_item = $request->get('price');
+            $order_product->price_item_promo = $request->get('price');
             $order_product->discount_item = $cek_promo->discount;
             if($stock_status->stock_status == 'ON'){
                 $order_product->available = $avail;
@@ -1139,7 +1140,7 @@ $no=$count_nt_paket;
                     <div id="cont-collapse" class="container">
                         <div class="card-body" id="card-detail">
                             <div class="col-md-12" style="padding-bottom:10rem;">';
-                            if($krj_paket !=null){
+                            if($krj_paket != null){
                             echo'<p id="p-title1" class="mb-2" style="font-weight:700;color: #153651;font-family: Montserrat;">Paket</p>
                                 <table class="table-detail" width="100%">
                                     <tbody>';
@@ -1233,7 +1234,7 @@ $no=$count_nt_paket;
                                                 <td width="60%" class="td-desc-detail" align="left" valign="top" style="border-bottom: 1px solid #ddd;padding-top:3%;">
                                                     <p style="color: #000">'.$detil->Product_name.'</p>';
                                                     if($detil->discount > 0){
-                                                        $total=$detil->price_promo * $detil->pivot->quantity;
+                                                        $total=$detil->pivot->price_promo * $detil->pivot->quantity;
                                                     }
                                                     else{
                                                         $total=$detil->price * $detil->pivot->quantity;
@@ -2205,15 +2206,21 @@ $no=$count_nt_paket;
     
     public static function priceListCustomer($productId,$customerId){
         $cekCustomer = \App\Customer::findOrFail($customerId);
+        $priceProduct = \App\product::findOrFail($productId);
         if($cekCustomer->pricelist_id != null){
             $cekProduct = \App\CustomerDiscProd::where('cust_disc_id',$cekCustomer->pricelist_id)
                         ->where('product_id',$productId)->first();
+                        
             if($cekProduct){
-                $customerPrice = $cekProduct->discount_price;
+                $priceCheck = $cekProduct->discount_price;
             }else{
-                $customerPrice = $cekProduct->discount_price;
+                $priceCheck = $priceProduct->price;
             }
+        }else{
+            $priceCheck = $priceProduct->price;
         }
+
+        return $priceCheck;
 
     }
 }

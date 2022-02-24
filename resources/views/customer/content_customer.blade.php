@@ -362,7 +362,15 @@ Home
                                                 @endif
                                             @endif
                                         @endif
-                                        
+                                        @if(session()->has('ses_order') && $store_name->customer_id != null)
+                                            @php
+                                                $priceTop = App\Http\Controllers\CustomerKeranjangController::priceListCustomer($top_product[$key]->id,$store_name->customer_id);
+                                            @endphp
+                                        @else
+                                            @php
+                                                $priceTop = $top_product[$key]->price;
+                                            @endphp
+                                        @endif
                                         <div class="float-left px-1 py-2" style="width: 100%;">
                                             <p class="product-price-header mb-0" style="">
                                                 {{$top_product[$key]->Product_name}}
@@ -379,7 +387,7 @@ Home
                                             </div>
                                         @else
                                             <div class="float-left px-1 py-2" style="">
-                                                <p style="line-height:1; bottom:0" class="product-price mb-0 " id="productPrice_top{{$top_product[$key]->id}}" style="">Rp. {{ number_format($top_product[$key]->price, 0, ',', '.') }},-</p>
+                                                <p style="line-height:1; bottom:0" class="product-price mb-0 " id="productPrice_top{{$top_product[$key]->id}}" style="">Rp. {{ number_format($priceTop, 0, ',', '.') }},-</p>
                                             </div>
                                         @endif
                                         <table width="100%" class="hdr_tbl_cart mt-auto">
@@ -387,7 +395,7 @@ Home
                                             <tr>
                                                 <td class="tbl_cart" valign="middle" style="" rowspan="2">
                                                     <input type="hidden" id="jumlah_top{{$top_product[$key]->id}}" name="quantity" value="1">
-                                                    <input type="hidden" id="harga_top{{$top_product[$key]->id}}" name="price" value="{{ $top_product[$key]->price }}">
+                                                    <input type="hidden" id="harga_top{{$top_product[$key]->id}}" name="price" value="{{ $priceTop }}">
                                                     <input type="hidden" id="top{{$top_product[$key]->id}}" name="Product_id" value="{{$top_product[$key]->id}}">
                                                     <button class="btn btn-block button_add_to_cart respon" onclick="add_tocart_top('{{$top_product[$key]->id}}')" {{($top_product[$key]->stock == 0) && ($stock_status->stock_status == 'ON') ? 'disabled' : ''}}>Tambah</button>
                                                     
