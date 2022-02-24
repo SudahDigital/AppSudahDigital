@@ -1,3 +1,4 @@
+/.github/workflows/docker-image.yml
 /node_modules
 /public/hot
 /public/storage
