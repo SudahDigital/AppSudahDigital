@@ -58,7 +58,7 @@ RUN touch /var/log/php/errors.log && chmod 777 /var/log/php/errors.log
 
 ARG CONSUL_TOKEN
 
-RUN curl -s --header "X-Consul-Token:$CONSUL_TOKEN" -XGET https://consul.sudahdigital.com/v1/kv/prod/app.sudahdigital.com?raw=true > .env
+RUN curl -s --header "X-Consul-Token:$CONSUL_TOKEN" -XGET https://consul.sudahdigital.com/v1/kv/dev/apptest.sudahdigital.com?raw=true > .env
 RUN chown root:root .env
 
 # Deployment steps
