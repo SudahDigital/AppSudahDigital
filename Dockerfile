@@ -71,5 +71,5 @@ RUN chmod -R 777 /var/www/storage/framework/sessions
 RUN chmod -R 777 /var/www/storage/framework/views
 RUN chmod -R 777 /var/www/storage/framework/cache
 
-EXPOSE 443
+EXPOSE 80
 ENTRYPOINT ["/var/www/docker/run.sh"]
