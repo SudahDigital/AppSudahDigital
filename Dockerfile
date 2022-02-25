@@ -80,8 +80,6 @@ ENV S3_BUCKET_NAME=sudahdigital
 RUN touch /root/.passwd-s3fs
 RUN echo $AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY > /root/.passwd-s3fs && \
     chmod 600 /root/.passwd-s3fs
-RUN modprobe fuse
-RUN /usr/local/bin/s3fs -o nonempty $S3_BUCKET_NAME $S3_MOUNT_DIRECTORY -o passwd_file=/root/.passwd-s3fs -o allow_other
 
 WORKDIR /var/www
 
@@ -96,4 +94,7 @@ RUN chmod -R 777 /var/www/storage/framework/views
 RUN chmod -R 777 /var/www/storage/framework/cache
 
 EXPOSE 443
+ADD start-script.sh /start-script.sh
+RUN chmod 755 /start-script.sh 
+CMD ["/start-script.sh"]
 ENTRYPOINT ["/var/www/docker/run.sh"]
