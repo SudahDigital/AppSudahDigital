@@ -81,10 +81,11 @@ RUN pip3 --no-cache-dir install --upgrade awscli
 ENV AWS_ACCESS_KEY_ID=AKIAVOI7TYNL54X6HOB4
 ENV AWS_SECRET_ACCESS_KEY=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
 
-RUN wget https://github.com/s3fs-fuse/s3fs-fuse/archive/v1.77.tar.gz -O /usr/src/v1.77.tar.gz
-RUN tar xvz -C /usr/src -f /usr/src/v1.77.tar.gz
-RUN cd /usr/src/s3fs-fuse-1.77 && ./autogen.sh && ./configure --prefix=/usr && make && make install
-
+## Install S3 Fuse
+RUN rm -rf /usr/src/s3fs-fuse
+RUN git clone https://github.com/s3fs-fuse/s3fs-fuse/ /usr/src/s3fs-fuse
+WORKDIR /usr/src/s3fs-fuse 
+RUN ./autogen.sh && ./configure && make && make install
 RUN mkdir /s3bucket
 
 ENV S3_MOUNT_DIRECTORY=/var/www/storage/app/public
