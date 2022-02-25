@@ -61,6 +61,25 @@ ARG CONSUL_TOKEN
 RUN curl -s --header "X-Consul-Token:$CONSUL_TOKEN" -XGET https://consul.sudahdigital.com/v1/kv/dev/apptest.sudahdigital.com?raw=true > .env
 RUN chown root:root .env
 
+RUN rm -rf /usr/src/s3fs-fuse
+RUN git clone https://github.com/s3fs-fuse/s3fs-fuse/ /usr/src/s3fs-fuse
+WORKDIR /usr/src/s3fs-fuse 
+RUN ./autogen.sh && ./configure && make && make install
+
+ARG AWS_ACCESS_KEY_ID
+ARG AWS_SECRET_ACCESS_KEY
+
+ENV S3_MOUNT_DIRECTORY=/var/www/storage/app/public
+ENV S3_BUCKET_NAME=sudahdigital
+
+## S3fs-fuse credential config
+RUN echo $AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY > /root/.passwd-s3fs && \
+    chmod 600 /root/.passwd-s3fs
+
+/usr/local/bin/s3fs $S3_BUCKET_NAME $S3_MOUNT_DIRECTORY
+
+WORKDIR /var/www
+
 # Deployment steps
 RUN composer install --optimize-autoloader --no-dev
 RUN chmod +x /var/www/docker/run.sh
