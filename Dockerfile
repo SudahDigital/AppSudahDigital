@@ -77,10 +77,11 @@ ENV S3_MOUNT_DIRECTORY=/var/www/storage/app/public
 ENV S3_BUCKET_NAME=sudahdigital
 
 ## S3fs-fuse credential config
+RUN touch /root/.passwd-s3fs
 RUN echo $AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY > /root/.passwd-s3fs && \
     chmod 600 /root/.passwd-s3fs
 
-RUN /usr/local/bin/s3fs -o nonempty $S3_BUCKET_NAME $S3_MOUNT_DIRECTORY
+RUN /usr/local/bin/s3fs -o nonempty $S3_BUCKET_NAME $S3_MOUNT_DIRECTORY -o passwd_file=/root/.passwd-s3fs -o allow_other
 
 WORKDIR /var/www
 
