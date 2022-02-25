@@ -13,7 +13,7 @@ RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
     install-php-extensions mbstring pdo_mysql zip exif pcntl gd memcached
 
 RUN apt-get update -y && \
-    apt-get install -y build-essential libfuse-dev libcurl4-openssl-dev libxml2-dev pkg-config libssl-dev mime-support automake libtool wget tar git unzip
+    apt-get install -y build-essential libfuse-dev libcurl4-openssl-dev libxml2-dev pkg-config libssl-dev mime-support automake libtool wget tar git unzip modprobe
 RUN apt-get install lsb-release -y  && apt-get install zip -y && apt-get install vim -y
 
 # Install dependencies
