@@ -81,8 +81,8 @@ RUN pip3 --no-cache-dir install --upgrade awscli
 ENV AWS_ACCESS_KEY_ID=AKIAVOI7TYNL54X6HOB4
 ENV AWS_SECRET_ACCESS_KEY=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
 
-RUN apt-get update -qq
-RUN apt-get install -y build-essential libfuse-dev fuse-utils libcurl4-openssl-dev libxml2-dev mime-support automake libtool wget tar
+RUN apt update
+RUN apt install -y build-essential libfuse-dev fuse-utils libcurl4-openssl-dev libxml2-dev mime-support automake libtool wget tar
 
 RUN wget https://github.com/s3fs-fuse/s3fs-fuse/archive/v1.77.tar.gz -O /usr/src/v1.77.tar.gz
 RUN tar xvz -C /usr/src -f /usr/src/v1.77.tar.gz
