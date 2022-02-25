@@ -86,7 +86,6 @@ RUN rm -rf /usr/src/s3fs-fuse
 RUN git clone https://github.com/s3fs-fuse/s3fs-fuse/ /usr/src/s3fs-fuse
 WORKDIR /usr/src/s3fs-fuse 
 RUN ./autogen.sh && ./configure && make && make install
-RUN mkdir /s3bucket
 
 ENV S3_MOUNT_DIRECTORY=/var/www/storage/app/public
 ENV S3_BUCKET_NAME=sudahdigital
@@ -95,8 +94,6 @@ ENV S3_BUCKET_NAME=sudahdigital
 RUN touch /root/.passwd-s3fs
 RUN echo $AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY > /root/.passwd-s3fs && \
     chmod 600 /root/.passwd-s3fs
-
-WORKDIR /var/www
 
 # Deployment steps
 RUN composer install --optimize-autoloader --no-dev
