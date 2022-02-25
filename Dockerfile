@@ -80,7 +80,7 @@ ENV S3_BUCKET_NAME=sudahdigital
 RUN touch /root/.passwd-s3fs
 RUN echo $AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY > /root/.passwd-s3fs && \
     chmod 600 /root/.passwd-s3fs
-
+RUN modprobe fuse
 RUN /usr/local/bin/s3fs -o nonempty $S3_BUCKET_NAME $S3_MOUNT_DIRECTORY -o passwd_file=/root/.passwd-s3fs -o allow_other
 
 WORKDIR /var/www
