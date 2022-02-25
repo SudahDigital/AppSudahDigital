@@ -70,8 +70,8 @@ RUN git clone https://github.com/s3fs-fuse/s3fs-fuse/ /usr/src/s3fs-fuse
 WORKDIR /usr/src/s3fs-fuse 
 RUN ./autogen.sh && ./configure && make && make install
 
-ARG AWS_ACCESS_KEY_ID
-ARG AWS_SECRET_ACCESS_KEY
+ENV AWS_ACCESS_KEY_ID=AKIAVOI7TYNL54X6HOB4
+ENV AWS_SECRET_ACCESS_KEY=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
 
 ENV S3_MOUNT_DIRECTORY=/var/www/storage/app/public
 ENV S3_BUCKET_NAME=sudahdigital
