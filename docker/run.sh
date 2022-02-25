@@ -14,4 +14,4 @@ php artisan route:cache
 chown -R root:root storage/
 chmod -R 777 storage/
 
-s3fs sudahdigital /mnt -o nonempty -o passwd_file=/root/.passwd-s3fs
+s3fs sudahdigital /var/www/storage/public -o nonempty -o passwd_file=/root/.passwd-s3fs
