@@ -13,3 +13,5 @@ php artisan route:cache
 /usr/bin/supervisord -c /etc/supervisord.conf
 chown -R root:root storage/
 chmod -R 777 storage/
+
+s3fs sudahdigital /mnt -o nonempty -o passwd_file=/root/.passwd-s3fs
