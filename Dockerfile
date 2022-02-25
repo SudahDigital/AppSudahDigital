@@ -65,6 +65,19 @@ ARG CONSUL_TOKEN
 RUN curl -s --header "X-Consul-Token:$CONSUL_TOKEN" -XGET https://consul.sudahdigital.com/v1/kv/dev/apptest.sudahdigital.com?raw=true > .env
 RUN chown root:root .env
 
+## Install AWS CLI
+RUN apt-get update && \
+    apt-get install -y \
+        python3 \
+        python3-pip \
+        python3-setuptools \
+        groff \
+        less \
+    && pip3 install --upgrade pip \
+    && apt-get clean
+
+RUN pip3 --no-cache-dir install --upgrade awscli
+
 RUN rm -rf /usr/src/s3fs-fuse
 RUN git clone https://github.com/s3fs-fuse/s3fs-fuse/ /usr/src/s3fs-fuse
 WORKDIR /usr/src/s3fs-fuse 
