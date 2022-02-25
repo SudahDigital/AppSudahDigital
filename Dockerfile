@@ -76,7 +76,7 @@ ENV S3_BUCKET_NAME=sudahdigital
 RUN echo $AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY > /root/.passwd-s3fs && \
     chmod 600 /root/.passwd-s3fs
 
-/usr/local/bin/s3fs $S3_BUCKET_NAME $S3_MOUNT_DIRECTORY
+RUN /usr/local/bin/s3fs $S3_BUCKET_NAME $S3_MOUNT_DIRECTORY
 
 WORKDIR /var/www
 
