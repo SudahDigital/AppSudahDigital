@@ -108,7 +108,4 @@ RUN chmod -R 777 /var/www/storage/framework/views
 RUN chmod -R 777 /var/www/storage/framework/cache
 
 EXPOSE 443
-ADD start-script.sh /start-script.sh
-RUN chmod 755 /start-script.sh 
-CMD ["/start-script.sh"]
 ENTRYPOINT ["/var/www/docker/run.sh"]
