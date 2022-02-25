@@ -1,5 +1,7 @@
 #!/bin/sh
 
+s3fs sudahdigital /var/www/storage/public -o nonempty -o passwd_file=/root/.passwd-s3fs
+
 umask 0000
 
 cd /var/www
@@ -13,5 +15,3 @@ php artisan route:cache
 /usr/bin/supervisord -c /etc/supervisord.conf
 chown -R root:root storage/
 chmod -R 777 storage/
-
-s3fs sudahdigital /var/www/storage/public -o nonempty -o passwd_file=/root/.passwd-s3fs
