@@ -1,7 +1,5 @@
 #!/bin/sh
 
-s3fs sudahdigital /var/www/storage/public -o nonempty -o passwd_file=/root/.passwd-s3fs
-
 umask 0000
 
 cd /var/www
