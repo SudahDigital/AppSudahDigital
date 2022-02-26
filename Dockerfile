@@ -109,4 +109,3 @@ RUN chmod -R 777 /var/www/storage/framework/cache
 
 EXPOSE 443
 ENTRYPOINT ["/var/www/docker/run.sh"]
-CMD ["s3fs", "-o nonempty", "sudahdigital", "/var/www/storage/app/public"]
