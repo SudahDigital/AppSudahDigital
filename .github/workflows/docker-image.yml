@@ -37,7 +37,7 @@ jobs:
         AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         IMAGE_TAG: apptest
       run: |
-        docker build --build-arg CONSUL_TOKEN=${{ secrets.CONSUL_TOKEN }} -t sudahdigital .
+        docker build --build-arg CONSUL_TOKEN=${{ secrets.CONSUL_TOKEN }} AWS_KEY=${{ secrets.AWS_ACCESS_KEY_ID }} AWS_SECRET_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} -t sudahdigital .
         docker tag sudahdigital $ECR_REGISTRY/$ECR_REPOSITORY:${IMAGE_TAG}
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:${IMAGE_TAG}
         
