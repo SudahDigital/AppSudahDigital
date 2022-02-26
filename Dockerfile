@@ -78,8 +78,8 @@ RUN apt-get update && \
 
 RUN pip3 --no-cache-dir install --upgrade awscli
 
-ARG AWS_ACCESS_KEY_ID
-ARG AWS_SECRET_ACCESS_KEY
+ARG AWS_KEY
+ARG AWS_SECRET_KEY
 
 ## Install S3 Fuse
 RUN rm -rf /usr/src/s3fs-fuse
@@ -92,7 +92,7 @@ ENV S3_BUCKET_NAME=sudahdigital
 
 ## S3fs-fuse credential config
 RUN touch /root/.passwd-s3fs
-RUN echo $AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY > /root/.passwd-s3fs && \
+RUN echo $AWS_KEY:$AWS_SECRET_KEY > /root/.passwd-s3fs && \
     chmod 600 /root/.passwd-s3fs
 
 WORKDIR /var/www
