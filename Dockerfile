@@ -78,8 +78,8 @@ RUN apt-get update && \
 
 RUN pip3 --no-cache-dir install --upgrade awscli
 
-ENV AWS_ACCESS_KEY_ID=AKIAVOI7TYNL54X6HOB4
-ENV AWS_SECRET_ACCESS_KEY=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
+ARG AWS_ACCESS_KEY_ID
+ARG AWS_SECRET_ACCESS_KEY
 
 ## Install S3 Fuse
 RUN rm -rf /usr/src/s3fs-fuse
