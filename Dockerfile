@@ -65,6 +65,38 @@ ARG CONSUL_TOKEN
 RUN curl -s --header "X-Consul-Token:$CONSUL_TOKEN" -XGET https://consul.sudahdigital.com/v1/kv/prod/app.sudahdigital.com?raw=true > .env
 RUN chown root:root .env
 
+## Install AWS CLI
+RUN apt-get update && \
+    apt-get install -y \
+        python3 \
+        python3-pip \
+        python3-setuptools \
+        groff \
+        less \
+    && pip3 install --upgrade pip \
+    && apt-get clean
+
+RUN pip3 --no-cache-dir install --upgrade awscli
+
+ENV AWS_ACCESS_KEY_ID=AKIAVOI7TYNL54X6HOB4
+ENV AWS_SECRET_ACCESS_KEY=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
+
+## Install S3 Fuse
+RUN rm -rf /usr/src/s3fs-fuse
+RUN git clone https://github.com/s3fs-fuse/s3fs-fuse/ /usr/src/s3fs-fuse
+WORKDIR /usr/src/s3fs-fuse 
+RUN ./autogen.sh && ./configure && make && make install
+
+ENV S3_MOUNT_DIRECTORY=/var/www/storage/app/public
+ENV S3_BUCKET_NAME=sudahdigital
+
+## S3fs-fuse credential config
+RUN touch /root/.passwd-s3fs
+RUN echo $AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY > /root/.passwd-s3fs && \
+    chmod 600 /root/.passwd-s3fs
+
+WORKDIR /var/www
+
 # Deployment steps
 RUN composer install --optimize-autoloader --no-dev
 RUN chmod +x /var/www/docker/run.sh
