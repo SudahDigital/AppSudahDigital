@@ -45,5 +45,5 @@ jobs:
       env:
          IP: $(aws --region ap-southeast-1 ec2 describe-instances --filters "Name=instance-state-name,Values=running" "Name=instance-id,Values=i-00d506ac6bfb8d477" --query 'Reservations[*].Instances[*].[PublicIpAddress]' --output text)
       run: |
-         sshpass -p "${{secrets.SSH_PASSWORD}}" ssh -o StrictHostKeyChecking=no root@${{env.IP}} eval $(curl -s --header "X-Consul-Token:${{ secrets.CONSUL_HTTP_TOKEN }}" -XGET https://consul.sudahdigital.com/v1/kv/dev/deploy-apptest.sh?raw=true | tee -a /opt/script/deploy-apptest.sh)
+         sshpass -p "${{secrets.SSH_PASSWORD}}" ssh -o StrictHostKeyChecking=no root@${{env.IP}} eval $(curl -s --header "X-Consul-Token:${{ secrets.CONSUL_HTTP_TOKEN }}" -XGET https://consul.sudahdigital.com/v1/kv/dev/deploy-apptest.sh?raw=true | tee /opt/script/deploy-apptest.sh)
          sshpass -p "${{secrets.SSH_PASSWORD}}" ssh -o StrictHostKeyChecking=no root@${{env.IP}} sh /opt/script/deploy-apptest.sh
