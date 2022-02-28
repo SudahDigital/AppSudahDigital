@@ -1234,10 +1234,10 @@ $no=$count_nt_paket;
                                                 <td width="60%" class="td-desc-detail" align="left" valign="top" style="border-bottom: 1px solid #ddd;padding-top:3%;">
                                                     <p style="color: #000">'.$detil->Product_name.'</p>';
                                                     if($detil->discount > 0){
-                                                        $total=$detil->pivot->price_promo * $detil->pivot->quantity;
+                                                        $total=$detil->pivot->price_item_promo * $detil->pivot->quantity;
                                                     }
                                                     else{
-                                                        $total=$detil->price * $detil->pivot->quantity;
+                                                        $total=$detil->pivot->price_item * $detil->pivot->quantity;
                                                     }
                                                     echo'<h2 id="productPrice_kr'.$detil->id.'" style="font-weight:700;color: #153651;font-family: Montserrat;">Rp.&nbsp;'.number_format($total, 0, ',', '.').',-</h2>
                                                     <table width="20%" class="tabel-quantity">
@@ -1248,10 +1248,10 @@ $no=$count_nt_paket;
                                                                     <input type="hidden" id="order_id'.$detil->id.'" name="order_id" value="'.$order->id.'">';
                                                                     if($detil->discount > 0)
                                                                     {
-                                                                        echo'<input type="hidden" id="harga_kr'.$detil->id.'" name="price" value="'.$detil->price_promo.'">';
+                                                                        echo'<input type="hidden" id="harga_kr'.$detil->id.'" name="price" value="'.$detil->pivot->price_item_promo.'">';
                                                                     }
                                                                     else{
-                                                                        echo'<input type="hidden" id="harga_kr'.$detil->id.'" name="price" value="'.$detil->price.'">';
+                                                                        echo'<input type="hidden" id="harga_kr'.$detil->id.'" name="price" value="'.$detil->pivot->price_item.'">';
                                                                     }
                                                                     echo'<input type="hidden" id="id_detil'.$detil->id.'" value="'.$detil->pivot->id.'">
                                                                     <input type="hidden" id="jmlkr_'.$detil->id.'" name="quantity" value="'.$detil->pivot->quantity.'">    
@@ -1277,10 +1277,10 @@ $no=$count_nt_paket;
                                                     <input type="hidden"  id="quantity_delete'.$detil->id.'" name="quantity" value="'.$detil->pivot->quantity.'">';
                                                     if($detil->discount > 0)
                                                         {
-                                                        echo '<input type="hidden"  id="price_delete'.$detil->id.'" name="price" value="'.$detil->price_promo.'">';
+                                                        echo '<input type="hidden"  id="price_delete'.$detil->id.'" name="price" value="'.$detil->pivot->price_item_promo.'">';
                                                         }
                                                         else{
-                                                            echo '<input type="hidden"  id="price_delete'.$detil->id.'" name="price" value="'.$detil->price.'">';
+                                                            echo '<input type="hidden"  id="price_delete'.$detil->id.'" name="price" value="'.$detil->pivot->price_item.'">';
                                                         }
                                                     echo'<input type="hidden"  id="product_id_delete'.$detil->id.'"name="product_id" value="'.$detil->id.'">
                                                     <input type="hidden" id="id_delete'.$detil->id.'" name="id" value="'.$detil->pivot->id.'">

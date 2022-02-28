@@ -167,23 +167,23 @@
 
     function GetDynamicTextBox() {
         
-        var fied1 = '<td>\
+        let fied1 = '<td>\
                         <div class="form-float">\
                             <select name="customer_id[]" class="form-control customer_id" required>\
                                 <option></option>\
-                                <?php echo fill_customer_select($customers); ?>\
+                                <?php echo fill_customer_select($customers)?>;\
                             </select>\
                         </div>\
                     </td>';
                     
-        var fied2 = '<td>\
+        let fied2 = '<td>\
                         <div class="">\
                             <div class="form-line">\
                                 <input type="file" name="file_name[]" accept=".pdf,.jpg,.jpeg,.png" placeholder="File">\
                             </div>\
                         </div>\
                     </td>';
-        var del = '<td><button type="button" class="btn btn-xs btn-danger waves-effect remove"><i class="material-icons">remove_circle_outline</i></button></td>'
+        let del = '<td><button type="button" class="btn btn-xs btn-danger waves-effect remove"><i class="material-icons">remove_circle_outline</i></button></td>';
        
         return fied1 + fied2 + del;
         

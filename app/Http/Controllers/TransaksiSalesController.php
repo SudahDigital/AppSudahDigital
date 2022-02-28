@@ -387,7 +387,7 @@ $no=$count_nt_paket;
         }
 
         foreach($amountNodisc as $amNoDisc){
-            $totalPriceNoDisc += $amNoDisc->quantity * $amNoDisc->price_item_promo;
+            $totalPriceNoDisc += $amNoDisc->quantity * $amNoDisc->price_item;
         }
 
 
