@@ -12,6 +12,10 @@ ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/do
 RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
     install-php-extensions mbstring pdo_mysql zip exif pcntl gd memcached
 
+RUN apt-get update -y && \
+    apt-get install -y build-essential libfuse-dev libcurl4-openssl-dev libxml2-dev pkg-config libssl-dev mime-support automake libtool wget tar git unzip kmod
+RUN apt-get install lsb-release -y  && apt-get install zip -y && apt-get install vim -y
+
 # Install dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -60,6 +64,38 @@ ARG CONSUL_TOKEN
 
 RUN curl -s --header "X-Consul-Token:$CONSUL_TOKEN" -XGET https://consul.sudahdigital.com/v1/kv/dev/apptest.sudahdigital.com?raw=true > .env
 RUN chown root:root .env
+
+## Install AWS CLI
+RUN apt-get update && \
+    apt-get install -y \
+        python3 \
+        python3-pip \
+        python3-setuptools \
+        groff \
+        less \
+    && pip3 install --upgrade pip \
+    && apt-get clean
+
+RUN pip3 --no-cache-dir install --upgrade awscli
+
+ARG AWS_KEY
+ARG AWS_SECRET_KEY
+
+## Install S3 Fuse
+RUN rm -rf /usr/src/s3fs-fuse
+RUN git clone https://github.com/s3fs-fuse/s3fs-fuse/ /usr/src/s3fs-fuse
+WORKDIR /usr/src/s3fs-fuse 
+RUN ./autogen.sh && ./configure && make && make install
+
+ENV S3_MOUNT_DIRECTORY=/var/www/storage/app/public
+ENV S3_BUCKET_NAME=sudahdigital
+
+## S3fs-fuse credential config
+RUN touch /root/.passwd-s3fs
+RUN echo $AWS_KEY:$AWS_SECRET_KEY > /root/.passwd-s3fs && \
+    chmod 600 /root/.passwd-s3fs
+
+WORKDIR /var/www
 
 # Deployment steps
 RUN composer install --optimize-autoloader --no-dev
