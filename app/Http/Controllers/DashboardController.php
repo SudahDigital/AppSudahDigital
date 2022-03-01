@@ -118,13 +118,16 @@ class DashboardController extends Controller
         $client->twt_url = $request->get('twt_url');
         
         if($request->file('client_image')){
-            $file_get = $request->file('client_image');
+            $image = $request->file('client_image');
+            $image_path = $image->store('client-logo-images', 'public');
+            $client->client_image = $image_path;
+            /*$file_get = $request->file('client_image');
             $file = '/client_image/';
             //dd($file);
             $nama_file = time()."_".$file_get->getClientOriginalName();
             $tujuan_upload = public_path('/assets/image/client_image');
             $file_get->move($tujuan_upload,$nama_file);
-            $client->client_image =$file.$nama_file;
+            $client->client_image =$file.$nama_file;*/
         }
         $client->save();
         if($client->save()){

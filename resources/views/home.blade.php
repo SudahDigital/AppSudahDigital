@@ -746,7 +746,7 @@
                         <div class="profile-header">&nbsp;</div>
                         <div class="profile-body">
                             <div class="image-area">
-                                <img src="{{ asset('assets/image'.$client->client_image)}}" width="130" height="130" alt="image-logo" />
+                                <img src="{{ asset('storage/'.$client->client_image)}}" width="130" height="130" alt="image-logo" />
                             </div>
                             <div class="content-area">
                                 <h3>{{$client->client_name}}</h3>
@@ -951,7 +951,7 @@
                                                 <div class="col-sm-9">
                                                     <div class="form-line">
                                                         @if($client->client_image)
-                                                        <img src="{{asset('assets/image'.$client->client_image)}}" width="120px"/>
+                                                            <img src="{{asset('storage/'.$client->client_image)}}" width="120px"/>
                                                         @else
                                                         No Image Logo
                                                         @endif

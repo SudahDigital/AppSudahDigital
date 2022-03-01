@@ -7,7 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <title>{{$client->client_name}} | @yield('title')</title>
 
-    <link rel="icon" href="{{asset('assets/image'.$client->client_image)}}" type="image/x-icon">
+    <link rel="icon" href="{{asset('storage/'.$client->client_image)}}" type="image/x-icon">
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css" >
     <!-- Our Custom CSS -->

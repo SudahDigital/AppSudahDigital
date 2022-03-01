@@ -7,7 +7,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{Request::session()->get('client_sess')['client_name']}} | @yield('title')</title>
     <!-- Favicon-->
-    <link rel="icon" href="{{ asset('assets/image'.Request::session()->get('client_sess')['client_image'])}}" type="image/x-icon">
+    <link rel="icon" 
+        href="{{ Gate::check('isOwner') ? asset('assets/image'.Request::session()->get('client_sess')['client_image']) :
+            asset('storage/'.Request::session()->get('client_sess')['client_image'])}}" type="image/x-icon">
 
     <!-- Google Fonts -->
     <link href="{{asset('bsb/googleapis.css?family=Roboto:400,700&subset=latin,cyrillic-ext')}}" rel="stylesheet" type="text/css">
@@ -92,7 +94,8 @@
         <div class="container-fluid">
             <div class="navbar-header">
                 <a href="#" class="navbar-brand">
-                    <img src="{{ asset('assets/image'.Request::session()->get('client_sess')['client_image'])}}" class="" height="40" style="margin-top:-11px;">
+                    <img src="{{ Gate::check('isOwner') ? asset('assets/image'.Request::session()->get('client_sess')['client_image']) : 
+                    asset('storage/'.Request::session()->get('client_sess')['client_image'])}}" class="" height="40" style="margin-top:-11px;">
                 </a>
                 <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
                 <a href="javascript:void(0);" class="bars"></a>

@@ -1386,7 +1386,7 @@ Paket
                     <div class="container image-logo-confirm">
                         <div class="d-flex justify-content-start mx-auto">
                             <div class="col-md-1" style="z-index: 2">
-                                <img src="{{asset('assets/image'.$client->client_image)}}" class="img-thumbnail" style="background-color:transparent; border:none;position:absolute;" alt="image logo">  
+                                <img src="{{asset('storage/'.$client->client_image)}}" class="img-thumbnail" style="background-color:transparent; border:none;position:absolute;" alt="image logo">  
                             </div>
                         </div>
                     </div>
