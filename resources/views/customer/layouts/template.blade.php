@@ -7,7 +7,7 @@
     <meta id="token" name="csrf-token" content="{{ csrf_token() }}" />
     <title>{{$client->client_name}} | @yield('title')</title>
 
-    <link rel="icon" href="{{asset('assets/image'.$client->client_image)}}" type="image/x-icon">
+    <link rel="icon" href="{{asset('storage/'.$client->client_image)}}" type="image/x-icon">
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css" >
     <!-- Our Custom CSS -->
@@ -1071,7 +1071,7 @@
                     <div class="container">
                         <div class="d-flex justify-content-center mx-auto">
                             <div class="col-md-2 image-logo-login" style="z-index: 2">
-                                <img src="{{asset('assets/image'.$client->client_image)}}" class="img-thumbnail pt-4 img-logo-loc" style="background-color:transparent; border:none;" alt="VENDOR LOGO">
+                                <img src="{{asset('storage/'.$client->client_image)}}" class="img-thumbnail pt-4 img-logo-loc" style="background-color:transparent; border:none;" alt="VENDOR LOGO">
                             </div>
                         </div>
                     </div>
@@ -1306,7 +1306,7 @@
                     <div class="container content-new-toko">
                         <div class="d-flex justify-content-center mx-auto">
                             <div class="col-md-2 image-logo-login" style="z-index: 2">
-                            <img src="{{asset('assets/image'.$client->client_image)}}" class="img-thumbnail pt-4" style="background-color:transparent; border:none;" alt="image-logo">  
+                            <img src="{{asset('storage/'.$client->client_image)}}" class="img-thumbnail pt-4" style="background-color:transparent; border:none;" alt="image-logo">  
                             </div>
                         </div>
                     </div>
@@ -1405,7 +1405,7 @@
                     <div class="container">
                         <div class="d-flex justify-content-center mx-auto">
                             <div class="col-md-2 image-logo-login" style="z-index: 2">
-                                <img src="{{asset('assets/image'.$client->client_image)}}" class="img-thumbnail pt-4 img-logo-loc" style="background-color:transparent; border:none;" alt="VENDOR LOGO">
+                                <img src="{{asset('storage/'.$client->client_image)}}" class="img-thumbnail pt-4 img-logo-loc" style="background-color:transparent; border:none;" alt="VENDOR LOGO">
                             </div>
                         </div>
                     </div>

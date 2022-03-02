@@ -198,7 +198,7 @@ Paket
                                                                                             ->where('group_id',$value->id)
                                                                                             ->whereNull('bonus_cat')->first();
                                                                                 if($qty_on_paket){
-                                                                                    $harga_on_paket = $p_group->price * $qty_on_paket->quantity; 
+                                                                                    $harga_on_paket = $qty_on_paket->price_item * $qty_on_paket->quantity; 
                                                                                 }
                                                                             }
                                                                         @endphp
@@ -296,6 +296,15 @@ Paket
                                                                                     @endif
                                                                                 @endif
                                                                             @endif
+                                                                            @if(session()->has('ses_order') && $store_name->customer_id != null)
+                                                                                @php
+                                                                                    $pktPrice = App\Http\Controllers\CustomerKeranjangController::priceListCustomer($p_group->id,$store_name->customer_id);
+                                                                                @endphp
+                                                                            @else
+                                                                                @php
+                                                                                    $pktPrice = $p_group->price;
+                                                                                @endphp
+                                                                            @endif
                                                                             <div class="float-left px-1 py-2" style="width: 100%;">
                                                                                 <p class="product-price-header_pop mb-0" style="">
                                                                                     {{$p_group->Product_name}}
@@ -303,12 +312,12 @@ Paket
                                                                             </div>
                                                                             <div class="float-left px-1 pb-0" style="">
                                                                                 
-                                                                                <p style="line-height:1; bottom:0" class="product-price_pop mt-auto" id="productPrice_pkt{{$p_group->id}}_{{$value->id}}" style="">Rp.  {{ $item && $qty_on_paket != NULL ?  number_format($harga_on_paket, 0, ',', '.') : number_format($p_group->price, 0, ',', '.') }},-</p>
+                                                                                <p style="line-height:1; bottom:0" class="product-price_pop mt-auto" id="productPrice_pkt{{$p_group->id}}_{{$value->id}}" style="">Rp.  {{ $item && $qty_on_paket != NULL ?  number_format($harga_on_paket, 0, ',', '.') : number_format($pktPrice, 0, ',', '.') }},-</p>
                                                                             </div>
                                                                             <div class="justify-content-center input_item_pop mt-auto px-3">
                                                                                 <input type="hidden" id="jumlah_val_pkt{{$p_group->id}}_{{$value->id}}" name="" value="{{$item && $qty_on_paket != NULL ? "$qty_on_paket->quantity" : '0'}}">
                                                                                 <input type="hidden" id="jumlah_pkt{{$p_group->id}}_{{$value->id}}" name="quantity_pkt" value="{{$item && $qty_on_paket != NULL ? "$qty_on_paket->quantity" : '0'}}">
-                                                                                <input type="hidden" id="harga_pkt{{$p_group->id}}_{{$value->id}}" name="price_pkt" value="{{$p_group->price}}">
+                                                                                <input type="hidden" id="harga_pkt{{$p_group->id}}_{{$value->id}}" name="price_pkt" value="{{$pktPrice}}">
                                                                                 <input type="hidden" id="product_pkt{{$p_group->id}}_{{$value->id}}" name="Product_id_pkt" value="{{$p_group->id}}">
                                                                                 
                                                                                 <div class="input-group mb-0 mx-auto">
@@ -363,7 +372,7 @@ Paket
                                                                                         ->where('group_id',$value->id)
                                                                                         ->whereNull('bonus_cat')->first();
                                                                             if($qty_on_paket){
-                                                                                $harga_on_paket = $p_group->price * $qty_on_paket->quantity; 
+                                                                                $harga_on_paket = $qty_on_paket->price_item * $qty_on_paket->quantity; 
                                                                             }
                                                                         }
                                                                     @endphp
@@ -459,6 +468,15 @@ Paket
                                                                                 @endif
                                                                             @endif
                                                                         @endif
+                                                                        @if(session()->has('ses_order') && $store_name->customer_id != null)
+                                                                            @php
+                                                                                $pktPrice = App\Http\Controllers\CustomerKeranjangController::priceListCustomer($p_group->id,$store_name->customer_id);
+                                                                            @endphp
+                                                                        @else
+                                                                            @php
+                                                                                $pktPrice = $p_group->price;
+                                                                            @endphp
+                                                                        @endif
                                                                         <div class="float-left px-1 py-2" style="width: 100%;">
                                                                             <p class="product-price-header_pop mb-0" style="">
                                                                                 {{$p_group->Product_name}}
@@ -466,12 +484,12 @@ Paket
                                                                         </div>
                                                                         <div class="float-left px-1 pb-0" style="">
                                                                             
-                                                                            <p style="line-height:1; bottom:0" class="product-price_pop mt-auto" id="productPrice_pkt{{$p_group->id}}_{{$value->id}}" style="">Rp.  {{ $item && $qty_on_paket != NULL ?  number_format($harga_on_paket, 0, ',', '.') : number_format($p_group->price, 0, ',', '.') }},-</p>
+                                                                            <p style="line-height:1; bottom:0" class="product-price_pop mt-auto" id="productPrice_pkt{{$p_group->id}}_{{$value->id}}" style="">Rp.  {{ $item && $qty_on_paket != NULL ?  number_format($harga_on_paket, 0, ',', '.') : number_format($pktPrice, 0, ',', '.') }},-</p>
                                                                         </div>
                                                                         <div class="justify-content-center input_item_pop mt-auto px-3">
                                                                             <input type="hidden" id="jumlah_val_pkt{{$p_group->id}}_{{$value->id}}" name="" value="{{$item && $qty_on_paket != NULL ? "$qty_on_paket->quantity" : '0'}}">
                                                                             <input type="hidden" id="jumlah_pkt{{$p_group->id}}_{{$value->id}}" name="quantity_pkt" value="{{$item && $qty_on_paket != NULL ? "$qty_on_paket->quantity" : '0'}}">
-                                                                            <input type="hidden" id="harga_pkt{{$p_group->id}}_{{$value->id}}" name="price_pkt" value="{{$p_group->price}}">
+                                                                            <input type="hidden" id="harga_pkt{{$p_group->id}}_{{$value->id}}" name="price_pkt" value="{{$pktPrice}}">
                                                                             <input type="hidden" id="product_pkt{{$p_group->id}}_{{$value->id}}" name="Product_id_pkt" value="{{$p_group->id}}">
                                                                             
                                                                             <div class="input-group mb-0 mx-auto">
@@ -598,11 +616,27 @@ Paket
                                                                                                 ->where('group_id',$value->id)
                                                                                                 ->whereNotNull('bonus_cat')->first();
                                                                                     if($qty_on_bonus){
-                                                                                        $harga_on_bonus = $p_group->price * $qty_on_bonus->quantity; 
+                                                                                        $harga_on_bonus = $qty_on_bonus->price_item * $qty_on_bonus->quantity; 
                                                                                     }
                                                                                 }
                                                                             @endphp
-                                                                            
+                                                                            @if(session()->has('ses_order'))
+                                                                                <?php $store_name = session()->get('ses_order');?>
+                                                                                @if($store_name->customer_id != null)
+                                                                                    @php
+                                                                                        $bnsPrice = App\Http\Controllers\CustomerKeranjangController::priceListCustomer($p_group->id,$store_name->customer_id);
+                                                                                    @endphp
+                                                                                @else
+                                                                                    @php
+                                                                                        $bnsPrice = $p_group->price;
+                                                                                    @endphp
+                                                                                @endif
+                                                                            @else
+                                                                                 @php
+                                                                                    $bnsPrice = $p_group->price;
+                                                                                @endphp
+                                                                            @endif
+
                                                                             @if(($item) && ($qty_on_bonus != NULL))
                                                                                 <input type="hidden" id="orderid_delete_bns{{$p_group->id}}_{{$value->id}}" value="{{$item->id}}">
                                                                             @else
@@ -624,7 +658,7 @@ Paket
                                                                                     </p>
                                                                                 </div>
                                                                                 <div class="float-left pl-0 pt-1 pb-0" style="">
-                                                                                    <p style="line-height:1; bottom:0" class="product-price_pop mt-auto" id="productPrice_bns{{$p_group->id}}_{{$value->id}}" style="">Rp. {{ $item && $qty_on_bonus != NULL ?  number_format($harga_on_bonus, 0, ',', '.') : number_format($p_group->price, 0, ',', '.') }},-</p>
+                                                                                    <p style="line-height:1; bottom:0" class="product-price_pop mt-auto" id="productPrice_bns{{$p_group->id}}_{{$value->id}}" style="">Rp. {{ $item && $qty_on_bonus != NULL ?  number_format($harga_on_bonus, 0, ',', '.') : number_format($bnsPrice, 0, ',', '.') }},-</p>
                                                                                 </div>
                                                                                 @if($stock_status->stock_status == 'ON')
                                                                                     @php
@@ -703,11 +737,12 @@ Paket
                                                                                         @endif
                                                                                     @endif
                                                                                 @endif
+                                                                                
                                                                                 <div class="float-left pl-0 mt-auto">
                                                                                     <div class="input-group mb-0">
                                                                                         <input type="hidden" id="jumlah_val_bns{{$p_group->id}}_{{$value->id}}" name="" value="{{$item && $qty_on_bonus != NULL ? "$qty_on_bonus->quantity" : '0'}}">
                                                                                         <input type="hidden" id="jumlah_bns{{$p_group->id}}_{{$value->id}}" name="quantity_bns" value="{{$item && $qty_on_bonus != NULL ? "$qty_on_bonus->quantity" : '0'}}">
-                                                                                        <input type="hidden" id="harga_bns{{$p_group->id}}_{{$value->id}}" name="price" value="{{$p_group->price}}">
+                                                                                        <input type="hidden" id="harga_bns{{$p_group->id}}_{{$value->id}}" name="price" value="{{$bnsPrice}}">
                                                                                         <input type="hidden" id="product_bns{{$p_group->id}}_{{$value->id}}" name="Product_id" value="{{$p_group->id}}">
                                                                                         <button class="input-group-text button_minus_bns" id="button_minus_bns{{$p_group->id}}_{{$value->id}}" 
                                                                                                 style="cursor: pointer;
@@ -780,11 +815,26 @@ Paket
                                                                                                 ->where('group_id',$value->id)
                                                                                                 ->whereNotNull('bonus_cat')->first();
                                                                                     if($qty_on_bonus){
-                                                                                        $harga_on_bonus = $p_group->price * $qty_on_bonus->quantity; 
+                                                                                        $harga_on_bonus = $qty_on_bonus->price_item * $qty_on_bonus->quantity; 
                                                                                     }
                                                                                 }
                                                                             @endphp
-                                                                            
+                                                                            @if(session()->has('ses_order'))
+                                                                                <?php $store_name = session()->get('ses_order');?>
+                                                                                @if($store_name->customer_id != null)
+                                                                                    @php
+                                                                                        $bnsPrice = App\Http\Controllers\CustomerKeranjangController::priceListCustomer($p_group->id,$store_name->customer_id);
+                                                                                    @endphp
+                                                                                @else
+                                                                                    @php
+                                                                                        $bnsPrice = $p_group->price;
+                                                                                    @endphp
+                                                                                @endif
+                                                                            @else
+                                                                                @php
+                                                                                    $bnsPrice = $p_group->price;
+                                                                                @endphp
+                                                                            @endif
                                                                             @if(($item) && ($qty_on_bonus != NULL))
                                                                                 <input type="hidden" id="orderid_delete_bns{{$p_group->id}}_{{$value->id}}" value="{{$item->id}}">
                                                                             @else
@@ -806,7 +856,7 @@ Paket
                                                                                     </p>
                                                                                 </div>
                                                                                 <div class="float-left pl-0 pt-1 pb-0" style="">
-                                                                                    <p style="line-height:1; bottom:0" class="product-price_pop mt-auto" id="productPrice_bns{{$p_group->id}}_{{$value->id}}" style="">Rp. {{ $item && $qty_on_bonus != NULL ?  number_format($harga_on_bonus, 0, ',', '.') : number_format($p_group->price, 0, ',', '.') }},-</p>
+                                                                                    <p style="line-height:1; bottom:0" class="product-price_pop mt-auto" id="productPrice_bns{{$p_group->id}}_{{$value->id}}" style="">Rp. {{ $item && $qty_on_bonus != NULL ?  number_format($harga_on_bonus, 0, ',', '.') : number_format($bnsPrice, 0, ',', '.') }},-</p>
                                                                                 </div>
                                                                                 @if($stock_status->stock_status == 'ON')
                                                                                     @php
@@ -890,7 +940,7 @@ Paket
                                                                                     <div class="input-group mb-0">
                                                                                         <input type="hidden" id="jumlah_val_bns{{$p_group->id}}_{{$value->id}}" name="" value="{{$item && $qty_on_bonus != NULL ? "$qty_on_bonus->quantity" : '0'}}">
                                                                                         <input type="hidden" id="jumlah_bns{{$p_group->id}}_{{$value->id}}" name="quantity_bns" value="{{$item && $qty_on_bonus != NULL ? "$qty_on_bonus->quantity" : '0'}}">
-                                                                                        <input type="hidden" id="harga_bns{{$p_group->id}}_{{$value->id}}" name="price" value="{{$p_group->price}}">
+                                                                                        <input type="hidden" id="harga_bns{{$p_group->id}}_{{$value->id}}" name="price" value="{{$bnsPrice}}">
                                                                                         <input type="hidden" id="product_bns{{$p_group->id}}_{{$value->id}}" name="Product_id" value="{{$p_group->id}}">
                                                                                         <button class="input-group-text button_minus_bns" id="button_minus_bns{{$p_group->id}}_{{$value->id}}" 
                                                                                                 style="cursor: pointer;
@@ -1197,10 +1247,10 @@ Paket
                                         <td width="60%" class="td-desc-detail" align="left" valign="top" style="border-bottom: 1px solid #ddd;padding-top:3%;">
                                             <p style="color: #000">{{ $detil->Product_name}}</p>
                                             <?php 
-                                            if($detil->discount > 0){
-                                                $total = $detil->price_promo * $detil->quantity;
+                                            if($detil->discount_item > 0){
+                                                $total = $detil->price_item_promo * $detil->quantity;
                                             }else{
-                                                $total=$detil->price * $detil->quantity;
+                                                $total=$detil->price_item * $detil->quantity;
                                             }
                                             ?>
                                             <h2 id="productPrice_kr{{$detil->product_id}}" style="font-weight:700;color: #153651;font-family: Montserrat;">Rp. {{ number_format($total, 0, ',', '.') }},-</h2>
@@ -1210,10 +1260,10 @@ Paket
                                                         <td width="3%" class="" align="left" valign="middle" rowspan="2">
                                                             <p style="color: #000">Qty</p>
                                                             <input type="hidden" id="order_id{{$detil->product_id}}" name="order_id" value="{{$detil->order_id}}">
-                                                            @if($detil->discount > 0)
-                                                            <input type="hidden" id="harga_kr{{$detil->product_id}}" name="price" value="{{$detil->price_promo}}">
+                                                            @if($detil->discount_item > 0)
+                                                            <input type="hidden" id="harga_kr{{$detil->product_id}}" name="price" value="{{$detil->price_item_promo}}">
                                                             @else
-                                                            <input type="hidden" id="harga_kr{{$detil->product_id}}" name="price" value="{{$detil->price}}">
+                                                            <input type="hidden" id="harga_kr{{$detil->product_id}}" name="price" value="{{$detil->price_item}}">
                                                             @endif
                                                             <input type="hidden" id="id_detil{{$detil->product_id}}" value="{{$detil->id}}">
                                                             <input type="hidden" id="jmlkr_{{$detil->product_id}}" name="quantity" value="{{$detil->quantity}}">    
@@ -1237,10 +1287,10 @@ Paket
                                             <button class="btn btn-default" onclick="delete_kr('{{$detil->product_id}}')" style="">X</button>
                                             <input type="hidden"  id="order_id_delete{{$detil->product_id}}" name="order_id" value="{{$detil->order_id}}">
                                             <input type="hidden"  id="quantity_delete{{$detil->product_id}}" name="quantity" value="{{$detil->quantity}}">
-                                            @if($detil->discount > 0)
-                                            <input type="hidden"  id="price_delete{{$detil->product_id}}" name="price" value="{{$detil->price_promo}}">
+                                            @if($detil->discount_item > 0)
+                                            <input type="hidden"  id="price_delete{{$detil->product_id}}" name="price" value="{{$detil->price_item_promo}}">
                                             @else
-                                            <input type="hidden"  id="price_delete{{$detil->product_id}}" name="price" value="{{$detil->price}}">
+                                            <input type="hidden"  id="price_delete{{$detil->product_id}}" name="price" value="{{$detil->price_item}}">
                                             @endif
                                             <input type="hidden"  id="product_id_delete{{$detil->product_id}}"name="product_id" value="{{$detil->product_id}}">
                                             <input type="hidden" id="id_delete{{$detil->product_id}}" name="id" value="{{$detil->id}}">
@@ -1336,7 +1386,7 @@ Paket
                     <div class="container image-logo-confirm">
                         <div class="d-flex justify-content-start mx-auto">
                             <div class="col-md-1" style="z-index: 2">
-                                <img src="{{asset('assets/image'.$client->client_image)}}" class="img-thumbnail" style="background-color:transparent; border:none;position:absolute;" alt="image logo">  
+                                <img src="{{asset('storage/'.$client->client_image)}}" class="img-thumbnail" style="background-color:transparent; border:none;position:absolute;" alt="image logo">  
                             </div>
                         </div>
                     </div>

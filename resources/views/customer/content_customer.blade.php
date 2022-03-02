@@ -619,6 +619,15 @@ Home
                                         @endif
                                     @endif
                                 @endif
+                                @if(session()->has('ses_order') && $store_name->customer_id != null)
+                                    @php
+                                        $prPrice = App\Http\Controllers\CustomerKeranjangController::priceListCustomer($value->id,$store_name->customer_id);
+                                    @endphp
+                                @else
+                                    @php
+                                        $prPrice = $value->price;
+                                    @endphp
+                                @endif
                                 <div class="float-left px-1 py-2" style="width: 100%;">
                                     <p class="product-price-header mb-0" style="">
                                         {{$value->Product_name}}
@@ -635,7 +644,7 @@ Home
                                     </div>
                                 @else
                                     <div class="float-left px-1 py-2" style="">
-                                        <p style="line-height:1; bottom:0" class="product-price mb-0 " id="productPrice{{$value->id}}" style="">Rp. {{ number_format($value->price, 0, ',', '.') }},-</p>
+                                        <p style="line-height:1; bottom:0" class="product-price mb-0 " id="productPrice{{$value->id}}" style="">Rp. {{ number_format($prPrice, 0, ',', '.') }},-</p>
                                     </div>
                                 @endif
                                 <div class="mb-0 mt-auto" >
@@ -644,7 +653,7 @@ Home
                                         <tr>
                                             <td class="tbl_cart" valign="middle" style="" rowspan="2">
                                                 <input type="hidden" id="jumlah{{$value->id}}" name="quantity" value="1">
-                                                <input type="hidden" id="harga{{$value->id}}" name="price" value="{{ $value->price }}">
+                                                <input type="hidden" id="harga{{$value->id}}" name="price" value="{{ $prPrice }}">
                                                 <input type="hidden" id="{{$value->id}}" name="Product_id" value="{{$value->id}}">
                                                 <button class="btn btn-block button_add_to_cart respon" onclick="add_tocart('{{$value->id}}')" >Tambah</button>
                                                 
@@ -813,10 +822,10 @@ Home
                                         <td width="60%" class="td-desc-detail" align="left" valign="top" style="border-bottom: 1px solid #ddd;padding-top:3%;">
                                             <p style="color: #000">{{ $detil->Product_name}}</p>
                                             <?php 
-                                            if($detil->discount > 0){
-                                                $total = $detil->price_promo * $detil->quantity;
+                                            if($detil->discount_item > 0){
+                                                $total = $detil->price_item_promo * $detil->quantity;
                                             }else{
-                                                $total=$detil->price * $detil->quantity;
+                                                $total=$detil->price_item * $detil->quantity;
                                             }
                                             ?>
                                             <h2 id="productPrice_kr{{$detil->product_id}}" style="font-weight:700;color: #153651;font-family: Montserrat;">Rp. {{ number_format($total, 0, ',', '.') }},-</h2>
@@ -826,10 +835,10 @@ Home
                                                         <td width="3%" class="" align="left" valign="middle" rowspan="2">
                                                             <p style="color: #000">Qty</p>
                                                             <input type="hidden" id="order_id{{$detil->product_id}}" name="order_id" value="{{$detil->order_id}}">
-                                                            @if($detil->discount > 0)
-                                                            <input type="hidden" id="harga_kr{{$detil->product_id}}" name="price" value="{{$detil->price_promo}}">
+                                                            @if($detil->discount_item > 0)
+                                                            <input type="hidden" id="harga_kr{{$detil->product_id}}" name="price" value="{{$detil->price_item_promo}}">
                                                             @else
-                                                            <input type="hidden" id="harga_kr{{$detil->product_id}}" name="price" value="{{$detil->price}}">
+                                                            <input type="hidden" id="harga_kr{{$detil->product_id}}" name="price" value="{{$detil->price_item}}">
                                                             @endif
                                                             <input type="hidden" id="id_detil{{$detil->product_id}}" value="{{$detil->id}}">
                                                             <input type="hidden" id="jmlkr_{{$detil->product_id}}" name="quantity" value="{{$detil->quantity}}">    
@@ -853,10 +862,10 @@ Home
                                             <button class="btn btn-default" onclick="delete_kr('{{$detil->product_id}}')" style="">X</button>
                                             <input type="hidden"  id="order_id_delete{{$detil->product_id}}" name="order_id" value="{{$detil->order_id}}">
                                             <input type="hidden"  id="quantity_delete{{$detil->product_id}}" name="quantity" value="{{$detil->quantity}}">
-                                            @if($detil->discount > 0)
-                                            <input type="hidden"  id="price_delete{{$detil->product_id}}" name="price" value="{{$detil->price_promo}}">
+                                            @if($detil->discount_item > 0)
+                                            <input type="hidden"  id="price_delete{{$detil->product_id}}" name="price" value="{{$detil->price_item_promo}}">
                                             @else
-                                            <input type="hidden"  id="price_delete{{$detil->product_id}}" name="price" value="{{$detil->price}}">
+                                            <input type="hidden"  id="price_delete{{$detil->product_id}}" name="price" value="{{$detil->price_item}}">
                                             @endif
                                             <input type="hidden"  id="product_id_delete{{$detil->product_id}}"name="product_id" value="{{$detil->product_id}}">
                                             <input type="hidden" id="id_delete{{$detil->product_id}}" name="id" value="{{$detil->id}}">
@@ -952,7 +961,7 @@ Home
                     <div class="container image-logo-confirm">
                         <div class="d-flex justify-content-start mx-auto">
                             <div class="col-md-1" style="z-index: 2">
-                                <img src="{{asset('assets/image'.$client->client_image)}}" class="img-thumbnail" style="background-color:transparent; border:none;position:absolute;" alt="image logo">  
+                                <img src="{{asset('storage/'.$client->client_image)}}" class="img-thumbnail" style="background-color:transparent; border:none;position:absolute;" alt="image logo">  
                             </div>
                         </div>
                     </div>

@@ -19,16 +19,22 @@ class CustomerExport implements FromCollection, WithMapping, WithHeadings, WithC
         ->where('client_id','=',auth()->user()->client_id)
         ->orderBy('created_at','DESC')
         ->get();
+        
     }
 
     public function map($customer) : array {
+        if($customer->lat == NULL || $customer->lng == NULL ){
+            $latalang = '';
+        }else{
+            $latalang = $customer->lat.', '.$customer->lng;
+        }
         return[
                 $customer->store_code,
                 $customer->store_name,
                 $customer->email,
                 $customer->city_id,
                 $customer->address,
-                $customer->lat.', '.$customer->lng,
+                $latalang,
                 $customer->cust_type,
                 $customer->pricelist_id,
                 $customer->phone,

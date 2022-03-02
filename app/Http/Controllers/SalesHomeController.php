@@ -91,8 +91,8 @@ class SalesHomeController extends Controller
         $top_count = $top_product->count();
         $count_data = $product->count();
         $keranjang = DB::select("SELECT orders.user_id, orders.status,orders.client_id,orders.customer_id, 
-                    products.Product_name, products.image, products.price, products.discount,
-                    products.price_promo, order_product.id, order_product.order_id,
+                    products.Product_name, products.image, order_product.price_item, order_product.discount_item,
+                    order_product.price_item_promo, order_product.id, order_product.order_id,
                     order_product.product_id,order_product.quantity,order_product.group_id 
                     FROM order_product, products, orders WHERE order_product.group_id IS NULL
                     AND orders.client_id = '$client->id' AND orders.id = order_product.order_id AND 

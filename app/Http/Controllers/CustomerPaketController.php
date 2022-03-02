@@ -134,8 +134,8 @@ class CustomerPaketController extends Controller
                     $preOrder = $qtyOrder - $prevstock;
                 }
 
-                $order_product->price_item = $cek_promo->price;
-                $order_product->price_item_promo = $cek_promo->price_promo;
+                $order_product->price_item = $price;
+                $order_product->price_item_promo = $price;
                 $order_product->discount_item = $cek_promo->discount;
                 $order_product->quantity = $quantity;
 
@@ -158,8 +158,8 @@ class CustomerPaketController extends Controller
                         $new_order_product = new \App\Order_paket_temp;
                         $new_order_product->order_id =  $cek_order->id;
                         $new_order_product->product_id = $id_product;
-                        $new_order_product->price_item = $cek_promo->price;
-                        $new_order_product->price_item_promo = $cek_promo->price_promo;
+                        $new_order_product->price_item = $price;
+                        $new_order_product->price_item_promo = $price;
                         $new_order_product->discount_item = $cek_promo->discount;
 
                         if($stock_status->stock_status == 'ON'){
@@ -193,8 +193,8 @@ class CustomerPaketController extends Controller
                 $order_product = new \App\Order_paket_temp;
                 $order_product->order_id = $order->id;
                 $order_product->product_id = $request->get('Product_id');
-                $order_product->price_item = $cek_promo->price;
-                $order_product->price_item_promo = $cek_promo->price_promo;
+                $order_product->price_item = $price;
+                $order_product->price_item_promo = $price;
                 $order_product->discount_item = $cek_promo->discount;
 
                 if($stock_status->stock_status == 'ON'){
@@ -273,8 +273,8 @@ class CustomerPaketController extends Controller
                     $preOrder = $qtyOrder - $prevstock;
                 }
                 
-                $order_product->price_item = $cek_promo->price;
-                $order_product->price_item_promo = $cek_promo->price_promo;
+                $order_product->price_item = $price;
+                $order_product->price_item_promo = $price;
                 $order_product->discount_item = $cek_promo->discount;
 
                 if($stock_status->stock_status == 'ON'){
@@ -297,8 +297,8 @@ class CustomerPaketController extends Controller
                         $new_order_product = new \App\Order_paket_temp;
                         $new_order_product->order_id =  $cek_order->id;
                         $new_order_product->product_id = $id_product;
-                        $new_order_product->price_item = $cek_promo->price;
-                        $new_order_product->price_item_promo = $cek_promo->price_promo;
+                        $new_order_product->price_item = $price;
+                        $new_order_product->price_item_promo = $price;
                         $new_order_product->discount_item = $cek_promo->discount;
                         
                         if($stock_status->stock_status == 'ON'){
@@ -400,9 +400,21 @@ class CustomerPaketController extends Controller
                     //->where('paket_id',$paket_id)
                     ->where('group_id',$group_id)
                     ->get();
+        
         $dateNow = date('Y-m-d H:i:s');
         foreach($paket_tmp as $tmp){
             $cek_harga = \App\product::findOrFail($tmp->product_id);
+            
+            if(session()->has('ses_order')){
+                $store_name = session()->get('ses_order');
+                if($store_name->customer_id != null){
+                    $Price = \App\Http\Controllers\CustomerKeranjangController::priceListCustomer($tmp->product_id,$store_name->customer_id);
+                }else{
+                    $Price = $cek_harga->price;
+                }
+            }else{
+                $Price = $cek_harga->price;
+            }
             $order_product = \App\order_product::where('order_id', $tmp->order_id)
                 ->where('product_id',$tmp->product_id)
                 ->where('group_id',$tmp->group_id)
@@ -412,8 +424,8 @@ class CustomerPaketController extends Controller
                     DB::table('order_product')->where('id', $order_product->id)->update([
                         'order_id' => $tmp->order_id, 
                         'product_id'=>$tmp->product_id,
-                        'price_item'=>$cek_harga->price,
-                        'price_item_promo'=>$cek_harga->price_promo,
+                        'price_item'=>$Price,
+                        'price_item_promo'=>$Price,
                         'discount_item'=>$cek_harga->discount,
                         'quantity'=>$tmp->quantity + $order_product->quantity,
                         'created_at'=>$tmp->created_at,
@@ -428,8 +440,8 @@ class CustomerPaketController extends Controller
                     DB::table('order_product')->insert([
                         'order_id' => $tmp->order_id, 
                         'product_id'=>$tmp->product_id,
-                        'price_item'=>$cek_harga->price,
-                        'price_item_promo'=>$cek_harga->price_promo,
+                        'price_item'=>$Price,
+                        'price_item_promo'=>$Price,
                         'discount_item'=>$cek_harga->discount,
                         'quantity'=>$tmp->quantity,
                         'created_at'=>$tmp->created_at,
@@ -595,7 +607,7 @@ class CustomerPaketController extends Controller
                                     ->where('group_id',$group_id)
                                     ->whereNull('bonus_cat')->first();
                         if($qty_on_paket){
-                            $harga_on_paket = $p_group->price * $qty_on_paket->quantity; 
+                            $harga_on_paket = $qty_on_paket->price_item * $qty_on_paket->quantity; 
                         }
                     }
                     if(($order_id != NULL) && ($qty_on_paket != NULL)){
@@ -708,18 +720,24 @@ class CustomerPaketController extends Controller
                                         }
                                     }
                                 }
+                                if(session()->has('ses_order') && $store_name->customer_id != null){
+                                   $pktPrice = \App\Http\Controllers\CustomerKeranjangController::priceListCustomer($p_group->id,$store_name->customer_id);
+                                }else{
+                                    $pktPrice = $p_group->price;
+                                }
+                               
                                 echo'<div class="float-left px-1 py-2" style="width: 100%;">
                                     <p class="product-price-header_pop mb-0" style="">
                                         '.$p_group->Product_name.'
                                     </p>
                                 </div>
                                 <div class="float-left px-1 pb-0" style="">
-                                    <p style="line-height:1; bottom:0" class="product-price_pop mt-auto" id="productPrice_pkt'.$p_group->id.'_'.$group_id.'" style="">Rp.  '.number_format($c_price, 0, ',', '.') .',-</p> 
+                                    <p style="line-height:1; bottom:0" class="product-price_pop mt-auto" id="productPrice_pkt'.$p_group->id.'_'.$group_id.'" style="">Rp.  '.number_format($pktPrice, 0, ',', '.') .',-</p> 
                                 </div>
                                 <div class="justify-content-center input_item_pop mt-auto px-3">
                                     <input type="hidden" id="jumlah_val_pkt'.$p_group->id.'_'.$group_id.'" name="" value="'.$c_jml_val.'">
                                     <input type="hidden" id="jumlah_pkt'.$p_group->id.'_'.$group_id.'" name="quantity_pkt" value="'.$c_jml_val.'">
-                                    <input type="hidden" id="harga_pkt'.$p_group->id.'_'.$group_id.'" name="price_pkt" value="'.$p_group->price.'">
+                                    <input type="hidden" id="harga_pkt'.$p_group->id.'_'.$group_id.'" name="price_pkt" value="'.$pktPrice.'">
                                     <input type="hidden" id="product_pkt'.$p_group->id.'_'.$group_id.'" name="Product_id_pkt" value="'.$p_group->id.'">
                                     <div class="input-group mb-0 mx-auto">
                                         <button class="input-group-text button_minus_pkt" id="button_minus_pkt'.$p_group->id.'_'.$group_id.'" 
@@ -830,7 +848,7 @@ class CustomerPaketController extends Controller
                                     ->where('group_id',$group_id)
                                     ->whereNotNull('bonus_cat')->first();
                         if($qty_on_bonus){
-                            $harga_on_bonus = $p_group->price * $qty_on_bonus->quantity; 
+                            $harga_on_bonus = $qty_on_bonus->price_item * $qty_on_bonus->quantity; 
                         }
                 }
                 if(($order_id != '') && ($qty_on_bonus)){
@@ -847,6 +865,18 @@ class CustomerPaketController extends Controller
                 if(($stock_status->stock_status == 'ON')&&($p_group->stock == 0)){
                     $dsbld_btn = 'disabled';
                     $info_stock = '<span class="badge badge-warning ">Sisa stok 0</span>';
+                }
+                if(session()->has('ses_order')){
+                $store_name = session()->get('ses_order');
+                    if($store_name->customer_id != null){
+                        $bnsPrice = \App\Http\Controllers\CustomerKeranjangController::priceListCustomer($p_group->id,$store_name->customer_id);
+                       
+                    }else{
+                       $bnsPrice = $p_group->price;
+                    }
+                }else{
+                    $bnsPrice = $p_group->price;
+                    
                 }
                 echo' 
                 <div class="col-12 col-md-6 d-flex item_pop_bonus pb-4" style="">
@@ -870,7 +900,7 @@ class CustomerPaketController extends Controller
                                 </p>
                             </div>
                             <div class="float-left pl-0 pt-1 pb-0" style="">
-                                <p style="line-height:1; bottom:0" class="product-price_pop mt-auto" id="productPrice_bns'.$p_group->id.'_'.$group_id.'" style="">Rp. '.number_format($c_price, 0, ',', '.') .',-</p>
+                                <p style="line-height:1; bottom:0" class="product-price_pop mt-auto" id="productPrice_bns'.$p_group->id.'_'.$group_id.'" style="">Rp. '.number_format($bnsPrice, 0, ',', '.') .',-</p>
                             </div>';
                             
                                 if($stock_status->stock_status == 'ON'){
@@ -954,7 +984,7 @@ class CustomerPaketController extends Controller
                                 <div class="input-group mb-0">
                                     <input type="hidden" id="jumlah_val_bns'.$p_group->id.'_'.$group_id.'" name="" value="'.$c_jml_val.'">
                                     <input type="hidden" id="jumlah_bns'.$p_group->id.'_'.$group_id.'" name="quantity_bns" value="'.$c_jml_val.'">
-                                    <input type="hidden" id="harga_bns'.$p_group->id.'_'.$group_id.'" name="price" value="'.$p_group->price.'">
+                                    <input type="hidden" id="harga_bns'.$p_group->id.'_'.$group_id.'" name="price" value="'.$bnsPrice.'">
                                     <input type="hidden" id="product_bns'.$p_group->id.'_'.$group_id.'" name="Product_id" value="'.$p_group->id.'">
                                     <button class="input-group-text button_minus_bns" id="button_minus_bns'.$p_group->id.'_'.$group_id.'" 
                                             style="cursor: pointer;

@@ -107,7 +107,10 @@ RUN chmod -R 777 /var/www/storage/framework/sessions
 RUN chmod -R 777 /var/www/storage/framework/views
 RUN chmod -R 777 /var/www/storage/framework/cache
 RUN chmod -R 777 /var/www/storage/framework/laravel-excel
+<<<<<<< HEAD
 
+=======
+>>>>>>> Zuki
 
 EXPOSE 443
 ENTRYPOINT ["/var/www/docker/run.sh"]
