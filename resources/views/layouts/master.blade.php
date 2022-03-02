@@ -8,7 +8,7 @@
     <title>{{Request::session()->get('client_sess')['client_name']}} | @yield('title')</title>
     <!-- Favicon-->
     <link rel="icon" 
-        href="{{ Gate::check('isOwner') ? asset('assets/image'.Request::session()->get('client_sess')['client_image']) :
+        href="{{ Gate::check('isOwner') ? asset('assets/image/'.Request::session()->get('client_sess')['client_image']) :
             asset('storage/'.Request::session()->get('client_sess')['client_image'])}}" type="image/x-icon">
 
     <!-- Google Fonts -->
@@ -94,8 +94,11 @@
         <div class="container-fluid">
             <div class="navbar-header">
                 <a href="#" class="navbar-brand">
-                    <img src="{{ Gate::check('isOwner') ? asset('assets/image'.Request::session()->get('client_sess')['client_image']) : 
-                    asset('storage/'.Request::session()->get('client_sess')['client_image'])}}" class="" height="40" style="margin-top:-11px;">
+                    @if(Gate::check('isOwner'))
+                        <img src="{{ asset('assets/image/'.Request::session()->get('client_sess')['client_image'])}}" class="" height="40" style="margin-top:-11px;">
+                    @else
+                        <img src="{{ asset('storage/'.Request::session()->get('client_sess')['client_image'])}}" class="" height="40" style="margin-top:-11px;">
+                    @endif
                 </a>
                 <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
                 <a href="javascript:void(0);" class="bars"></a>

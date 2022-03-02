@@ -1048,7 +1048,7 @@
                     <div class="card profile-card">
                         <div class="profile-header text-center">
                             <div class="image-area">
-                                <img src="{{ asset('assets/image'.$client->client_image)}}" alt="image logo" />
+                                <img src="{{ asset('assets/image/'.$client->client_image)}}" alt="image logo" />
                             </div>
                         </div>
                         <div class="profile-body">
