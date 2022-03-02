@@ -419,8 +419,10 @@ class CustomerController extends Controller
             }
             
             $cust->cust_type = $request->get('cust_type');
-            if($request->get('cust_price_type') != ''){
+            if(($request->get('cust_price_type') != '') && ($request->get('cust_price_type') != 0) ){
                 $cust->pricelist_id = $request->get('cust_price_type');
+            }elseif($request->get('cust_price_type') == 0){
+                $cust->pricelist_id = NULL;
             }
         }
         else{

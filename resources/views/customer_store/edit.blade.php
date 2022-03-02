@@ -53,6 +53,9 @@
                 <b>Customer Price Type</b>
                 <select name="cust_price_type"  id="cust_price_type" class="form-control">
                     <option></option>
+                    @if($cust->pricelist_id != null)
+                        <option value="0">Don't use customer price type</option>
+                    @endif
                     @foreach($custPrice as $cp)
                         <option value="{{$cp->id}}" {{$cust->pricelist_id == $cp->id ? 'selected' : ''}}>{{$cp->name}}</option>
                     @endforeach
