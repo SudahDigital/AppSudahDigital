@@ -34,7 +34,7 @@ class DashboardController extends Controller
             $param_reset = 1;
             $month = date('m', strtotime($request->get('period')));
             $year = date('Y', strtotime($request->get('period')));
-            $jumHari = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+            $jumHari = cal_days_in_month(CAL_GREGORIAN, (int)$month, (int)$year);
             $date_now = $year.'-'.$month.'-'.$jumHari;
             $current_day = $jumHari;
             $period_info = date('F, Y', strtotime($request->get('period')));
