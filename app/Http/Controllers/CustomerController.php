@@ -46,7 +46,7 @@ class CustomerController extends Controller
                         FROM customers c 
                         left outer join type_customer ON type_customer.id = c.cust_type 
                         left outer join cat_pareto ON cat_pareto.id = c.pareto_id
-                        left join customer_discounts ON customers.pricelist_id = cd.id,
+                        left join customer_discounts ON c.pricelist_id = customer_discounts.id,
                         cities ct, users u, customer_discounts cd WHERE c.status != 'NEW' AND c.client_id = $client_id 
                         AND c.user_id = u.id AND c.city_id = ct.id AND EXISTS
                             (
@@ -66,7 +66,7 @@ class CustomerController extends Controller
                     FROM customers c 
                     left join type_customer ON type_customer.id = c.cust_type 
                     left outer join cat_pareto ON cat_pareto.id = c.pareto_id
-                    left join customer_discounts ON customers.pricelist_id = cd.id,
+                    left join customer_discounts ON c.pricelist_id = customer_discounts.id,
                     cities ct, users u, customer_discounts cd WHERE c.status != 'NEW' AND c.client_id = $client_id 
                     AND c.user_id = u.id AND c.city_id = ct.id AND c.reg_point = 'Y' AND EXISTS
                         (
@@ -81,7 +81,7 @@ class CustomerController extends Controller
                     FROM customers c 
                     left join type_customer ON type_customer.id = c.cust_type 
                     left outer join cat_pareto ON cat_pareto.id = c.pareto_id
-                    left join customer_discounts ON customers.pricelist_id = cd.id,
+                    left join customer_discounts ON c.pricelist_id = customer_discounts.id,
                     cities ct, users u, customer_discounts cd WHERE c.status != 'NEW' AND c.client_id = $client_id 
                     AND c.user_id = u.id AND c.city_id = ct.id AND c.status LIKE '%$status%' AND EXISTS
                         (
@@ -91,12 +91,12 @@ class CustomerController extends Controller
                         )
                     ");
                 }
-                $customers = \DB::select("SELECT c.*, type_customer.name as tp_name, ct.city_name, 
+                /*$customers = \DB::select("SELECT c.*, type_customer.name as tp_name, ct.city_name, 
                 u.id as user_id, u.name as user_name, cat_pareto.pareto_code, cd.name as cd_name
                 FROM customers c 
                 left join type_customer ON type_customer.id = c.cust_type 
                 left outer join cat_pareto ON cat_pareto.id = c.pareto_id
-                left join customer_discounts ON customers.pricelist_id = cd.id,
+                left join customer_discounts ON c.pricelist_id = customer_discounts.id,
                 cities ct, users u, customer_discounts cd WHERE c.status != 'NEW' AND c.client_id = $client_id 
                 AND c.user_id = u.id AND c.city_id = ct.id AND c.status LIKE '%$status%' AND EXISTS
                     (
@@ -104,7 +104,7 @@ class CustomerController extends Controller
                         WHERE   spv_sales.sls_id = c.user_id
                         AND spv_sales.spv_id ='$spv_id'
                     )
-                ");
+                ");*/
             }
             //dd($customers);
         }
