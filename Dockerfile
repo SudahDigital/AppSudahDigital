@@ -31,7 +31,10 @@ RUN apt-get update && apt-get install -y \
     lua-zlib-dev \
     libmemcached-dev \
     nginx
-    
+
+#install calender gregorian
+RUN docker-php-ext-install calendar
+
 # Install supervisor
 RUN apt-get install -y supervisor
 
