@@ -46,7 +46,7 @@ class CustomerController extends Controller
                         FROM customers c 
                         left outer join type_customer ON type_customer.id = c.cust_type 
                         left outer join cat_pareto ON cat_pareto.id = c.pareto_id
-                        left join customer_discounts ON customers.pricelist_id = cd.id,
+                        left join customer_discounts ON c.pricelist_id = cd.id,
                         cities ct, users u, customer_discounts cd WHERE c.status != 'NEW' AND c.client_id = $client_id 
                         AND c.user_id = u.id AND c.city_id = ct.id AND EXISTS
                             (
@@ -66,7 +66,7 @@ class CustomerController extends Controller
                     FROM customers c 
                     left join type_customer ON type_customer.id = c.cust_type 
                     left outer join cat_pareto ON cat_pareto.id = c.pareto_id
-                    left join customer_discounts ON customers.pricelist_id = cd.id,
+                    left join customer_discounts ON c.pricelist_id = cd.id,
                     cities ct, users u, customer_discounts cd WHERE c.status != 'NEW' AND c.client_id = $client_id 
                     AND c.user_id = u.id AND c.city_id = ct.id AND c.reg_point = 'Y' AND EXISTS
                         (
@@ -81,7 +81,7 @@ class CustomerController extends Controller
                     FROM customers c 
                     left join type_customer ON type_customer.id = c.cust_type 
                     left outer join cat_pareto ON cat_pareto.id = c.pareto_id
-                    left join customer_discounts ON customers.pricelist_id = cd.id,
+                    left join customer_discounts ON c.pricelist_id = cd.id,
                     cities ct, users u, customer_discounts cd WHERE c.status != 'NEW' AND c.client_id = $client_id 
                     AND c.user_id = u.id AND c.city_id = ct.id AND c.status LIKE '%$status%' AND EXISTS
                         (
@@ -96,7 +96,7 @@ class CustomerController extends Controller
                 FROM customers c 
                 left join type_customer ON type_customer.id = c.cust_type 
                 left outer join cat_pareto ON cat_pareto.id = c.pareto_id
-                left join customer_discounts ON customers.pricelist_id = cd.id,
+                left join customer_discounts ON c.pricelist_id = cd.id,
                 cities ct, users u, customer_discounts cd WHERE c.status != 'NEW' AND c.client_id = $client_id 
                 AND c.user_id = u.id AND c.city_id = ct.id AND c.status LIKE '%$status%' AND EXISTS
                     (
