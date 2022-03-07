@@ -36,7 +36,7 @@ RUN apt-get update && apt-get install -y \
 RUN docker-php-ext-install calendar
 
 # Set memory limit
-RUN echo "memory_limit=2048M" > /usr/local/etc/php-fpm.d/memory-limit.conf
+#RUN echo "memory_limit=2048M" > /usr/local/etc/php-fpm.d/memory-limit.conf
 
 # Install supervisor
 RUN apt-get install -y supervisor
