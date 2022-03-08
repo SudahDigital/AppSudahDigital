@@ -22,7 +22,7 @@ class PointFilterPeriodExport implements FromCollection, WithMapping, WithHeadin
         
         $pn =\DB::select("SELECT *, points.totalpoint +ifnull( pointsRewards.Pointreward,0) as grand_total
                     FROM
-                    (SELECT o.id as oid, cs.id csid,  cs.store_name, cs.user_id , u.name as sales_name, pr.created_at,
+                    (SELECT o.id as oid, cs.id csid, cs.store_code, cs.store_name, cs.user_id , u.name as sales_name, pr.created_at,
                                 /*cp.id,*/ 
                                 /*sum(case when (date(o.created_at) between '$period->starts_at' and '$period->expires_at')
                                          AND  (date(o.finish_time) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY)
@@ -97,7 +97,7 @@ class PointFilterPeriodExport implements FromCollection, WithMapping, WithHeadin
         $pointClaim = number_format($claim,2);
         $pointTotal = number_format($pn->grand_total + $rest ,2);
         return[
-            $pn->store_name,
+            $pn->store_code.' - '.$pn->store_name,
             $pn->sales_name,
             $start_point,
             $pointInPeriod,

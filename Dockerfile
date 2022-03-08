@@ -35,6 +35,9 @@ RUN apt-get update && apt-get install -y \
 #install calender gregorian
 RUN docker-php-ext-install calendar
 
+#install extension gd
+RUN docker-php-ext-install gd
+
 # Install supervisor
 RUN apt-get install -y supervisor
 

@@ -185,7 +185,7 @@ class CustomerPaketController extends Controller
             $order->user_id = $id_user;
             $order->client_id = $client_id;
             //$order->quantity = $quantity;
-            $order->invoice_number = date('YmdHis');
+            $order->invoice_number = 'SO-'.date('YmdHis');
             //$order->total_price = 0;
             $order->status = 'SUBMIT';
             $order->save();
