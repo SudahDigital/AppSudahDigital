@@ -22,7 +22,6 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg62-turbo-dev \
     libfreetype6-dev \
-    libxpm-dev \
     locales \
     zip \
     jpegoptim optipng pngquant gifsicle \
@@ -33,7 +32,10 @@ RUN apt-get update && apt-get install -y \
     libmemcached-dev \
     nginx
 
-#RUN docker-php-ext-install gd
+RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-webp
+RUN cd /usr/src/php/ext/gd && make
+RUN cp /usr/src/php/ext/gd/modules/gd.so /usr/local/lib/php/extensions/no-debug-non-zts-20190902/gd.so
+RUN docker-php-ext-install -j$(nproc) gd
 
 #install calender gregorian
 RUN docker-php-ext-install calendar
