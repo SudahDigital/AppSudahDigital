@@ -22,6 +22,7 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg62-turbo-dev \
     libfreetype6-dev \
+    libpng-dev libxpm-dev \
     locales \
     zip \
     jpegoptim optipng pngquant gifsicle \
@@ -30,16 +31,23 @@ RUN apt-get update && apt-get install -y \
     curl \
     lua-zlib-dev \
     libmemcached-dev \
-    nginx\
-    docker-php-ext-install -j$(nproc) iconv \
-    docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    docker-php-ext-install -j$(nproc) gd
+    nginx
+
+#install extension gd
+RUN docker-php-ext-configure gd \
+    --with-gd \
+    --with-webp-dir \
+    --with-jpeg-dir \
+    --with-png-dir \
+    --with-zlib-dir \
+    --with-xpm-dir \
+    --with-freetype-dir \
+    --enable-gd-native-ttf
+
+RUN docker-php-ext-install gd
 
 #install calender gregorian
 RUN docker-php-ext-install calendar
-
-#install extension gd
-RUN docker-php-ext-install gd
 
 # Install supervisor
 RUN apt-get install -y supervisor
