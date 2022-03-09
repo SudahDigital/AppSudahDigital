@@ -34,7 +34,6 @@ RUN apt-get update && apt-get install -y \
 
 RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg 
 RUN cd /usr/src/php/ext/gd && make
-RUN cp /usr/src/php/ext/gd/modules/gd.so /usr/local/lib/php/extensions/no-debug-non-zts-20190902/gd.so
 RUN docker-php-ext-install -j$(nproc) gd
 
 #install calender gregorian
