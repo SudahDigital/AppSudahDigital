@@ -7001,6 +7001,17 @@
                                     window.location.href = '{{URL::to('/success/send/order')}}';
                             });
                         }
+                    }else{
+                        Swal.fire({
+                                title: 'Berhasil',
+                                text: "Anda melakukan pesanan melalui whatsapp",
+                                icon: 'success',
+                                showCancelButton: false,
+                                confirmButtonText: "OK",
+                                confirmButtonColor: '#4db849'
+                                }).then(function(){ 
+                                    window.location.href = '{{URL::to('/success/send/order')}}';
+                            }); 
                     }
                 }
             }
