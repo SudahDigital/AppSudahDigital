@@ -42,7 +42,7 @@ class CustomerPointOrderController extends Controller
         if($period){
             $customers =\DB::select("SELECT *, points.totalpoint +ifnull( pointsRewards.Pointreward,0) as grand_total
             FROM
-            (SELECT o.id as oid, cs.id csid,  cs.store_name, cs.user_id , u.name as sales_name, pr.created_at,
+            (SELECT o.id as oid, cs.id csid,  cs.store_code, cs.store_name, cs.user_id , u.name as sales_name, pr.created_at,
                     
                         /*cp.id,*/ 
                         sum(case when (date(o.created_at) between '$period->starts_at' and '$period->expires_at')
@@ -128,7 +128,7 @@ class CustomerPointOrderController extends Controller
         //dd($period);
         $customers =\DB::select("SELECT *, points.totalpoint +ifnull( pointsRewards.Pointreward,0) as grand_total
         FROM
-        (SELECT o.id as oid, cs.id csid,  cs.store_name, cs.user_id , u.name as sales_name, pr.created_at,
+        (SELECT o.id as oid, cs.id csid, cs.store_code, cs.store_name, cs.user_id , u.name as sales_name, pr.created_at,
                     /*cp.id,*/ 
                     /*sum(case when (date(o.created_at) between '$period->starts_at' and '$period->expires_at')
                              AND (date(o.finish_time) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY)

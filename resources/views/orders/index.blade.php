@@ -80,7 +80,7 @@
 		<thead>
 			
 			<tr>
-				<th>#Order</th>
+				<th width="20%">#Order</th>
 				<th>Status</th>
 				<th >Customer</th>
 				<!--<th width="15%">Order Product</th>-->
@@ -95,7 +95,16 @@
 			@foreach($orders as $order)
 			
 			<tr>
-				<td>{{$order->invoice_number}}</td>
+				<td>
+					{{$order->invoice_number}}<br>
+					@if($order->po_file)
+						<div id="aniimated-thumbnials" class="list-unstyled row clearfix">
+							<a href="{{asset('storage/'.$order->po_file)}}" data-sub-html="PO-DOC-{{$order->invoice_number}}">
+								<img class="m-l-15 m-b--50" src="{{asset('storage/'.$order->po_file)}}" width="50px" height="50px">
+							</a>
+						</div>
+					@endif
+				</td>
 				<td>
 					@if($order->status == "SUBMIT")
 					<span class="badge bg-orange text-light">{{$order->status}}</span>
@@ -119,6 +128,7 @@
 								->where('id',$order->id)->first();
 						@endphp
 						@if($odr->customers->status == 'NEW')<span class="badge bg-pink">New Customer</span><br>@endif
+						<small><b>Code :</b> {{$odr->customers->store_code}}</small><br>
 						<small><b>Name :</b> {{$odr->customers->store_name}}</small><br>
 						<small><b>Sales Rep :</b> {{$odr->users['name']}} <span class="badge {{$odr->user_loc == 'On Location' ? 'bg-green' : 'bg-black'}}">{{$odr->user_loc}}</span></small><br>
 						<small><b>Payment Term :</b> 
@@ -129,7 +139,7 @@
 							<a href="{{route('orders.addnew_customer',[$vendor,Crypt::encrypt($order->customers->id),$order->payment_method])}}"><span class="badge bg-pink">New Customer</span></a><br>
 						
 						@endif
-						
+						<small><b>Code :</b> {{$order->customers->store_code}}</small><br>
 						<small><b>Name :</b> {{$order->customers->store_name}}</small><br>
 						<!--<small><b>Email :</b> {{$order->customers->email}}</small><br>
 						<small><b>Addr :</b> {{$order->customers->address}}</small><br>

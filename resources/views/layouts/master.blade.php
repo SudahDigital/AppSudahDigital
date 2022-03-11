@@ -39,6 +39,9 @@
     <!-- Sweet Alert Css -->
     <link href="{{asset('bsb/plugins/sweetalert/sweetalert.css')}}" rel="stylesheet" />
 
+    <!-- Light Gallery Plugin Css -->
+    <link href="{{asset('bsb/plugins/light-gallery/css/lightgallery.css')}}" rel="stylesheet">
+
     <!-- Custom Css -->
     <link href="{{asset('bsb/css/style.css')}}" rel="stylesheet">
 
@@ -643,6 +646,9 @@
     <!-- Moment Plugin Js -->
     <script src="{{asset('bsb/plugins/momentjs/moment.js')}}"></script>
 
+    <!-- Light Gallery Plugin Js -->
+    <script src="{{asset('bsb/plugins/light-gallery/js/lightgallery-all.js')}}"></script>
+
     <!-- Bootstrap Material Datetime Picker Plugin Js -->
     <script src="{{asset('bsb/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js')}}"></script>
 
@@ -665,6 +671,7 @@
     <script src="{{asset('bsb/js/pages/forms/basic-form-elements.js')}}"></script>
     <script src="{{asset('bsb/js/pages/forms/form-validation.js')}}"></script>
     <script src="{{asset('bsb/js/pages/tables/jquery-datatable.js')}}"></script>
+    <script src="{{asset('bsb/js/pages/medias/image-gallery.js')}}"></script>
 
     <!-- Demo Js -->
     <script src="{{asset('bsb/js/demo.js')}}"></script>

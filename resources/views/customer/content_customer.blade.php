@@ -977,8 +977,36 @@ Home
                                 
                             </div>
                             
-                            <form class="form-inline" method="POST" id="ga_pesan_form" target="_BLANK" action="{{ route('customer.keranjang.pesan',[$vendor]) }}">
+                            <form class="form-inline" enctype="multipart/form-data" 
+                                method="POST" id="ga_pesan_form" target="_BLANK" 
+                                action="{{ route('customer.keranjang.pesan',[$vendor]) }}"
+                                onsubmit="return ValidatePo(this);">
                                 @csrf
+                                <!--cam capture-->
+                                <div class="col-md-12 px-0 mb-1">
+                                    <img id="preview-image-before-upload" src="{{asset('assets/image/2428676_frame_gallery_image_landscape_mobile_icon.png')}}"
+                                        alt="preview image" class="img-thumbnail">
+                                </div>
+                                <div class="col-12 mb-4 px-0">
+                                    <label class="float-left" for="imagePo" 
+                                            style="color: #1A4066 !important;
+                                                   cursor:pointer;">
+                                        <i class="fa fa-camera fa-2x" aria-hidden="true"></i>
+                                    </label>
+                                    <p class="text-left mt-2" style="color: #1A4066 !important; margin-left:50px;">
+                                        Unggah dokumen PO
+                                    </p>
+                                    <input type="file" 
+                                            accept="image/*;capture=camera" 
+                                            class="imagePo form-control" 
+                                            id="imagePo"
+                                            name="imagePo" 
+                                            style="width:100%;
+                                                    border-top-right-radius:20px;
+                                                    border-top-left-radius:20px;
+                                                    visibility:none;
+                                                    display:none;">
+                                </div>
                                 
                                 <div class="col-md-5 px-0 pt-3">
                                     <p class="text-left mb-1" style="color: #1A4066 !important;">Pilih Metode Pembayaran</p>

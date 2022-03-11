@@ -32,6 +32,10 @@ RUN apt-get update && apt-get install -y \
     libmemcached-dev \
     nginx
 
+RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg 
+RUN cd /usr/src/php/ext/gd && make
+RUN docker-php-ext-install -j$(nproc) gd
+
 #install calender gregorian
 RUN docker-php-ext-install calendar
 

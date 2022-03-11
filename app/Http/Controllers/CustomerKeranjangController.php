@@ -12,6 +12,7 @@ use App\Customer;
 use App\City;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use RealRashid\SweetAlert\Facades\Alert;
+use Intervention\Image\Facades\Image;
 
 class CustomerKeranjangController extends Controller
 {
@@ -124,7 +125,7 @@ class CustomerKeranjangController extends Controller
             $order->user_id = $id_user;
             $order->client_id = $client_id;
             //$order->quantity = $quantity;
-            $order->invoice_number = date('YmdHis');
+            $order->invoice_number = 'SO-'.date('YmdHis');
             $order->total_price = $price * $quantity;
             $order->status = 'SUBMIT';
             $order->save();
@@ -439,6 +440,21 @@ class CustomerKeranjangController extends Controller
             else{
                 $orders->id_voucher = NULL;
             }
+            $images = $request->file('imagePo');
+            if($images){
+                $path = $images->hashName('po-images');
+                $image = \Image::make($images);
+                $image->resize(350, null, function ($const) {
+                    $const->aspectRatio();
+                });
+                \Storage::put('public/'.$path, (string) $image->encode());
+                /*$image_path = $image->store('po-images', 'public');
+                Image::make(storage_path($image_path))->resize(350, null, function ($const) {
+                    $const->aspectRatio();
+                })->save();*/
+                
+                $orders->po_file = $path;
+              }
             $orders->save();
 
             $total_pesanan = $request->get('total_pesanan');

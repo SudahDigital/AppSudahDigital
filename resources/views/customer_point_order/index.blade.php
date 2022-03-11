@@ -77,7 +77,7 @@
 					@endphp
 					<tr>
 						<td>
-							{{$c->store_name ? "$c->store_name" : '-'}}
+							{{$c->store_name ? "$c->store_code - $c->store_name" : '-'}}
 						</td>
 						<td>
 							{{$c->sales_name}}

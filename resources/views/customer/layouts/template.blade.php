@@ -1899,6 +1899,7 @@
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MSWC453"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
+
     <script type="text/javascript">
         //style column new toko form
         if($(window).width()> 1367 ){
@@ -2633,7 +2634,7 @@
             return true;
         }
         
-        function pesan_wa()
+        /*function pesan_wa()
         {
             //var name = document.getElementById("name").value;
             //var email = document.getElementById("email").value;
@@ -2668,7 +2669,7 @@
                         }
                         else
                         {
-                    */      Swal.fire({
+                    */      /*Swal.fire({
                             title: 'Berhasil',
                             text: "Anda melakukan pesanan melalui whatsapp",
                             icon: 'success',
@@ -2683,7 +2684,7 @@
                 });*/
                 
             
-        }
+        //}
 
         function cancel_wa()
         {
@@ -6950,7 +6951,74 @@
             $(".alert").slideUp(500); 
         });
         }, 6000);*/
+        
+        //upload PO
+        $(document).ready(function (e) {
+            $('#imagePo').change(function(){
+                let reader = new FileReader();
+                reader.onload = (e) => { 
+                        $('#preview-image-before-upload').attr('src', e.target.result); 
+                }
+                reader.readAsDataURL(this.files[0]); 
+            });
+        });
 
+        //validate upload PO
+        var _validFileExtensions = [".jpg", ".jpeg", ".png"];    
+        function ValidatePo(oForm) {
+            var arrInputs = oForm.getElementsByClassName("imagePo");
+            for (var i = 0; i < arrInputs.length; i++) {
+                var oInput = arrInputs[i];
+                if (oInput.type == "file") {
+                    var sFileName = oInput.value;
+                    if (sFileName.length > 0) {
+                        var blnValid = false;
+                        for (var j = 0; j < _validFileExtensions.length; j++) {
+                            var sCurExtension = _validFileExtensions[j];
+                            if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
+                                blnValid = true;
+                                break;
+                            }
+                        }
+                        
+                        if (!blnValid) {
+                            //alert("Sorry, " + sFileName + " is invalid, allowed extensions are: " + _validFileExtensions.join(", "));
+                            Swal.fire({
+                                icon: 'error',
+                                text: 'Maaf,  Jenis file dokumen PO tidak diizinkan...(ekstensi yang diizinkan adalah'+ _validFileExtensions.join(", ")+') ',
+                                
+                                });
+                            return false;
+                        }else{
+                            Swal.fire({
+                                title: 'Berhasil',
+                                text: "Anda melakukan pesanan melalui whatsapp",
+                                icon: 'success',
+                                showCancelButton: false,
+                                confirmButtonText: "OK",
+                                confirmButtonColor: '#4db849'
+                                }).then(function(){ 
+                                    window.location.href = '{{URL::to('/success/send/order')}}';
+                            });
+                        }
+                    }else{
+                        Swal.fire({
+                                title: 'Berhasil',
+                                text: "Anda melakukan pesanan melalui whatsapp",
+                                icon: 'success',
+                                showCancelButton: false,
+                                confirmButtonText: "OK",
+                                confirmButtonColor: '#4db849'
+                                }).then(function(){ 
+                                    window.location.href = '{{URL::to('/success/send/order')}}';
+                            }); 
+                    }
+                }
+            }
+            
+            return true;
+            
+        }
     </script>
     <script>
         $(document).ready(function(){
