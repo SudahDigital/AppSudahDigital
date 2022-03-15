@@ -39,9 +39,6 @@ RUN docker-php-ext-install -j$(nproc) gd
 #install calender gregorian
 RUN docker-php-ext-install calendar
 
-# Memory Limit
-RUN echo "memory_limit=2048M" > $PHP_INI_DIR/conf.d/memory-limit.ini
-
 # Install supervisor
 RUN apt-get install -y supervisor
 
@@ -72,7 +69,7 @@ RUN touch /var/log/php/errors.log && chmod 777 /var/log/php/errors.log
 
 ARG CONSUL_TOKEN
 
-RUN curl -s --header "X-Consul-Token:$CONSUL_TOKEN" -XGET https://consul.sudahdigital.com/v1/kv/prod/app.sudahdigital.com?raw=true > .env
+RUN curl -s --header "X-Consul-Token:$CONSUL_TOKEN" -XGET https://consul.sudahdigital.com/v1/kv/dev/apptest.sudahdigital.com?raw=true > .env
 RUN chown root:root .env
 
 ## Install AWS CLI
