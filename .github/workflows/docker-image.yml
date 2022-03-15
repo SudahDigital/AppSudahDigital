@@ -2,16 +2,16 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ Zuki ]
   pull_request:
-    branches: [ master ]
+    branches: [ Zuki ]
 
 jobs:
 
   build:
 
     runs-on: ubuntu-latest
-    environment: prod
+    environment: test
 
     steps:
     - name: Check out code
@@ -35,7 +35,7 @@ jobs:
         CONSUL_TOKEN: ${{ secrets.CONSUL_HTTP_TOKEN }}
         AWS_KEY: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        IMAGE_TAG: app
+        IMAGE_TAG: apptest
       run: |
         docker build --build-arg CONSUL_TOKEN=${{ secrets.CONSUL_HTTP_TOKEN }} --build-arg AWS_KEY=${{ secrets.AWS_ACCESS_KEY_ID }} --build-arg AWS_SECRET_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} -t sudahdigital .
         docker tag sudahdigital $ECR_REGISTRY/$ECR_REPOSITORY:${IMAGE_TAG}
@@ -46,5 +46,5 @@ jobs:
          IP: $(aws --region ap-southeast-1 ec2 describe-instances --filters "Name=instance-state-name,Values=running" "Name=instance-id,Values=i-00d506ac6bfb8d477" --query 'Reservations[*].Instances[*].[PublicIpAddress]' --output text)
          CONSUL_TOKEN: ${{ secrets.CONSUL_HTTP_TOKEN }}
       run: |
-         sshpass -p "${{secrets.SSH_PASSWORD}}" ssh -o StrictHostKeyChecking=no root@${{env.IP}} 'curl -s --header "X-Consul-Token:${{env.CONSUL_TOKEN}}" -XGET https://consul.sudahdigital.com/v1/kv/prod/deploy-app.sh?raw=true | tee ~/deploy-app.sh'
-         sshpass -p "${{secrets.SSH_PASSWORD}}" ssh -o StrictHostKeyChecking=no root@${{env.IP}} 'sh ~/deploy-app.sh'
+         sshpass -p "${{secrets.SSH_PASSWORD}}" ssh -o StrictHostKeyChecking=no root@${{env.IP}} 'curl -s --header "X-Consul-Token:${{env.CONSUL_TOKEN}}" -XGET https://consul.sudahdigital.com/v1/kv/dev/deploy-apptest.sh?raw=true | tee ~/deploy-apptest.sh'
+         sshpass -p "${{secrets.SSH_PASSWORD}}" ssh -o StrictHostKeyChecking=no root@${{env.IP}} 'sh ~/deploy-apptest.sh'
