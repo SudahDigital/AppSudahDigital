@@ -167,9 +167,24 @@ class AjaxDetailPesananSales extends Controller
                             <span class="badge badge-warning">Outstanding : '.($total_quantity - $total_delivery).'</span><br>
                             <span class="badge badge-info">Delivered : '.$total_delivery.'</span>';
                         }
-                    echo'</td>
-                    
-                </tr>';
+                        if($order->po_file){
+                            echo'<br>
+                            <div class="aniimated-thumbnials list-unstyled row clearfix">
+                                <a href="'.asset('storage/'.$order->po_file).'" data-sub-html="PO-DOC-'.$order->invoice_number.'">
+                                    <img  src="'.asset('storage/'.$order->po_file).'" width="50px" height="50px" style="margin-left:15px;margin-top:10px;">
+                                </a>
+                            </div>';
+                        }
+                    echo'</td>';
+                    echo "<script>
+                            $(document).ready(function() {
+                            $('.aniimated-thumbnials').lightGallery({
+                                thumbnail: true,
+                                selector: 'a'
+                            });
+                        });
+                    </script>";
+                echo '</tr>';
             }
         }
         else{

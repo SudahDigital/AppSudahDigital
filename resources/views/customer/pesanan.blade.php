@@ -239,8 +239,8 @@
                                             @elseif($order->status == "NO-ORDER")
                                             <span class="status-style badge bg-dark text-light status-order mb-2">{{$order->status}}</span>
                                             @endif
-                                        <!--</td>
-                                        <td width="50%">-->
+                                            <!--</td>
+                                            <td width="50%">-->
                                             <span class="data-list-order"><p class="mb-n1">Tanggal Order</p></span>
                                             <b class="data-list-order mb-4"> {{$order->created_at}}</b><br>
                                             @if($order->status == "FINISH")
@@ -286,7 +286,14 @@
                                                 <span class="badge badge-warning">Outstanding : {{$order->TotalQuantity - $order->TotalDelivery}}</span><br>
                                                 <span class="badge badge-info">Delivered : {{$order->TotalDelivery}}</span>
                                             @endif
-                                           
+                                            @if($order->po_file)
+                                                <br>
+                                                <div class="aniimated-thumbnials list-unstyled row clearfix">
+                                                    <a href="{{asset('storage/'.$order->po_file)}}" data-sub-html="PO-DOC-{{$order->invoice_number}}">
+                                                        <img  src="{{asset('storage/'.$order->po_file)}}" width="50px" height="50px" style="margin-left:15px;margin-top:10px;">
+                                                    </a>
+                                                </div>
+                                            @endif
                                         </td>
                                     </tr>
                                     @endforeach
@@ -353,7 +360,7 @@
             </div>
         </div>
     </div>
-    
+     
 
     <script>
         if ($(window).width() < 769) {
@@ -375,6 +382,13 @@
             $('.btn-preview-cancel').addClass('btn-block').addClass('mt-5');
             //$('.contact-row').addClass('mt-5');
         }
+
+        $(document).ready(function() {
+            $('.aniimated-thumbnials').lightGallery({
+                thumbnail: true,
+                selector: 'a'
+            });
+        });
 
     </script>
     @include('sweetalert::alert')

@@ -94,6 +94,8 @@ $message = \App\Message::where('client_id',$client_id)->first();
 
 $txt_descwa='*PEMBATALAN PESANAN*,
 
+No. Order    : '.$order->invoice_number.'
+
 *'.$message->s_tittle.'*
 Nama           : '.$user->name.',
 Email            : '.$user->email.',

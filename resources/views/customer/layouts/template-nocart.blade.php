@@ -29,6 +29,10 @@
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
     />
+
+    <!-- Light Gallery Plugin Css -->
+    <link href="{{asset('bsb/plugins/light-gallery/css/lightgallery.css')}}" rel="stylesheet">
+
     <style type="text/css">
         /*[class^='select2'] {
             border-top-left-radius: 15px !important;
@@ -814,7 +818,12 @@
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+    <!-- Light Gallery Plugin Js -->
+    <script src="{{asset('bsb/js/pages/medias/image-gallery.js')}}"></script>
+    <script src="{{asset('bsb/plugins/light-gallery/js/lightgallery-all.js')}}"></script>
     @yield('footer-scripts')
+
+    
     <!--<script src="https://unpkg.com/sweetalert2@7.18.0/dist/sweetalert2.all.js"></script>-->
     
     <!--<script src="{{ asset('assets/js/jquery.firstVisitPopup.js')}}"></script>-->

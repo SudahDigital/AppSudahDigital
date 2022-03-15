@@ -98,11 +98,12 @@
 				<td>
 					{{$order->invoice_number}}<br>
 					@if($order->po_file)
-						<div id="aniimated-thumbnials" class="list-unstyled row clearfix">
+						<div class="aniimated-thumbnials list-unstyled row clearfix">
 							<a href="{{asset('storage/'.$order->po_file)}}" data-sub-html="PO-DOC-{{$order->invoice_number}}">
 								<img class="m-l-15 m-b--50" src="{{asset('storage/'.$order->po_file)}}" width="50px" height="50px">
 							</a>
 						</div>
+						
 					@endif
 				</td>
 				<td>
@@ -206,5 +207,12 @@
             //do something here
             $(".datepicker").hide();
         });
+
+	$(document).ready(function() {
+		$('.aniimated-thumbnials').lightGallery({
+			thumbnail: true,
+			selector: 'a'
+		});
+	});
 </script>
 @endsection

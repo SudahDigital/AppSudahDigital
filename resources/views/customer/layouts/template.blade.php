@@ -6967,6 +6967,7 @@
         var _validFileExtensions = [".jpg", ".jpeg", ".png"];    
         function ValidatePo(oForm) {
             var arrInputs = oForm.getElementsByClassName("imagePo");
+            //var file = document.getElementById('imagePo').files[0].name;
             for (var i = 0; i < arrInputs.length; i++) {
                 var oInput = arrInputs[i];
                 if (oInput.type == "file") {
