@@ -47,14 +47,20 @@
 							@csrf
 							<div class="modal-body">
 								
-									<h2 class="card-inside-title">Period</h2>
+									<label class="form-label m-t-20">Period</label>
 									<div class="form-group">
 										<div class="form-line " >
 											<input type="text" name="period" autocomplete="off" required
 											id="bs_datepicker_container" class=" form-control" placeholder="Please choose a date...">
 										</div>
 									</div>
-									
+									<div class="form-group">
+										<input class="form-control" type="radio" name="dataExport" id="orderSelect" value="1" required> 
+										<label for="orderSelect">Order Data</label>
+
+										<input class="form-control" type="radio" name="dataExport" id="notOrderSelect" value="0" > 
+										<label for="notOrderSelect">Customer Has not Ordered</label>
+									</div>
 								
 							</div>
 							<div class="modal-footer">
@@ -66,10 +72,35 @@
 				</div>
 			</div>
 		@elseif(\Auth::user()->roles == 'ADMIN' || \Auth::user()->roles == 'SUPERVISOR')
-		<a href="{{route('orders.exportThisPeriod',[$vendor]) }}" 
-			class="btn btn-success pull-right ">
+		<a href="" 
+			class="btn btn-success pull-right "
+			data-toggle="modal" data-target="#exportSpvOrderModal">
 			<i class="fas fa-file-excel fa-0x "></i> Export
 		</a>
+		<div class="modal fade" id="exportSpvOrderModal" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-sm" role="document">
+				<div class="modal-content">
+					<form id="form_validation" method="post" action="{{route('orders.exportThisPeriod',[$vendor]) }}">
+						@csrf
+						<div class="modal-body">
+								
+								<div class="form-group m-t-30">
+									<input class="form-control" type="radio" name="dataExport" id="orderSelect" value="1" required> 
+									<label for="orderSelect">Order Data</label>
+
+									<input class="form-control" type="radio" name="dataExport" id="notOrderSelect" value="0" > 
+									<label for="notOrderSelect">Customer Has not Ordered</label>
+								</div>
+							
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-sm btn-success waves-effect">Export</button>
+							<button type="button" class="btn btn-sm btn-danger waves-effect" data-dismiss="modal">CLOSE</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
 		@endif
 	</div>
 </div>

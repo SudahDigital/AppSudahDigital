@@ -149,7 +149,7 @@ class SessionStore extends Controller
         $order->customer_id = $customer->id;
         $order->notes_no_order = $request->get('notes_no_order');
         //$order->quantity = $quantity;
-        $order->invoice_number = date('YmdHis');
+        $order->invoice_number = 'SO-'.date('YmdHis');
         $order->total_price = 0;
         $order->status = 'NO-ORDER';
         $order->reasons_id = $request->get('reasons_id');

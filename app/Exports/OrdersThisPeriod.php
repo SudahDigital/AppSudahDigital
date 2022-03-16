@@ -26,6 +26,8 @@ class OrdersThisPeriod implements FromCollection, WithMapping, WithHeadings, Wit
 
     public function collection()
     {
+        $user = \App\User::findOrfail(\Auth::user()->id);
+
         $day = date('d');
         if($day <= 5){
             if($this->month == 1){
@@ -33,25 +35,59 @@ class OrdersThisPeriod implements FromCollection, WithMapping, WithHeadings, Wit
                 $prevMonth = 12;
                 $dateS = $prevYear.'-'.$prevMonth.'-01';
                 $dateE = $this->year.'-'.$this->month.'-'.$day;
-                return Order::where('client_id','=',auth()->user()->client_id)
+                if($user->roles == 'SUPERVISOR'){
+                    $idSpv = $user->id;
+                    return Order::whereHas('spv_sales',function($q)use($idSpv){
+                            $q->where('spv_id',$idSpv);
+                        })
+                        ->where('client_id','=',auth()->user()->client_id)
+                        ->whereNotNull('customer_id')
+                        ->whereBetween('created_at',[$dateS,$dateE])
+                        ->orderBy('created_at', 'DESC')->get();
+                }else{
+                    return Order::where('client_id','=',auth()->user()->client_id)
                     ->whereNotNull('customer_id')
                     ->whereBetween('created_at',[$dateS,$dateE])
                     ->orderBy('created_at', 'DESC')->get();
+                }
             }else{
                 $prevMonth = $this->month-1;
                 $dateS = $this->year.'-'.$prevMonth.'-01';
                 $dateE = $this->year.'-'.$this->month.'-'.$day;
-                return Order::where('client_id','=',auth()->user()->client_id)
-                    ->whereNotNull('customer_id')
-                    ->whereBetween('created_at',[$dateS,$dateE])
-                    ->orderBy('created_at', 'DESC')->get();
+                if($user->roles == 'SUPERVISOR'){
+                    $idSpv = $user->id;
+                    return Order::whereHas('spv_sales',function($q)use($idSpv){
+                            $q->where('spv_id',$idSpv);
+                        })
+                        ->where('client_id','=',auth()->user()->client_id)
+                        ->whereNotNull('customer_id')
+                        ->whereBetween('created_at',[$dateS,$dateE])
+                        ->orderBy('created_at', 'DESC')->get();
+                }else{
+                    return Order::where('client_id','=',auth()->user()->client_id)
+                        ->whereNotNull('customer_id')
+                        ->whereBetween('created_at',[$dateS,$dateE])
+                        ->orderBy('created_at', 'DESC')->get();
+                }
             }
         }else{
-            return Order::where('client_id','=',auth()->user()->client_id)
+            if($user->roles == 'SUPERVISOR'){
+                $idSpv = $user->id;
+                return Order::whereHas('spv_sales',function($q)use($idSpv){
+                    $q->where('spv_id',$idSpv);
+                })
+                    ->where('client_id','=',auth()->user()->client_id)
                     ->whereNotNull('customer_id')
                     ->whereMonth('created_at',$this->month)
                     ->whereYear('created_at',$this->year)
                     ->orderBy('created_at', 'DESC')->get();
+            }else{
+                return Order::where('client_id','=',auth()->user()->client_id)
+                    ->whereNotNull('customer_id')
+                    ->whereMonth('created_at',$this->month)
+                    ->whereYear('created_at',$this->year)
+                    ->orderBy('created_at', 'DESC')->get();
+            }
         }
     }
 
@@ -108,6 +144,7 @@ class OrdersThisPeriod implements FromCollection, WithMapping, WithHeadings, Wit
                 $p->pivot->quantity,
                 $delivered,
                 $price,
+                $price * $p->pivot->quantity,
                 $order->payment_method,
                 $p->pivot->paket_id,
                 $p->pivot->group_id,
@@ -141,6 +178,7 @@ class OrdersThisPeriod implements FromCollection, WithMapping, WithHeadings, Wit
            'Quantity',
            'Delivered',
            'Price',
+           'Price Total',
            'Payment',
            'Paket Id',
            'Group Id',

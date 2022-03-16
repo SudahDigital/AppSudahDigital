@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\OrdersExportMapping;
+use App\Exports\CustomerNotOrderExport;
+use App\Exports\CustNotOrderThisPeriod;
 use App\Exports\OrdersThisPeriod;
 use Illuminate\Http\Request;
+
 
 class OrderController extends Controller
 {
@@ -242,14 +245,41 @@ class OrderController extends Controller
         $year = $date_explode[0];
         $month = $date_explode[1];
         //$type = $request->get('target_type');
+        $selectType = $request->get('dataExport');
+        if($selectType == 1){
+            return Excel::download(new OrdersExportMapping($year,$month), 'Orders '.$month.'-'.$year.'.xlsx');
+        }else{
+            return Excel::download(new CustomerNotOrderExport($year,$month), 'CustomerNotOrders '.$month.'-'.$year.'.xlsx');
+        }
         
-        return Excel::download(new OrdersExportMapping($year,$month), 'Orders.xlsx');
     } 
     
-    public function exportThisPeriod($vendor){
+    public function exportThisPeriod(Request $request, $vendor){
         $year = date('Y');
         $month = date('m');
-        return Excel::download(new OrdersThisPeriod($year,$month), 'Orders.xlsx');
+        $selectType = $request->get('dataExport');
+        $day = date('d');
+        if($day <= 5){
+            if($month == 1){
+                $prevYear = $year-1;
+                $prevMonth = 12;
+                $dateS = $prevYear.'-'.$prevMonth.'-01';
+                $dateE = $year.'-'.$month.'-'.$day;
+            }else{
+                $prevMonth = $month-1;
+                $dateS = $year.'-'.$prevMonth.'-01';
+                $dateE = $year.'-'.$month.'-'.$day;
+            }
+        }else{
+            $dateS = $year.'-'.$month.'-01';
+            $dateE = $year.'-'.$month.'-'.$day;
+        }
+
+        if($selectType == 1){
+            return Excel::download(new OrdersThisPeriod($year,$month), 'Orders '.$dateS.' to '.$dateE.'.xlsx');
+        }else{
+            return Excel::download(new CustNotOrderThisPeriod($year,$month), 'CustomerNotOrders '.$dateS.' to '.$dateE.'.xlsx');
+        }
     }
       
 
