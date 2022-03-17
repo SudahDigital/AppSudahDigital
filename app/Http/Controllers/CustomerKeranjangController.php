@@ -656,7 +656,7 @@ $no=$count_nt_paket;
 
 
                 //=============send mail =================//
-                $mailOrder= '<table width="836" border="0">
+                /*$mailOrder= '<table width="836" border="0">
                                 <tbody>
                                     <tr>
                                         <td height="53" colspan="3"><h3><strong>PESANAN #'.$orders->invoice_number.'</strong></h3></td>
@@ -775,7 +775,7 @@ $no=$count_nt_paket;
                 $message->to($email_spv)
                 ->subject('Order '.$orderNumber)
                 ->setBody($mailOrder, 'text/html');
-                }); 
+                }); */
                 //=============end send email=============//
             
                 $url = "https://api.whatsapp.com/send?phone=62$wa_numb&text=$text_wa";
