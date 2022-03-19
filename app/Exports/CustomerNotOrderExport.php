@@ -78,9 +78,21 @@ class CustomerNotOrderExport implements FromCollection, WithMapping, WithHeading
         }
 
         //store target
+        $thisMonth = date('m');
+        $thisYear = date('Y');
+        $thisYM = $thisYear.'-'.$thisMonth;
+        $selectYM = $this->year.'-'.$this->month;
+        
+        if($thisYM == $selectYM){
+            $date_now = date('Y-m-d');
+        }else{
+            $jumHari = cal_days_in_month(CAL_GREGORIAN, $this->month, $this->year);
+            $date_now =  $this->year.'-'.$this->month.'-'.$jumHari;
+        }
+
         $target = \App\Store_Targets::where('customer_id',$notOrder->id)
-                    ->whereMonth('period', '=', $this->month)
-                    ->whereYear('period', '=', $this->year)
+                    ->where('period','<=',$date_now)
+                    ->orderBy('period','DESC')
                     ->first();
         if($target){
             $trgNml = number_format($target->TotalNominal/1.1);
@@ -91,16 +103,6 @@ class CustomerNotOrderExport implements FromCollection, WithMapping, WithHeading
         }
 
         //haven't ordered (Days)
-        $thisMonth = date('m');
-        $thisYear = date('Y');
-        $thisYM = $thisYear.'-'.$thisMonth;
-        $selectYM = $this->year.'-'.$this->month;
-        if($thisYM == $selectYM){
-            $date_now = date('Y-m-d');
-        }else{
-            $jumHari = cal_days_in_month(CAL_GREGORIAN, $this->month, $this->year);
-            $date_now =  $this->year.'-'.$this->month.'-'.$jumHari;
-        }
         $last_odr = \App\Http\Controllers\DashboardController::lastOrder($notOrder->id,$date_now);
 
         return[
