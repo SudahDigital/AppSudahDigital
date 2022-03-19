@@ -149,16 +149,23 @@ class CustNotOrderThisPeriod implements FromCollection, WithMapping, WithHeading
         }else{
             $salesName = '';
         }
+
         return[
-            $notOrder->store_code.' - '.$notOrder->store_name,
+            $notOrder->store_code,
+            $notOrder->store_name,
+            $notOrder->address,
             $salesName,
         ];
     }
 
     public function headings() : array {
         return [
-           'Customer',
-           'Sales Representative',
+            'Customer Code',
+            'Customer Name',
+            'Address',
+            'Max Nominal Target',
+            ''
+            'Sales Representative',
         ] ;
     }
     

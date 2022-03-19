@@ -254,6 +254,7 @@ class OrderController extends Controller
         
     } 
     
+    /*
     public function exportThisPeriod(Request $request, $vendor){
         $year = date('Y');
         $month = date('m');
@@ -275,12 +276,17 @@ class OrderController extends Controller
             $dateE = $year.'-'.$month.'-'.$day;
         }
 
+        $period = $request->get('period');
+        $date_explode = explode('-',$period);
+        $year = $date_explode[0];
+        $month = $date_explode[1];
+        $selectType = $request->get('dataExport');
         if($selectType == 1){
             return Excel::download(new OrdersThisPeriod($year,$month), 'Orders '.$dateS.' to '.$dateE.'.xlsx');
         }else{
             return Excel::download(new CustNotOrderThisPeriod($year,$month), 'CustomerNotOrders '.$dateS.' to '.$dateE.'.xlsx');
         }
-    }
+    }*/
       
 
     public function new_customer($vendor, $id, $payment = null){

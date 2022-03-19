@@ -72,35 +72,50 @@
 				</div>
 			</div>
 		@elseif(\Auth::user()->roles == 'ADMIN' || \Auth::user()->roles == 'SUPERVISOR')
-		<a href="" 
-			class="btn btn-success pull-right "
-			data-toggle="modal" data-target="#exportSpvOrderModal">
-			<i class="fas fa-file-excel fa-0x "></i> Export
-		</a>
-		<div class="modal fade" id="exportSpvOrderModal" tabindex="-1" role="dialog">
-			<div class="modal-dialog modal-sm" role="document">
-				<div class="modal-content">
-					<form id="form_validation" method="post" action="{{route('orders.exportThisPeriod',[$vendor]) }}">
-						@csrf
-						<div class="modal-body">
-								
-								<div class="form-group m-t-30">
-									<input class="form-control" type="radio" name="dataExport" id="orderSelect" value="1" required> 
-									<label for="orderSelect">Order Data</label>
+			<a href="" 
+				class="btn btn-success pull-right "
+				data-toggle="modal" data-target="#exportSpvOrderModal">
+				<i class="fas fa-file-excel fa-0x "></i> Export
+			</a>
+			<div class="modal fade" id="exportSpvOrderModal" tabindex="-1" role="dialog">
+				<div class="modal-dialog modal-sm" role="document">
+					<div class="modal-content">
+						<form id="form_validation" method="post" action="{{route('orders.export_mapping',[$vendor]) }}">
+							@csrf
+							<div class="modal-body">
 
-									<input class="form-control" type="radio" name="dataExport" id="notOrderSelect" value="0" > 
-									<label for="notOrderSelect">Customer Has not Ordered</label>
-								</div>
-							
-						</div>
-						<div class="modal-footer">
-							<button type="submit" class="btn btn-sm btn-success waves-effect">Export</button>
-							<button type="button" class="btn btn-sm btn-danger waves-effect" data-dismiss="modal">CLOSE</button>
-						</div>
-					</form>
+									<div class="form-group m-t-30">
+										<select class="form-control" name="period" id="periodSelect" style="width:100%" required>
+											<?php 
+												$day = date('d');
+											?>
+											<option value=""></option>
+											@if($day <= 5)
+												<option value="{{date("Y-m")}}">{{date("Y-M")}}</option>
+												<option value="{{date("Y-m", strtotime("-1 months"))}}">{{date("Y-M", strtotime("-1 months"))}}</option>
+											@else
+												<option value="{{date("Y-m")}}">{{date("Y-M")}}</option>
+											@endif
+										</select>
+									</div>
+
+									<div class="form-group">
+										<input class="form-control" type="radio" name="dataExport" id="orderSelect" value="1" required> 
+										<label for="orderSelect">Order Data</label>
+
+										<input class="form-control" type="radio" name="dataExport" id="notOrderSelect" value="0" > 
+										<label for="notOrderSelect">Customer Has not Ordered</label>
+									</div>
+								
+							</div>
+							<div class="modal-footer">
+								<button type="submit" class="btn btn-sm btn-success waves-effect">Export</button>
+								<button type="button" class="btn btn-sm btn-danger waves-effect" data-dismiss="modal">CLOSE</button>
+							</div>
+						</form>
+					</div>
 				</div>
 			</div>
-		</div>
 		@endif
 	</div>
 </div>
@@ -219,8 +234,13 @@
 
 @endsection
 @section('footer-scripts')
-
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 <script>
+	$('#periodSelect').select2({
+        placeholder: 'Select Period',
+    });
+
 	$(document).ready(function() {
 		$('.order-table').DataTable( {
 			"order": [[ 4, "desc" ]]
