@@ -82,7 +82,7 @@ class CustomerNotOrderExport implements FromCollection, WithMapping, WithHeading
         $thisYear = date('Y');
         $thisYM = $thisYear.'-'.$thisMonth;
         $selectYM = $this->year.'-'.$this->month;
-        
+
         if($thisYM == $selectYM){
             $date_now = date('Y-m-d');
         }else{
@@ -91,7 +91,7 @@ class CustomerNotOrderExport implements FromCollection, WithMapping, WithHeading
         }
 
         $target = \App\Store_Targets::where('customer_id',$notOrder->id)
-                    ->where('period','<=',$date_now)
+                    ->where('period','<=',$date_now) 
                     ->orderBy('period','DESC')
                     ->first();
         if($target){
