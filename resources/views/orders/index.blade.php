@@ -11,7 +11,7 @@
 						<span class="label label-warning" style="padding:12px;"><label>Order Attachment </label>
 							<div class="switch">
 								<label>OFF<input id="attachOnOff" type="checkbox" 
-									{{$orderAttach->attachment == 'ON' ? 'checked' : ''}}>
+									{{$orderAttach && $orderAttach->attachment == 'ON' ? 'checked' : ''}}>
 									<span class="lever"></span>ON</label>
 							</div>
 						</span>
