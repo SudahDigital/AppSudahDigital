@@ -2686,6 +2686,18 @@
             
         //}
 
+        function pesan_wa(){
+            let imgPo = $('#imagePo').val();
+            let attach = $('#attachParam').val();
+            if(attach == 'ON' && imgPo == ''){
+                Swal.fire({
+                    icon: 'error',
+                    text: 'Wajib menyertakan dokumen PO',
+                    
+                });
+            }
+        }
+
         function cancel_wa()
         {
             var order_id = $('#order_id_cek').val();

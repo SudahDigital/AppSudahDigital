@@ -40,6 +40,8 @@ class OrderController extends Controller
         $id_user =\Auth::user()->id;
         $client_id = \Auth::user()->client_id;
         $datefrom = date('2021-06-01');
+        $orderAttachments = \App\OrderAttachment::where('client_id', $client_id)
+                            ->first();
         //dd($client_id);
         if($user == 'SUPERVISOR'){
             $status = $request->get('status');
@@ -82,7 +84,7 @@ class OrderController extends Controller
             }
         }
         
-        return view('orders.index', ['orders' => $orders,'vendor'=>$vendor]);
+        return view('orders.index', ['orders' => $orders,'orderAttach'=>$orderAttachments,'vendor'=>$vendor]);
     }
 
     /**
@@ -254,6 +256,7 @@ class OrderController extends Controller
         
     } 
     
+    /*
     public function exportThisPeriod(Request $request, $vendor){
         $year = date('Y');
         $month = date('m');
@@ -275,12 +278,17 @@ class OrderController extends Controller
             $dateE = $year.'-'.$month.'-'.$day;
         }
 
+        $period = $request->get('period');
+        $date_explode = explode('-',$period);
+        $year = $date_explode[0];
+        $month = $date_explode[1];
+        $selectType = $request->get('dataExport');
         if($selectType == 1){
             return Excel::download(new OrdersThisPeriod($year,$month), 'Orders '.$dateS.' to '.$dateE.'.xlsx');
         }else{
             return Excel::download(new CustNotOrderThisPeriod($year,$month), 'CustomerNotOrders '.$dateS.' to '.$dateE.'.xlsx');
         }
-    }
+    }*/
       
 
     public function new_customer($vendor, $id, $payment = null){

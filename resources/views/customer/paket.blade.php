@@ -1421,7 +1421,8 @@ Paket
                                     <p class="text-left mt-2" style="color: #1A4066 !important; margin-left:50px;">
                                         Unggah dokumen PO
                                     </p>
-                                    <input type="file" 
+                                    <input type="file"
+                                            {{$attach == 'ON' ? 'required' : ''}} 
                                             accept="image/*;capture=camera" 
                                             class="imagePo form-control" 
                                             id="imagePo"
@@ -1432,7 +1433,7 @@ Paket
                                                     visibility:none;
                                                     display:none;">
                                 </div>
-                                
+                                <input type="hidden" id="attachParam" value="{{$attach}}">
                                 <div class="col-md-5 px-0 pt-3">
                                     <p class="text-left mb-1" style="color: #1A4066 !important;">Pilih Metode Pembayaran</p>
                                 </div>

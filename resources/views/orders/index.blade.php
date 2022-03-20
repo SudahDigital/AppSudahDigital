@@ -1,5 +1,27 @@
 @extends('layouts.master')
-@section('title') Order List @endsection
+@section('title') Order List 
+	@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))	
+		<div class="dropdown pull-right">
+			<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">
+				<i class="material-icons">settings</i>
+			</a>
+			<ul class="dropdown-menu pull-right">
+				<li>
+					<div class="demo-switch">
+						<span class="label label-warning" style="padding:12px;"><label>Order Attachment </label>
+							<div class="switch">
+								<label>OFF<input id="attachOnOff" type="checkbox" 
+									{{$orderAttach->attachment == 'ON' ? 'checked' : ''}}>
+									<span class="lever"></span>ON</label>
+							</div>
+						</span>
+					</div>
+				</li>
+			</ul>
+		</div>
+	@endif
+@endsection
+
 @section('content')
 @if(session('status'))
 	<div class="alert alert-success">
@@ -72,35 +94,50 @@
 				</div>
 			</div>
 		@elseif(\Auth::user()->roles == 'ADMIN' || \Auth::user()->roles == 'SUPERVISOR')
-		<a href="" 
-			class="btn btn-success pull-right "
-			data-toggle="modal" data-target="#exportSpvOrderModal">
-			<i class="fas fa-file-excel fa-0x "></i> Export
-		</a>
-		<div class="modal fade" id="exportSpvOrderModal" tabindex="-1" role="dialog">
-			<div class="modal-dialog modal-sm" role="document">
-				<div class="modal-content">
-					<form id="form_validation" method="post" action="{{route('orders.exportThisPeriod',[$vendor]) }}">
-						@csrf
-						<div class="modal-body">
-								
-								<div class="form-group m-t-30">
-									<input class="form-control" type="radio" name="dataExport" id="orderSelect" value="1" required> 
-									<label for="orderSelect">Order Data</label>
+			<a href="" 
+				class="btn btn-success pull-right "
+				data-toggle="modal" data-target="#exportSpvOrderModal">
+				<i class="fas fa-file-excel fa-0x "></i> Export
+			</a>
+			<div class="modal fade" id="exportSpvOrderModal" tabindex="-1" role="dialog">
+				<div class="modal-dialog modal-sm" role="document">
+					<div class="modal-content">
+						<form id="form_validation" method="post" action="{{route('orders.export_mapping',[$vendor]) }}">
+							@csrf
+							<div class="modal-body">
 
-									<input class="form-control" type="radio" name="dataExport" id="notOrderSelect" value="0" > 
-									<label for="notOrderSelect">Customer Has not Ordered</label>
-								</div>
-							
-						</div>
-						<div class="modal-footer">
-							<button type="submit" class="btn btn-sm btn-success waves-effect">Export</button>
-							<button type="button" class="btn btn-sm btn-danger waves-effect" data-dismiss="modal">CLOSE</button>
-						</div>
-					</form>
+									<div class="form-group m-t-30">
+										<select class="form-control" name="period" id="periodSelect" style="width:100%" required>
+											<?php 
+												$day = date('d');
+											?>
+											<option value=""></option>
+											@if($day <= 5)
+												<option value="{{date("Y-m")}}">{{date("Y-M")}}</option>
+												<option value="{{date("Y-m", strtotime("-1 months"))}}">{{date("Y-M", strtotime("-1 months"))}}</option>
+											@else
+												<option value="{{date("Y-m")}}">{{date("Y-M")}}</option>
+											@endif
+										</select>
+									</div>
+
+									<div class="form-group">
+										<input class="form-control" type="radio" name="dataExport" id="orderSelect" value="1" required> 
+										<label for="orderSelect">Order Data</label>
+
+										<input class="form-control" type="radio" name="dataExport" id="notOrderSelect" value="0" > 
+										<label for="notOrderSelect">Customer Has not Ordered</label>
+									</div>
+								
+							</div>
+							<div class="modal-footer">
+								<button type="submit" class="btn btn-sm btn-success waves-effect">Export</button>
+								<button type="button" class="btn btn-sm btn-danger waves-effect" data-dismiss="modal">CLOSE</button>
+							</div>
+						</form>
+					</div>
 				</div>
 			</div>
-		</div>
 		@endif
 	</div>
 </div>
@@ -219,8 +256,15 @@
 
 @endsection
 @section('footer-scripts')
-
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+	$('#periodSelect').select2({
+        placeholder: 'Select Period',
+    });
+
 	$(document).ready(function() {
 		$('.order-table').DataTable( {
 			"order": [[ 4, "desc" ]]
@@ -245,5 +289,64 @@
 			selector: 'a'
 		});
 	});
+
+	//on/off attachment
+	$("#attachOnOff").change(function() {
+		if(this.checked) {
+			var status = 'ON';
+			$.ajax({
+				url: '{{URL::to('/orders/change_status_attach')}}',
+				type: 'get',
+				data: {
+					'status' : status,
+				},
+				success: function(){
+					Swal.fire({
+						//title: 'Apakah anda yakin ?',
+						text: "Mandatory order attachment file is ON",
+						type: 'success',
+						showCancelButton: false,
+						confirmButtonColor: '#3085d6',
+						confirmButtonText: 'Ok',
+						showClass: {
+							popup: 'animate__animated animate__fadeInDown'
+						},
+						hideClass: {
+							popup: 'animate__animated animate__fadeOutUp'
+						}
+					})
+				}
+			});
+		}
+		else
+		{
+			var status = 'OFF';
+			$.ajax({
+				url: '{{URL::to('/orders/change_status_attach')}}',
+				type: 'get',
+				data: {
+					'status' : status,
+				},
+				success: function(){
+					Swal.fire({
+						//title: 'Apakah anda yakin ?',
+						text: "Mandatory order attachment file is OFF",
+						type: 'success',
+						showCancelButton: false,
+						confirmButtonColor: '#3085d6',
+						confirmButtonText: 'Ok',
+						showClass: {
+							popup: 'animate__animated animate__fadeInDown'
+						},
+						hideClass: {
+							popup: 'animate__animated animate__fadeOutUp'
+						}
+					})
+				}
+			});
+		
+		}
+	});
+	
 </script>
 @endsection

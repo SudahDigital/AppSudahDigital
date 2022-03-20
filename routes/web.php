@@ -322,7 +322,7 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::put('/orders/{id}/update', 'OrderController@update')->name('orders.update');
     Route::get('/orders/{id}/edit', 'OrderController@edit')->name('orders.edit');
     Route::get('/orders/{id}/detail', 'OrderController@detail')->name('orders.detail');
-    Route::post('/orders/exportThisPeriod', 'OrderController@exportThisPeriod')->name('orders.exportThisPeriod') ;
+    //Route::post('/orders/exportThisPeriod', 'OrderController@exportThisPeriod')->name('orders.exportThisPeriod') ;
     Route::post('/orders/export_mapping', 'OrderController@export_mapping')->name('orders.export_mapping') ;
     Route::get('/orders/add-new-customer/{id}/{payment?}', 'OrderController@new_customer')->name('orders.addnew_customer') ;
     //Route::get('/orders/add-new-no-order/{id}', 'OrderController@new_no_order')->name('orders.addnew_no_order') ;
@@ -404,6 +404,7 @@ Route::post('/ajax/post-sortable-reasons','AjaxAdminSearch@post_sortable_reasons
 Route::get('/ajax/products/code/search', 'AjaxAdminSearch@CodeProductSearch');
 Route::get('/ajax/categories/search', 'AjaxAdminSearch@CategorySearch');
 Route::get('/products/change_status_stock', 'AjaxAdminSearch@OnOff_stock');
+Route::get('/orders/change_status_attach', 'AjaxAdminSearch@OnOffAttachment');
 Route::get('/ajax/groups/search', 'AjaxAdminSearch@GroupNameSearch');
 Route::get('/ajax/paket/search', 'AjaxAdminSearch@PaketNameSearch');
 Route::get('/ajax/users/search', 'AjaxAdminSearch@CustomerajaxUserSearch');
