@@ -370,64 +370,64 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script>
 		$("#check_onoff_stock").change(function() {
-		if(this.checked) {
-			var status = 'ON';
-			$.ajax({
-                url: '{{URL::to('/products/change_status_stock')}}',
-                type: 'get',
-                data: {
-                    'status' : status,
-                },
-                success: function(){
-                    Swal.fire({
-						//title: 'Apakah anda yakin ?',
-						text: "All Product Stock is ON",
-						type: 'success',
-						showCancelButton: false,
-						confirmButtonColor: '#3085d6',
-						confirmButtonText: 'Ok',
-						showClass: {
-							popup: 'animate__animated animate__fadeInDown'
-						},
-						hideClass: {
-							popup: 'animate__animated animate__fadeOutUp'
-						}
-					}).then(function(){ 
-							location.reload();
-						})
-                }
-            });
-		}
-	else
-		{
-			var status = 'OFF';
-			$.ajax({
-                url: '{{URL::to('/products/change_status_stock')}}',
-                type: 'get',
-                data: {
-                    'status' : status,
-                },
-                success: function(){
-                    Swal.fire({
-						//title: 'Apakah anda yakin ?',
-						text: "All Product Stock is OFF",
-						type: 'success',
-						showCancelButton: false,
-						confirmButtonColor: '#3085d6',
-						confirmButtonText: 'Ok',
-						showClass: {
-							popup: 'animate__animated animate__fadeInDown'
-						},
-						hideClass: {
-							popup: 'animate__animated animate__fadeOutUp'
-						}
-					}).then(function(){ 
-							location.reload();
-						})
-                }
-            });
-		
-		}
-	});
+			if(this.checked) {
+				var status = 'ON';
+				$.ajax({
+					url: '{{URL::to('/products/change_status_stock')}}',
+					type: 'get',
+					data: {
+						'status' : status,
+					},
+					success: function(){
+						Swal.fire({
+							//title: 'Apakah anda yakin ?',
+							text: "All Product Stock is ON",
+							type: 'success',
+							showCancelButton: false,
+							confirmButtonColor: '#3085d6',
+							confirmButtonText: 'Ok',
+							showClass: {
+								popup: 'animate__animated animate__fadeInDown'
+							},
+							hideClass: {
+								popup: 'animate__animated animate__fadeOutUp'
+							}
+						}).then(function(){ 
+								location.reload();
+							})
+					}
+				});
+			}
+			else
+			{
+				var status = 'OFF';
+				$.ajax({
+					url: '{{URL::to('/products/change_status_stock')}}',
+					type: 'get',
+					data: {
+						'status' : status,
+					},
+					success: function(){
+						Swal.fire({
+							//title: 'Apakah anda yakin ?',
+							text: "All Product Stock is OFF",
+							type: 'success',
+							showCancelButton: false,
+							confirmButtonColor: '#3085d6',
+							confirmButtonText: 'Ok',
+							showClass: {
+								popup: 'animate__animated animate__fadeInDown'
+							},
+							hideClass: {
+								popup: 'animate__animated animate__fadeOutUp'
+							}
+						}).then(function(){ 
+								location.reload();
+							})
+					}
+				});
+			
+			}
+		});
 	</script>
 @endsection

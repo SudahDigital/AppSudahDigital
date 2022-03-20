@@ -609,4 +609,23 @@ class AjaxAdminSearch extends Controller
       }
   }
 
+  public function OnOffAttachment(Request $request){
+    $status = $request->get('status');
+    //check status
+    $checkAttach = \App\OrderAttachment::where('client_id',auth()->user()->client_id)
+                  ->first();
+    //update or create
+    if($checkAttach){
+      $orders = \DB::table('order_attachments')
+              ->where('client_id','=',auth()->user()->client_id)
+              ->update(array('attachment'=>$status));
+    }else{
+      $orders = new \App\OrderAttachment();
+      $orders->client_id = auth()->user()->client_id;
+      $orders->attachment = $status;
+      $orders->save();
+    }
+    
+  }
+
 }

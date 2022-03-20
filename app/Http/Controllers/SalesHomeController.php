@@ -127,6 +127,13 @@ class SalesHomeController extends Controller
                     ->distinct('order_product.product_id')
                     /*->whereNull('order_product.group_id')*/
                     ->count();
+        $orderAttach = \App\OrderAttachment::where('client_id',$client->id)
+                        ->first();
+        if($orderAttach){
+            $attach = $orderAttach->attachment;
+        }else{
+            $attach = 'NO_ATTACH';
+        }
         //dd($item_name->id);
         //dd($total_item);
         if($routeName == 'home_paket'){
@@ -146,6 +153,7 @@ class SalesHomeController extends Controller
                 'vendor'=>$vendor,
                 'stock_status'=>$stock_status,
                 'message'=>$message,
+                'attach'=>$attach
             ];
         }else{
             $data=['total_item'=> $total_item, 
@@ -164,6 +172,7 @@ class SalesHomeController extends Controller
                 'vendor'=>$vendor,
                 'client'=>$client,
                 'message'=>$message,
+                'attach'=>$attach
                 ];  
         }            
         

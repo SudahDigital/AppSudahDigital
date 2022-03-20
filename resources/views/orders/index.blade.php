@@ -1,5 +1,27 @@
 @extends('layouts.master')
-@section('title') Order List @endsection
+@section('title') Order List 
+	@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))	
+		<div class="dropdown pull-right">
+			<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">
+				<i class="material-icons">settings</i>
+			</a>
+			<ul class="dropdown-menu pull-right">
+				<li>
+					<div class="demo-switch">
+						<span class="label label-warning" style="padding:12px;"><label>Order Attachment </label>
+							<div class="switch">
+								<label>OFF<input id="attachOnOff" type="checkbox" 
+									{{$orderAttach->attachment == 'ON' ? 'checked' : ''}}>
+									<span class="lever"></span>ON</label>
+							</div>
+						</span>
+					</div>
+				</li>
+			</ul>
+		</div>
+	@endif
+@endsection
+
 @section('content')
 @if(session('status'))
 	<div class="alert alert-success">
@@ -236,6 +258,8 @@
 @section('footer-scripts')
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 	$('#periodSelect').select2({
         placeholder: 'Select Period',
@@ -265,5 +289,64 @@
 			selector: 'a'
 		});
 	});
+
+	//on/off attachment
+	$("#attachOnOff").change(function() {
+		if(this.checked) {
+			var status = 'ON';
+			$.ajax({
+				url: '{{URL::to('/orders/change_status_attach')}}',
+				type: 'get',
+				data: {
+					'status' : status,
+				},
+				success: function(){
+					Swal.fire({
+						//title: 'Apakah anda yakin ?',
+						text: "Mandatory order attachment file is ON",
+						type: 'success',
+						showCancelButton: false,
+						confirmButtonColor: '#3085d6',
+						confirmButtonText: 'Ok',
+						showClass: {
+							popup: 'animate__animated animate__fadeInDown'
+						},
+						hideClass: {
+							popup: 'animate__animated animate__fadeOutUp'
+						}
+					})
+				}
+			});
+		}
+		else
+		{
+			var status = 'OFF';
+			$.ajax({
+				url: '{{URL::to('/orders/change_status_attach')}}',
+				type: 'get',
+				data: {
+					'status' : status,
+				},
+				success: function(){
+					Swal.fire({
+						//title: 'Apakah anda yakin ?',
+						text: "Mandatory order attachment file is OFF",
+						type: 'success',
+						showCancelButton: false,
+						confirmButtonColor: '#3085d6',
+						confirmButtonText: 'Ok',
+						showClass: {
+							popup: 'animate__animated animate__fadeInDown'
+						},
+						hideClass: {
+							popup: 'animate__animated animate__fadeOutUp'
+						}
+					})
+				}
+			});
+		
+		}
+	});
+	
 </script>
 @endsection

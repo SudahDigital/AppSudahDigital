@@ -40,6 +40,8 @@ class OrderController extends Controller
         $id_user =\Auth::user()->id;
         $client_id = \Auth::user()->client_id;
         $datefrom = date('2021-06-01');
+        $orderAttachments = \App\OrderAttachment::where('client_id', $client_id)
+                            ->first();
         //dd($client_id);
         if($user == 'SUPERVISOR'){
             $status = $request->get('status');
@@ -82,7 +84,7 @@ class OrderController extends Controller
             }
         }
         
-        return view('orders.index', ['orders' => $orders,'vendor'=>$vendor]);
+        return view('orders.index', ['orders' => $orders,'orderAttach'=>$orderAttachments,'vendor'=>$vendor]);
     }
 
     /**
