@@ -651,8 +651,15 @@ $no=$count_nt_paket;
                     $list_text = urlencode($txt_descwa).'%0A'.urlencode($ttle_nonpkt);
                 }
 
+                if($orders_ach->po_file){
+                    $polink = 'File PO          : '.asset('storage/'.$orders_ach->po_file);       
+                }else{
+                    $polink = '';
+                }
+
                 $note_sales = 'Notes            : '.$notes_wa;
-                $text_wa=$list_text.'%0A'.$info_harga.'%0A'.$note_sales;
+                
+                $text_wa=$list_text.'%0A'.$info_harga.'%0A'.$note_sales.'%0A'.$polink;
 
 
                 //=============send mail =================//
