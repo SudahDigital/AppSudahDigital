@@ -120,7 +120,7 @@
                                             <input type="number" min="0" 
                                             max="{{$p->pivot->deliveryQty > 0 ? ($p->pivot->quantity - $p->pivot->deliveryQty) : $p->pivot->quantity}}" 
                                             name="deliveryQty[{{$p->pivot->id}}]" 
-                                            value="" class="form-control deliveryQty" onkeyup="input_qty('{{$p->pivot->id}}')"
+                                            value="" class="form-control deliveryQty" onkeyup="input_qty('{{$p->pivot->id}}')" onblur="input_qty('{{$p->pivot->id}}')"
                                             autocomplete="off" id="dlv{{$p->pivot->id}}" required/>
                                             <label for="dlv{{$p->pivot->id}}" class="form-label">Delivery Quantity</label>
                                         </div>
@@ -241,7 +241,7 @@
                                             <input type="number" min="0" 
                                             max="{{$p->deliveryQty > 0 ? ($p->quantity - $p->deliveryQty) : $p->quantity}}" 
                                             name="deliveryQty[{{$p->id}}]" 
-                                            value="" class="form-control deliveryQty" onkeyup="input_qty('{{$p->id}}')"
+                                            value="" class="form-control deliveryQty" onkeyup="input_qty('{{$p->id}}')" onblur="input_qty('{{$p->id}}')"
                                             autocomplete="off" id="dlv{{$p->id}}" required/>
                                             <label for="dlv{{$p->id}}" class="form-label">Delivery Quantity</label>
                                         </div>
@@ -425,7 +425,8 @@
         function input_qty(id){
             var jumlah = $('#dlv'+id).val();
             var product_id = $('#PrId'+id).val();
-
+            $('#update_status').prop('disabled', true);
+            $('#valEmpty'+id).val(1);
             $.ajax({
                 url: '{{URL::to('/ajax/cekQty/order')}}',
                 type: 'get',
@@ -500,13 +501,23 @@
                         }
                         
                     });
+                }else if(this.value == 'PARTIAL-SHIPMENT'){
+                    $('#update_status').prop('disabled', true);
+                    var vEmptyTextBox = $(".valEmpty").filter(function(){
+                    return $.trim($(this).val()) !== '';
+                    }).length;
+                    if(vEmptyTextBox > 0){
+                        $('#update_status').prop('disabled', true);
+                    }else{
+                        $('#update_status').prop('disabled', false);
+                    }
                 }else if(
-                            (this.value == 'PARTIAL-SHIPMENT') 
-                            || (this.value == 'CANCEL')
+                            (this.value == 'CANCEL')
                             || (this.value == 'SUBMIT')
                             || (this.value == 'PROCESS')
                         ){
                     $('#update_status').prop('disabled', false);
+                    
                 }
             });
 
