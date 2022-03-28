@@ -39,6 +39,9 @@ RUN docker-php-ext-install -j$(nproc) gd
 #install calender gregorian
 RUN docker-php-ext-install calendar
 
+# Memory Limit
+RUN echo "memory_limit=2048M" > $PHP_INI_DIR/conf.d/memory-limit.ini
+
 # Install supervisor
 RUN apt-get install -y supervisor
 

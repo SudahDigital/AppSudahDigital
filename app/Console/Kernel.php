@@ -25,13 +25,14 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->call(function () {
+        /*$schedule->call(function () {
             \App\Order::with('products')
                 ->where('status', 'SUBMIT')
                 ->whereNull('customer_id')
                 ->where('created_at', '<=', now()->subMinutes(30)->toDateTimeString())
                 ->delete();
-        })->everyMinute();
+        })->everyMinute();*/
+        $schedule->call('App\Http\Controllers\SendReportDailyController@index')->daily()->at('13:00');
     }
 
     /**
