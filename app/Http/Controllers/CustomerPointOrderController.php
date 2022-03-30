@@ -46,10 +46,11 @@ class CustomerPointOrderController extends Controller
                     
                         /*cp.id,*/ 
                         sum(case when (date(o.created_at) between '$period->starts_at' and '$period->expires_at')
-                                 AND  ( (date(o.finish_time) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY))
+                                 AND  ((date(o.finish_time) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY))
                                             OR
                                         (date(o.finish_time) between '$period->starts_at' AND '$period->expires_at')
-                                      )
+                                        
+                            )
                             then 
                                 (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end
                             )
@@ -58,7 +59,8 @@ class CustomerPointOrderController extends Controller
                                     AND ( date(pd.created_at) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY)
                                             OR
                                           date(pd.created_at) between '$period->starts_at' AND '$period->expires_at'
-                                        )
+                                        
+                              )
                               then
                                 (pr.prod_point_val/pr.quantity_rule) * (IFNULL(pd.partial_qty,0)) else 0 end
                               ) totalpoint,
@@ -70,7 +72,7 @@ class CustomerPointOrderController extends Controller
                             ) potentcyPoint
 
                         FROM orders as o 
-                        JOIN order_product as op ON o.id = op.order_id 
+                        JOIN order_product as op ON op.order_id = o.id  
                         JOIN products on products.id = op.product_id 
                         JOIN product_rewards as pr on pr.product_id = products.id
                         JOIN customers as cs on cs.id = o.customer_id
@@ -78,7 +80,7 @@ class CustomerPointOrderController extends Controller
                         LEFT JOIN partial_deliveries as pd on op.id = pd.op_id
                         /*JOIN customer_points as cp on cp.customer_id = cs.id*/
                         WHERE
-
+                        
                         EXISTS ( SELECT * FROM customer_points WHERE period_id = $period->id AND
                                 customer_points.customer_id = o.customer_id) AND
                         pr.created_at = (SELECT MAX(created_at) FROM 
