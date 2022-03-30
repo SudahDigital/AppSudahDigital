@@ -34,13 +34,13 @@
                 <input class="form-control" type="radio" 
                     {{$vDiscounts->type ==1 ? 'checked' : ''}} 
                     name="type" id="1" value="1" required
-                    {{$vDiscounts->type == 1 && $countInverse > 0 ? '' : 'disabled'}}
+                    {{$vDiscounts->type == 1 && $countInverse > 0 ? '' : 'readonly'}}
                 > 
                 <label for="1">Combine</label>
                 <input class="form-control" type="radio" 
                     {{$vDiscounts->type ==2 ? 'checked' : ''}}
                     name="type" id="2" value="2"
-                    {{$vDiscounts->type == 2 && $countInverse > 0 ? '' : 'disabled'}}    
+                    {{$vDiscounts->type == 2 && $countInverse > 0 ? '' : 'readonly'}}    
                  > 
                 <label for="2">Item</label>
                 <div class="invalid-feedback">

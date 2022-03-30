@@ -32,7 +32,7 @@ class Kernel extends ConsoleKernel
                 ->where('created_at', '<=', now()->subMinutes(30)->toDateTimeString())
                 ->delete();
         })->everyMinute();*/
-        $schedule->call('App\Http\Controllers\SendReportDailyController@index')->daily()->at('13:00');
+        //$schedule->call('App\Http\Controllers\SendReportDailyController@index')->daily()->at('13:00');
     }
 
     /**
