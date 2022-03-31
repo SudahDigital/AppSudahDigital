@@ -1735,6 +1735,7 @@
         </nav>
         <div class="overlay"></div>
         
+        <!--navbar-->
         <nav class="navbar navbar-expand-lg fixed-top" style="z-index: 1.5;">
             <div class="container">
                 <button type="button" id="sidebarCollapse" class="btn button-burger-menu ">
@@ -1787,11 +1788,12 @@
                                                 <i class="fas fa-info-circle" style="color: turquoise"></i>
                                             </a>
                                             @if($store_name->customer_id != null && $amount_claim > 0)
-                                                
+                                                <!--hide temporary--
                                                 <div class="float-right btn-claim mr-2">
                                                     <input type="hidden" value="{{$store_name->customer_id}}" id="CsIdClaim">
                                                     <button class="btn btn-success btn-sm py-0" data-toggle="modal" data-target="#TukarPoinModal">Klaim</button>
                                                 </div>
+                                                -->
                                             @endif
                                         @endif
                                     </div>
