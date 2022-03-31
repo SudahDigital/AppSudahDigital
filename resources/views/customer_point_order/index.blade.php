@@ -72,8 +72,10 @@
 			@if($period != null)
 				@foreach($customers as $c)
 					@php
-						$claim = App\Http\Controllers\CustomerPointOrderController::pointsClaim($period_start,$c->csid);
 						[$rest,$totalPotency] = App\Http\Controllers\CustomerPointOrderController::starting_point($period_start,$c->csid);
+						$claim = App\Http\Controllers\CustomerPointOrderController::pointsClaim($period_start,$c->csid);
+						$pointPartial = App\Http\Controllers\CustomerPointOrderController::pointPartial($period_start,$c->csid);
+						$pointPrevPartial = App\Http\Controllers\CustomerPointOrderController::pointPrevPartial($period_start,$c->csid);
 					@endphp
 					<tr>
 						<td>
@@ -86,7 +88,7 @@
 							{{number_format($rest,2)}}
 						</td>
 						<td>
-							{{number_format(($c->grand_total + $claim),2)}}	
+							{{number_format((($c->grand_total-$pointPrevPartial) + $pointPartial + $claim),2)}}
 						</td>
 						<td>
 							<p class="col-teal">{{number_format(($c->potentcyPoint + $totalPotency),2)}}</p>
@@ -95,7 +97,7 @@
 							{{number_format($claim,2)}}
 						</td>
 						<td>
-							{{number_format(($c->grand_total + $rest) ,2)}}	
+							{{number_format((($c->grand_total-$pointPrevPartial) + $pointPartial + $rest) ,2)}}	
 						</td>
 					</tr>
 				@endforeach

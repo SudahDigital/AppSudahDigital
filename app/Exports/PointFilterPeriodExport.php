@@ -38,15 +38,6 @@ class PointFilterPeriodExport implements FromCollection, WithMapping, WithHeadin
                                             )
                                     then 
                                         (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end
-                                    )
-                                + sum(case when date(o.created_at) between '$period->starts_at' and '$period->expires_at'
-                                            AND o.status = 'PARTIAL-SHIPMENT'
-                                            AND ( date(pd.created_at) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY)
-                                                    OR
-                                                date(pd.created_at) between '$period->starts_at' AND '$period->expires_at'
-                                                )
-                                    then
-                                        (pr.prod_point_val/pr.quantity_rule) * (IFNULL(pd.partial_qty,0)) else 0 end
                                     ) totalpoint,
                                 
                                 sum(case when date(o.created_at) between '$period->starts_at' and '$period->expires_at'
@@ -61,7 +52,7 @@ class PointFilterPeriodExport implements FromCollection, WithMapping, WithHeadin
                                 JOIN product_rewards as pr on pr.product_id = products.id
                                 JOIN customers as cs on cs.id = o.customer_id
                                 JOIN users as u on u.id = cs.user_id
-                                LEFT JOIN partial_deliveries as pd on op.id = pd.op_id
+                                /*LEFT JOIN partial_deliveries as pd on op.id = pd.op_id
                                 /*JOIN customer_points as cp on cp.customer_id = cs.id*/
                                 WHERE
                                 EXISTS ( SELECT * FROM customer_points WHERE period_id = $period->id AND
@@ -91,11 +82,14 @@ class PointFilterPeriodExport implements FromCollection, WithMapping, WithHeadin
         $period = \App\PointPeriod::where('id',$this->period_id)->first();
         $claim = \App\Http\Controllers\CustomerPointOrderController::pointsClaim($period->starts_at,$pn->csid);
         [$rest,$totalPotency] = \App\Http\Controllers\CustomerPointOrderController::starting_point($period->starts_at,$pn->csid);
+        $pointPartial = \App\Http\Controllers\CustomerPointOrderController::pointPartial($period->starts_at,$pn->csid);
+		$pointPrevPartial = \App\Http\Controllers\CustomerPointOrderController::pointPrevPartial($period->starts_at,$pn->csid);
+        
         $start_point = number_format($rest,2);
-        $pointInPeriod = number_format($pn->grand_total + $claim,2);
+        $pointInPeriod = number_format(($pn->grand_total-$pointPrevPartial) + $pointPartial + $claim,2);
         $potentcyPoint = number_format(($pn->potentcyPoint)+($totalPotency),2);
         $pointClaim = number_format($claim,2);
-        $pointTotal = number_format($pn->grand_total + $rest ,2);
+        $pointTotal = number_format(($pn->grand_total-$pointPrevPartial) + $pointPartial + $rest ,2);
         return[
             $pn->store_code.' - '.$pn->store_name,
             $pn->sales_name,
