@@ -1788,12 +1788,12 @@
                                                 <i class="fas fa-info-circle" style="color: turquoise"></i>
                                             </a>
                                             @if($store_name->customer_id != null && $amount_claim > 0)
-                                                <!--hide temporary--
+                                                
                                                 <div class="float-right btn-claim mr-2">
                                                     <input type="hidden" value="{{$store_name->customer_id}}" id="CsIdClaim">
                                                     <button class="btn btn-success btn-sm py-0" data-toggle="modal" data-target="#TukarPoinModal">Klaim</button>
                                                 </div>
-                                                -->
+                                                
                                             @endif
                                         @endif
                                     </div>
