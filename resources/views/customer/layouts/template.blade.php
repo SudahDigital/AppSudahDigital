@@ -1768,8 +1768,7 @@
                                         @if(session()->has('ses_order'))
                                             <strong class="text-info">
                                                 {{
-                                                    $store_name->store_name != null ? 
-                                                    $store_name->store_name : 
+                                                    $store_name->store_name != null ? $store_name->store_name : 
                                                     App\Http\Controllers\PointInfoController::StoreInfo($store_name->customer_id)
                                                 }}
                                             </strong>

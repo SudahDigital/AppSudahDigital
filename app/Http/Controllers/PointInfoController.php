@@ -575,12 +575,11 @@ class PointInfoController extends Controller
                                         INNER JOIN partial_deliveries as pd on op.id = pd.op_id
                                         WHERE
                                         o.status = 'FINISH' AND
-                                        date(date(o.finish_time) between '$startTime' AND DATE_ADD('$period->expires_at'), INTERVAL 14 DAY)) AND 
+                                        date(o.finish_time) between '$startTime' AND DATE_ADD(date('$period->expires_at'), INTERVAL 14 DAY) AND 
                                         o.customer_id = $csid AND
                                         pr.created_at = (SELECT MAX(created_at) FROM 
                                                         product_rewards GROUP BY product_id HAVING 
-                                                        product_id = pr.product_id)"
-                                    );
+                                                        product_id = pr.product_id)");
             $pointPrevPartial = $customers[0]->totalpoint; 
             
         }else{
