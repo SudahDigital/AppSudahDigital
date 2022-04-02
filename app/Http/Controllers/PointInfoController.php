@@ -540,7 +540,7 @@ class PointInfoController extends Controller
                                                             product_rewards GROUP BY product_id HAVING 
                                                             product_id = pr.product_id)"
                                 );
-
+        
         return $customers[0]->totalpoint;
     }
 
@@ -556,6 +556,7 @@ class PointInfoController extends Controller
                             ->whereYear('expires_at',$yPeriodPrev)
                             ->orderBy('expires_at','DESC')
                             ->first();
+                          
         if($PrevPeriodCheck){
             $customers =\DB::select("SELECT o.id as oid, o.created_at, pr.created_at, pr.prod_point_val, pr.quantity_rule, pr.product_id,
                                         
@@ -580,9 +581,13 @@ class PointInfoController extends Controller
                                                         product_rewards GROUP BY product_id HAVING 
                                                         product_id = pr.product_id)"
                                     );
-
-            return $customers[0]->totalpoint;
+            $pointPrevPartial = $customers[0]->totalpoint; 
+            
+        }else{
+            $pointPrevPartial = 0 ; 
         }
+
+        return $pointPrevPartial;
     }
 
 }
