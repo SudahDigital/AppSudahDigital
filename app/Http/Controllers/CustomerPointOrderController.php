@@ -28,8 +28,7 @@ class CustomerPointOrderController extends Controller
         });
     }
 
-    public function index($vendor)
-    {   
+    public function index($vendor){
         $date = date('Y-m-d');
         $client_id = \Auth::user()->client_id;
 
@@ -38,142 +37,106 @@ class CustomerPointOrderController extends Controller
         $period = \App\PointPeriod::where('client_id',$client_id)
                     ->whereDate('starts_at', '<=', $date)
                     ->whereDate('expires_at', '>=', $date)->first();
-        //dd($period->starts_at);
         if($period){
-            $customers =\DB::select("SELECT *, points.totalpoint +ifnull( pointsRewards.Pointreward,0) as grand_total
-                FROM
-                (SELECT o.id as oid, cs.id csid,  cs.store_code, cs.store_name, cs.user_id , u.name as sales_name, pr.created_at,
-                        
-                            /*cp.id,*/ 
-                            sum(case when (date(o.created_at) between '$period->starts_at' and '$period->expires_at')
-                                    AND  ((date(o.finish_time) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY))
-                                                OR
-                                            (date(o.finish_time) between '$period->starts_at' AND '$period->expires_at')
-                                            
-                                )
-                                then 
-                                    (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end
-                                ) totalpoint,
-                            
-                            sum(case when date(o.created_at) between '$period->starts_at' and '$period->expires_at'
-                                    AND (o.status = 'SUBMIT' OR o.status = 'PROCESS' OR o.status = 'PARTIAL-SHIPMENT')
-                                then
-                                    (pr.prod_point_val/pr.quantity_rule) * (op.quantity - IFNULL(op.deliveryQty,0)) else 0 end
-                                ) potentcyPoint
-                            
-                            FROM orders as o 
-                            JOIN order_product as op ON op.order_id = o.id  
-                            JOIN products on products.id = op.product_id 
-                            JOIN product_rewards as pr on pr.product_id = products.id
-                            JOIN customers as cs on cs.id = o.customer_id
-                            JOIN users as u on u.id = cs.user_id 
-                            /*JOIN partial_deliveries as pd on op.id = pd.op_id
-                            /*JOIN customer_points as cp on cp.customer_id = cs.id*/
-                            WHERE
-                            
-                            EXISTS ( SELECT * FROM customer_points WHERE period_id = $period->id AND
-                                    customer_points.customer_id = o.customer_id) AND
-                            pr.created_at = (SELECT MAX(created_at) FROM 
-                                            product_rewards GROUP BY product_id HAVING 
-                                            product_id = pr.product_id) AND  
-                            date(o.created_at) between '$period->starts_at' and '$period->expires_at' AND
-                            o.status != 'CANCEL' AND o.status != 'NO-ORDER'
-                            GROUP by o.customer_id 
-                ) as points
-                LEFT JOIN (SELECT pc.custpoint_id, prpc.period_id as ppid, sum(case when pc.Type = 1 then -(ifnull(pc.override_points, prpc.point_rule)) 
-                                when pc.Type = 2 then ifnull(pc.override_points,prpc.point_rule)
-                            else 0 end) Pointreward 
-                        from point_claims as pc 
-                        JOIN point_rewards as prpc on pc.reward_id = prpc.id
-                        JOIN point_periods as pprd on prpc.period_id = pprd.id
-                        WHERE prpc.period_id = '$period->id'
-                        Group by pc.custpoint_id) pointsRewards
-                on points.csid = pointsRewards.custpoint_id;");
-
-
-            //doesn't have points
-
-        
+            $periodId = $period->id;
+            $customers = \App\Customer::whereHas('custPoints', function($q) use ($periodId){
+                            $q->where('period_id',$periodId);
+                        })
+                        ->where('client_id',$client_id)
+                        ->get();
             //dd($customers);
-        
             return view ('customer_point_order.index',
-                ['customers'=>$customers,
-                'vendor'=>$vendor,
-                'period_list'=>$period_list,
-                'period_start'=>$period->starts_at,
-                'period_name'=>$period->name,
-                'period'=>$period]);
+                        ['customers'=>$customers,
+                        'vendor'=>$vendor,
+                        'period_list'=>$period_list,
+                        'period_start'=>$period->starts_at,
+                        'period_name'=>$period->name,
+                        'period'=>$period]);
         }else{
             return view ('customer_point_order.index',
                 ['vendor'=>$vendor,
                  'period'=>$period,
                  'period_list'=>$period_list]);
         }
+        
     }
 
-    public function filter_period($vendor, $period_name, $period_id)
+    public static function getPoints($period_start,$csid)
     {   
-        //dd(\Crypt::decrypt($period_id));
+        
         $client_id = \Auth::user()->client_id;
 
-        $period_list = \App\PointPeriod::where('client_id',$client_id)->get();
-
-        $period = \App\PointPeriod::findOrFail(\Crypt::decrypt($period_id));
+        $period = \App\PointPeriod::where('client_id',$client_id)
+                ->whereDate('starts_at', $period_start)
+                ->first();
         
-        //dd($period);
-        $customers =\DB::select("SELECT *, points.totalpoint +ifnull( pointsRewards.Pointreward,0) as grand_total
-        FROM
-        (SELECT o.id as oid, cs.id csid, cs.store_code, cs.store_name, cs.user_id , u.name as sales_name, pr.created_at,
-                    /*cp.id,*/ 
-                    /*sum(case when (date(o.created_at) between '$period->starts_at' and '$period->expires_at')
-                             AND (date(o.finish_time) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY)
-                                OR
-                                date(o.finish_time) between '$period->starts_at' AND '$period->expires_at') 
-                     then 
-                    (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end) totalpoint*/
-
-                    sum(case when (date(o.created_at) between '$period->starts_at' and '$period->expires_at')
-                                 AND  ( (date(o.finish_time) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY))
+        
+        $points =\DB::select("SELECT *, points.totalpoint +ifnull( pointsRewards.Pointreward,0) as grand_total,
+                                        points.potencyPoint as potency
+            FROM
+            (SELECT o.id as oid, pr.created_at, o.customer_id csid,
+                    
+                        /*cp.id,*/ 
+                        sum(case when (date(o.created_at) between '$period->starts_at' and '$period->expires_at')
+                                AND  ((date(o.finish_time) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY))
                                             OR
                                         (date(o.finish_time) between '$period->starts_at' AND '$period->expires_at')
-                                      )
+                                        
+                            )
                             then 
                                 (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end
                             ) totalpoint,
                         
                         sum(case when date(o.created_at) between '$period->starts_at' and '$period->expires_at'
-                                 AND (o.status = 'SUBMIT' OR o.status = 'PROCESS' OR o.status = 'PARTIAL-SHIPMENT')
+                                AND (o.status = 'SUBMIT' OR o.status = 'PROCESS' OR o.status = 'PARTIAL-SHIPMENT')
                             then
                                 (pr.prod_point_val/pr.quantity_rule) * (op.quantity - IFNULL(op.deliveryQty,0)) else 0 end
-                            ) potentcyPoint
+                            ) potencyPoint
+                        
+                        FROM orders as o 
+                        JOIN order_product as op ON op.order_id = o.id  
+                        JOIN products on products.id = op.product_id 
+                        JOIN product_rewards as pr on pr.product_id = products.id
+                        WHERE
+                        o.customer_id = '$csid' AND
+                        pr.created_at = (SELECT MAX(created_at) FROM 
+                                        product_rewards GROUP BY product_id HAVING 
+                                        product_id = pr.product_id) AND  
+                        date(o.created_at) between '$period->starts_at' and '$period->expires_at' AND
+                        o.status != 'CANCEL' AND o.status != 'NO-ORDER'
+                        
+            ) as points
+            LEFT JOIN (SELECT pc.custpoint_id, prpc.period_id as ppid, sum(case when pc.Type = 1 then -(ifnull(pc.override_points, prpc.point_rule)) 
+                            when pc.Type = 2 then ifnull(pc.override_points,prpc.point_rule)
+                        else 0 end) Pointreward 
+                    from point_claims as pc 
+                    JOIN point_rewards as prpc on pc.reward_id = prpc.id
+                    JOIN point_periods as pprd on prpc.period_id = pprd.id
+                    WHERE prpc.period_id = '$period->id'
+                    Group by pc.custpoint_id) pointsRewards
+            on points.csid = pointsRewards.custpoint_id;");
+        //dd($points);
+        $point = $points[0]->grand_total;
+        $potencyPoint = $points[0]->potency;
+        return [$point,$potencyPoint];
+            
+    }
 
-                    FROM orders as o 
-                    JOIN order_product as op ON o.id = op.order_id 
-                    JOIN products on products.id = op.product_id 
-                    JOIN product_rewards as pr on pr.product_id = products.id
-                    JOIN customers as cs on cs.id = o.customer_id
-                    JOIN users as u on u.id = cs.user_id
-                    /*LEFT JOIN partial_deliveries as pd on op.id = pd.op_id
-                    /*JOIN customer_points as cp on cp.customer_id = cs.id*/
-                    WHERE
-                    EXISTS ( SELECT * FROM customer_points WHERE period_id = $period->id AND
-                                customer_points.customer_id = o.customer_id) AND
-                    pr.created_at = (SELECT MAX(created_at) FROM 
-                                    product_rewards GROUP BY product_id HAVING 
-                                    product_id = pr.product_id) AND  
-                    date(o.created_at) between '$period->starts_at' and '$period->expires_at' AND
-                    o.status != 'CANCEL' AND o.status != 'NO-ORDER'
-                    GROUP by o.customer_id 
-        ) as points
-        LEFT JOIN (SELECT pc.custpoint_id, prpc.period_id as ppid, sum(case when pc.Type = 1 then -(ifnull(pc.override_points, prpc.point_rule)) 
-                        when pc.Type = 2 then ifnull(pc.override_points,prpc.point_rule)
-                       else 0 end) Pointreward 
-                   from point_claims as pc 
-                   JOIN point_rewards as prpc on pc.reward_id = prpc.id
-                   JOIN point_periods as pprd on prpc.period_id = pprd.id
-                   WHERE prpc.period_id = '$period->id'
-                   Group by pc.custpoint_id) pointsRewards
-         on points.csid = pointsRewards.custpoint_id;"); 
+    public function filter_period($vendor, $period_name, $period_id)
+    {   
+        $periodId = (\Crypt::decrypt($period_id));
+        $client_id = \Auth::user()->client_id;
+
+        $period_list = \App\PointPeriod::where('client_id',$client_id)->get();
+
+        $period = \App\PointPeriod::findOrFail($periodId);
+        
+        //dd($period);
+        $customers = \App\Customer::whereHas('custPoints', function($q) use ($periodId){
+                        $q->where('period_id',$periodId);
+                    })
+        ->where('client_id',$client_id)
+        ->get();
         //dd($customers);
         
         
@@ -213,15 +176,7 @@ class CustomerPointOrderController extends Controller
                     }
                     $customers_cek =\DB::select("SELECT *, points.totalpoint +ifnull( pointsRewards.Pointreward,0) as grand_total
                                 FROM
-                                (SELECT o.id as oid, cs.id csid,  cs.store_name, cs.user_id , u.name as sales_name, pr.created_at,
-                                            /*cp.id,*/ 
-                                            /*sum(case when (date(o.created_at) between '$period_cek->starts_at' and '$period_cek->expires_at')
-                                                     AND  (date(o.finish_time) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY)
-                                                            OR
-                                                           date(o.finish_time) between '$period_cek->starts_at' AND '$period_cek->expires_at') 
-                                            then 
-                                            (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end) totalpoint*/
-                                            
+                                (SELECT o.id as oid, o.customer_id csid,  pr.created_at,
                                             sum(case when (date(o.created_at) between '$period_cek->starts_at' and '$period_cek->expires_at')
                                                     AND  ( (date(o.finish_time) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY))
                                                                 OR
@@ -241,10 +196,6 @@ class CustomerPointOrderController extends Controller
                                             JOIN order_product as op ON o.id = op.order_id 
                                             JOIN products on products.id = op.product_id 
                                             JOIN product_rewards as pr on pr.product_id = products.id
-                                            JOIN customers as cs on cs.id = o.customer_id
-                                            JOIN users as u on u.id = cs.user_id
-                                            /*JOIN customer_points as cp on cp.customer_id = cs.id
-                                            LEFT JOIN partial_deliveries as pd on op.id = pd.op_id*/
                                             WHERE
                                             
                                             
@@ -291,68 +242,6 @@ class CustomerPointOrderController extends Controller
        
         return [$total_start_point,$totalPotency];
     }
-
-    /*public static function starting_point($period, $customer){
-        $date =date('Y-m-d', strtotime($period));
-        $Year =date('Y');
-        $prd_cek = \App\PointPeriod::where('client_id',\Auth::user()->client_id)
-                    ->whereDate('expires_at', '<', $date)
-                    ->whereYear('expires_at', $Year)//yearly
-                    ->orderBy('expires_at','DESC')
-                    ->get();
-        //dd($prd_cek);
-        
-        if($prd_cek){
-            $total_start_point = 0;
-            foreach($prd_cek as $period_cek){
-            
-                $customers_cek =\DB::select("SELECT *, points.totalpoint +ifnull( pointsRewards.Pointreward,0) as grand_total
-                            FROM
-                            (SELECT o.id as oid, cs.id csid,  cs.store_name, cs.user_id , u.name as sales_name, pr.created_at,
-                                        /*cp.id,*/ 
-                                        /*sum(case when o.finish_time between '$period_cek->starts_at' and '$period_cek->expires_at' 
-                                        then 
-                                        (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end) totalpoint
-                                        FROM orders as o 
-                                        JOIN order_product as op ON o.id = op.order_id 
-                                        JOIN products on products.id = op.product_id 
-                                        JOIN product_rewards as pr on pr.product_id = products.id
-                                        JOIN customers as cs on cs.id = o.customer_id
-                                        JOIN users as u on u.id = cs.user_id
-                                        /*JOIN customer_points as cp on cp.customer_id = cs.id*/
-                                       /* WHERE
-                                        
-                                        pr.created_at = (SELECT MAX(created_at) FROM 
-                                                        product_rewards GROUP BY product_id HAVING 
-                                                        product_id = pr.product_id) AND  
-                                        o.created_at between '$period_cek->starts_at' and '$period_cek->expires_at' AND
-                                        o.status != 'CANCEL' AND o.status != 'NO-ORDER' AND
-                                        o.customer_id = '$customer'
-                            ) as points
-                            LEFT JOIN (SELECT pc.custpoint_id, prpc.period_id as ppid, sum(case when pc.Type = 1 then -(ifnull(pc.override_points, prpc.point_rule)) 
-                                            when pc.Type = 2 then ifnull(pc.override_points,prpc.point_rule)
-                                        else 0 end) Pointreward 
-                                    from point_claims as pc 
-                                    JOIN point_rewards as prpc on pc.reward_id = prpc.id
-                                    JOIN point_periods as pprd on prpc.period_id = pprd.id
-                                    WHERE prpc.period_id = '$period_cek->id'
-                                    AND pc.custpoint_id = '$customer') pointsRewards
-                            on points.csid = pointsRewards.custpoint_id;");
-                $restpoints = $customers_cek[0]->grand_total;
-                if($restpoints == null){
-                    $pointstart = 0;
-                }else{
-                    $pointstart = $restpoints;
-                }
-            
-                $total_start_point += $pointstart; 
-            }
-        }else{
-            $total_start_point = 0;
-        }
-        
-        return $total_start_point;
-    }*/
 
     public function exportThisPeriod($vendor){
         $date = date('Y-m-d');
