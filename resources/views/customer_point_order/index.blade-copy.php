@@ -44,6 +44,7 @@
 		</div>
 	</form>
 </div>
+
 <!--tabs-->
 <ul class="nav nav-tabs tab-nav-right" role="tablist">
 	<li role="presentation" class="active"><a href="#havePoints" data-toggle="tab">CUSTOMERS HAVE POINTS</a></li>

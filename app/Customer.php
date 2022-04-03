@@ -50,4 +50,8 @@ class Customer extends Model
         return $this->belongsTo('App\CustomerDiscount','pricelist_id');
     }
 
+    public function custPoints(){
+        return $this->hasMany('App\CustomerPoint','customer_id');
+    }
+
 }

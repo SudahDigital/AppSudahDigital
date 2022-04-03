@@ -72,32 +72,44 @@
 			@if($period != null)
 				@foreach($customers as $c)
 					@php
-						[$rest,$totalPotency] = App\Http\Controllers\CustomerPointOrderController::starting_point($period_start,$c->csid);
-						$claim = App\Http\Controllers\CustomerPointOrderController::pointsClaim($period_start,$c->csid);
-						$pointPartial = App\Http\Controllers\CustomerPointOrderController::pointPartial($period_start,$c->csid);
-						$pointPrevPartial = App\Http\Controllers\CustomerPointOrderController::pointPrevPartial($period_start,$c->csid);
+						[$point,$potencyPoint] = App\Http\Controllers\CustomerPointOrderController::getPoints($period_start,$c->id);
+						[$rest,$totalPotency] = App\Http\Controllers\CustomerPointOrderController::starting_point($period_start,$c->id);
+						$claim = App\Http\Controllers\CustomerPointOrderController::pointsClaim($period_start,$c->id);
+						$pointPartial = App\Http\Controllers\CustomerPointOrderController::pointPartial($period_start,$c->id);
+						$pointPrevPartial = App\Http\Controllers\CustomerPointOrderController::pointPrevPartial($period_start,$c->id);
 					@endphp
 					<tr>
 						<td>
 							{{$c->store_name ? "$c->store_code - $c->store_name" : '-'}}
 						</td>
 						<td>
-							{{$c->sales_name}}
+							{{//$c->users->sales_name
+								$c->users->name
+							}}
+							
 						</td>
 						<td>
 							{{number_format($rest,2)}}
 						</td>
 						<td>
-							{{number_format((($c->grand_total-$pointPrevPartial) + $pointPartial + $claim),2)}}
+							{{
+								//number_format((($c->grand_total-$pointPrevPartial) + $pointPartial + $claim),2)
+								number_format((($point-$pointPrevPartial) + $pointPartial + $claim),2)
+							}}
 						</td>
 						<td>
-							<p class="col-teal">{{number_format(($c->potentcyPoint + $totalPotency),2)}}</p>
+							<p class="col-teal">
+								{{
+									//number_format(($c->potentcyPoint + $totalPotency),2)
+									number_format(($potencyPoint + $totalPotency),2)
+								}}
+							</p>
 						</td>
 						<td>
 							{{number_format($claim,2)}}
 						</td>
 						<td>
-							{{number_format((($c->grand_total-$pointPrevPartial) + $pointPartial + $rest) ,2)}}	
+							{{number_format((($point-$pointPrevPartial) + $pointPartial + $rest) ,2)}}	
 						</td>
 					</tr>
 				@endforeach
