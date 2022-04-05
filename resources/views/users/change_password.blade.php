@@ -15,6 +15,7 @@
     <!-- Form Create -->
     <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('post.changepass',[$vendor])}}">
         @csrf
+        <input type="hidden" name="id_user" value="{{$id_user}}">
         <div class="form-group form-float">
             <div class="form-line">
                 <input type="password" class="form-control {{$errors->first('password') ? "is-invalid" : ""}}" name="current-password" id="current-password" required>
@@ -28,7 +29,7 @@
         <div class="form-group form-float">
             <div class="form-line">
                 <input type="password" class="form-control {{$errors->first('password') ? "is-invalid" : ""}}" name="password" id="password" required>
-                <label for="password" class="form-label">Password</label>
+                <label for="password" class="form-label">New Password</label>
                 <div class="invalid-feedback">
                     {{$errors->first('password')}}
                 </div>
@@ -38,7 +39,7 @@
         <div class="form-group form-float">
             <div class="form-line">
                 <input type="password" class="form-control {{$errors->first('password_confirmation') ? "is-invalid" : ""}}" name="password_confirmation" id="password_confirmation" required>
-                <label for="password_confirmation" class="form-label">Password Confirmation</label>
+                <label for="password_confirmation" class="form-label">New Password Confirmation</label>
                 <div class="invalid-feedback">
                     {{$errors->first('password_confirmation')}}
                 </div>

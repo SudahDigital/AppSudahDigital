@@ -204,7 +204,7 @@
 					
 					<th>Status</th>
 					@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
-						<th width="20%">Action</th>
+						<th>Action</th>
 					@endif
 				</tr>
 			</thead>
@@ -234,86 +234,118 @@
 					</td>
 					@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
 					<td>
-						
-							<a class="btn btn-info btn-xs" href="{{route('sales.edit',[$vendor,Crypt::encrypt($u->id)])}}"><i class="material-icons">edit</i></a>&nbsp;
-							<button type="button" class="btn btn-danger btn-xs waves-effect" data-toggle="modal" data-target="#deleteModal{{$u->id}}"><i class="material-icons">delete</i></button>&nbsp;
-							<!-- Modal Delete -->
-							<div class="modal fade" id="deleteModal{{$u->id}}" tabindex="-1" role="dialog">
-								<div class="modal-dialog modal-sm" role="document">
-									<div class="modal-content modal-col-red">
-										<div class="modal-header">
-											<h4 class="modal-title" id="deleteModalLabel">Delete Sales</h4>
-										</div>
-										<div class="modal-body">
-										Delete this sales permananetly..? 
-										</div>
-										<div class="modal-footer">
-											<form action="{{route('sales.destroy',[$vendor,$u->id])}}" method="POST">
-												@csrf
-												<input type="hidden" name="_method" value="GET">
-												<button type="submit" class="btn btn-link waves-effect">Delete</button>
-												<button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Close</button>
-											</form>
-										</div>
+						<div class="dropdown">
+							<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">
+								<i class="material-icons" >apps</i>
+							</a>
+							<ul class="dropdown-menu pull-right">
+								<li>
+									<a href="{{route('sales.edit',[$vendor,Crypt::encrypt($u->id)])}}" 
+									class=" waves-effect waves-block">
+										Edit
+									</a>
+								</li>
+								
+								<li><a href="javascript:void(0);" class=" waves-effect waves-block" 
+									data-toggle="modal" data-target="#deleteModal{{$u->id}}"
+									{{Auth::user()->id == $u->id ? 'disabled' : ''}}>
+									Delete
+									</a>
+								</li>
+
+								<li><a href="javascript:void(0);" class=" waves-effect waves-block" 
+									data-toggle="modal" data-target="#detailModal{{$u->id}}">
+									Detail
+									</a>
+								</li>
+
+								@if(Gate::check('isSuperadmin'))
+								<li>
+									<a href="{{route('changepass',[$vendor,Crypt::encrypt($u->id)])}}" class="waves-effect waves-block">
+                                        Change Password
+                                    </a>
+								</li>
+								@endif
+							</ul>
+						</div>
+							
+						<!-- Modal Delete -->
+						<div class="modal fade" id="deleteModal{{$u->id}}" tabindex="-1" role="dialog">
+							<div class="modal-dialog modal-sm" role="document">
+								<div class="modal-content modal-col-red">
+									<div class="modal-header">
+										<h4 class="modal-title" id="deleteModalLabel">Delete Sales</h4>
 									</div>
-								</div>
-							</div>
-							<button type="button" class="btn bg-grey waves-effect" data-toggle="modal" data-target="#detailModal{{$u->id}}">Detail</button>
-							<!-- Modal Detail -->
-							<div class="modal fade" id="detailModal{{$u->id}}" tabindex="-1" role="dialog">
-								<div class="modal-dialog modal-lg" role="document">
-									<div class="modal-content  modal-col-cyan">
-										<div class="modal-header">
-											<h5 class="modal-title">Detail Sales</h5>
-										</div>
-										<div class="modal-body">
-											<div class="col-md-4" style="margin-top: 20px;">
-												<img src="{{ asset('storage/'.(($u->avatar !='') ? $u->avatar : 'image-noprofile.png').'') }}" width="128px"/>
-											</div>
-											
-											<div class="col-md-8" style="margin-top: 30px;">
-												<b><small>Name:</small></b>
-												<br>
-												{{$u->name}}
-												<br/>
-												<br/>
-												<b><small>Email:</small></b>
-												<br/>
-												{{$u->email}}
-												<br/>
-												<br/>
-												<b><small>Phone Number:</small></b>
-												<br/>
-												{{$u->phone}}
-												<br/>
-												<br/>
-												<b><small>Address:</small></b>
-												<br/>
-												{{$u->address}}
-												<br/>
-												<br/>
-												<b><small>Sales Area:</small></b>
-												<br/>
-												{{$u->sales_area}}
-												<br/>
-												<br/>
-												<b><small>Profil Description:</small></b>
-												<br/>
-												@if($u->profil_desc)
-													{{$u->profil_desc}}
-												@else
-												N/A
-												@endif
-											</div>
-										</div>
-										
-										<div class="modal-footer">
+									<div class="modal-body">
+									Delete this sales permananetly..? 
+									</div>
+									<div class="modal-footer">
+										<form action="{{route('sales.destroy',[$vendor,$u->id])}}" method="POST">
+											@csrf
+											<input type="hidden" name="_method" value="GET">
+											<button type="submit" class="btn btn-link waves-effect">Delete</button>
 											<button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Close</button>
-										</div>
-										
+										</form>
 									</div>
 								</div>
 							</div>
+						</div>
+						
+						<!-- Modal Detail -->
+						<div class="modal fade" id="detailModal{{$u->id}}" tabindex="-1" role="dialog">
+							<div class="modal-dialog modal-lg" role="document">
+								<div class="modal-content  modal-col-cyan">
+									<div class="modal-header">
+										<h5 class="modal-title">Detail Sales</h5>
+									</div>
+									<div class="modal-body">
+										<div class="col-md-4" style="margin-top: 20px;">
+											<img src="{{ asset('storage/'.(($u->avatar !='') ? $u->avatar : 'image-noprofile.png').'') }}" width="128px"/>
+										</div>
+										
+										<div class="col-md-8" style="margin-top: 30px;">
+											<b><small>Name:</small></b>
+											<br>
+											{{$u->name}}
+											<br/>
+											<br/>
+											<b><small>Email:</small></b>
+											<br/>
+											{{$u->email}}
+											<br/>
+											<br/>
+											<b><small>Phone Number:</small></b>
+											<br/>
+											{{$u->phone}}
+											<br/>
+											<br/>
+											<b><small>Address:</small></b>
+											<br/>
+											{{$u->address}}
+											<br/>
+											<br/>
+											<b><small>Sales Area:</small></b>
+											<br/>
+											{{$u->sales_area}}
+											<br/>
+											<br/>
+											<b><small>Profil Description:</small></b>
+											<br/>
+											@if($u->profil_desc)
+												{{$u->profil_desc}}
+											@else
+											N/A
+											@endif
+										</div>
+									</div>
+									
+									<div class="modal-footer">
+										<button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Close</button>
+									</div>
+									
+								</div>
+							</div>
+						</div>
 						
 					</td>
 					@endif
