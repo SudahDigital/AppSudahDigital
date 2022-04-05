@@ -490,7 +490,7 @@ class PointInfoController extends Controller
                     }
                     $total_start_point += $pointstart[$key];
                 }
-                if($thisYear != $Year){
+                //if($thisYear != $Year){
                     $dateExpired =  date('Y-m-d', strtotime("+14 day", strtotime($lastExpPeriod)));
                     //dd($dateExpired);
                     if($date <= $dateExpired){
@@ -498,9 +498,10 @@ class PointInfoController extends Controller
                     }else{
                         $total_start_point = 0;
                     }
-                }else{
-                    $total_start_point = $total_start_point;
-                }
+                //}else{
+
+                //    $total_start_point = $total_start_point;
+                // }
             }else{
                 $total_start_point = 0;
             }

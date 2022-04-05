@@ -389,7 +389,7 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::post('/points-claim-export', 'ClaimPointsOrderController@exportClaim')->name('claim.Export');
     
     //Change Password
-    Route::get('/users/change_password', 'changePasswordController@index')->name('changepass');
+    Route::get('/users/change_password/{id?}', 'changePasswordController@index')->name('changepass');
     Route::post('/users/post/change_password', 'changePasswordController@changepassword')->name('post.changepass');
     
 

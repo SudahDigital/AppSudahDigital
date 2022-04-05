@@ -25,30 +25,54 @@ class changePasswordController extends Controller
         });
     }
 
-    public function index($vendor){
+    public function index($vendor,  $id = null){
         $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
-        return view('users.change_password',['vendor'=>$vendor,'client'=>$client]);
+        
+        if($id){
+            $id_user = \Crypt::decrypt($id);
+        }else{
+            $id_user = '';
+        }
+
+        return view('users.change_password',['vendor'=>$vendor,'client'=>$client,'id_user'=>$id_user]);
     }
 
-    public function changepassword(Request $request, $vendor){
+    public function changepassword(Request $request, $vendor,){
 
-        if (!(Hash::check($request->get('current-password'), Auth::user()->password))) {
-            // The passwords matches
-            return redirect()->back()->with("error","Your current password does not matches with the password you provided. Please try again.");
+        if($request->get('id_user') != ''){
+            //dd($request->get('id_user'));
+            $userPass = \App\User::findOrFail($request->get('id_user'));
+            if (!(Hash::check($request->get('current-password'), $userPass->password))) {
+                // The passwords matches
+                return redirect()->back()->with("error","Your current password does not matches with the password you provided. Please try again.");
+            }  
+        }else{
+            if (!(Hash::check($request->get('current-password'), Auth::user()->password))) {
+                // The passwords matches
+                return redirect()->back()->with("error","Your current password does not matches with the password you provided. Please try again.");
             }
+        }
+            
              
-            if(strcmp($request->get('current-password'), $request->get('new-password')) == 0){
-            //Current password and new password are same
-            return redirect()->back()->with("error","New Password cannot be same as your current password. Please choose a different password.");
-            }
-            if(!(strcmp($request->get('new-password'), $request->get('new-password-confirm'))) == 0){
-                        //New password and confirm password are not same
-                        return redirect()->back()->with("error","New Password should be same as your confirmed password. Please retype new password.");
-            }
-            //Change Password
+        if(strcmp($request->get('current-password'), $request->get('new-password')) == 0){
+        //Current password and new password are same
+        return redirect()->back()->with("error","New Password cannot be same as your current password. Please choose a different password.");
+        }
+        if(!(strcmp($request->get('new-password'), $request->get('new-password-confirm'))) == 0){
+                    //New password and confirm password are not same
+                    return redirect()->back()->with("error","New Password should be same as your confirmed password. Please retype new password.");
+        }
+
+        //Change Password
+        if($request->get('id_user') != ''){
+            $userPass->password = \Hash::make($request->get('password'));
+            $userPass->save();
+        }else{
             $user = Auth::user();
             $user->password = \Hash::make($request->get('password'));
             $user->save();
+        }
+            
              
             return redirect()->back()->with("status","Password changed successfully !");
     }
