@@ -1,7 +1,8 @@
 @extends('layouts.master')
-@section('title') Order List 
+@section('title') Order List @endsection
+@section('menuHeader')
 	@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))	
-		<div class="dropdown pull-right">
+		<div class="dropdown pull-right m-t--20">
 			<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">
 				<i class="material-icons">settings</i>
 			</a>
@@ -167,7 +168,8 @@
 					{{$order->invoice_number}}<br>
 					@if($order->po_file)
 						<div class="aniimated-thumbnials list-unstyled row clearfix">
-							<a href="{{asset('storage/'.$order->po_file)}}" data-sub-html="PO-DOC-{{$order->invoice_number}}">
+							<a href="{{asset('storage/'.$order->po_file)}}" 
+								data-sub-html="{{$order->status == 'NO-ORDER' ? 'NO-ORDER-DOC-'.$order->invoice_number : 'PO-DOC-'.$order->invoice_number}}">
 								<img class="m-l-15 m-b--50" src="{{asset('storage/'.$order->po_file)}}" width="50px" height="50px">
 							</a>
 						</div>

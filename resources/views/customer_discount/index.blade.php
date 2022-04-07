@@ -1,7 +1,7 @@
 @extends('layouts.master')
-@section('title') 
-	Customer Price List
-	<div class="pull-right">
+@section('title')Customer Price List @endsection
+@section('menuHeader')
+	<div class="pull-right m-t--20">
 		<div class="dropdown">
 			<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" 
 				aria-haspopup="true" aria-expanded="true" id="popoverDataTemplate" data-trigger="hover" data-container="body" data-placement="left" 
