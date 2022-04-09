@@ -609,23 +609,49 @@ class AjaxAdminSearch extends Controller
       }
   }
 
-  public function OnOffAttachment(Request $request){
+  public function OnOffOrderAttach(Request $request){
     $status = $request->get('status');
     //check status
     $checkAttach = \App\OrderAttachment::where('client_id',auth()->user()->client_id)
+                  ->where('attach_status','SUBMIT')
                   ->first();
     //update or create
     if($checkAttach){
       $orders = \DB::table('order_attachments')
               ->where('client_id','=',auth()->user()->client_id)
+              ->where('attach_status','SUBMIT')
               ->update(array('attachment'=>$status));
     }else{
       $orders = new \App\OrderAttachment();
       $orders->client_id = auth()->user()->client_id;
       $orders->attachment = $status;
+      $orders->attach_status = 'SUBMIT';
+      $orders->save();
+    }
+    
+  }
+
+  public function OnOffNoOrderAttach(Request $request){
+    $status = $request->get('status');
+    //check status
+    $checkAttach = \App\OrderAttachment::where('client_id',auth()->user()->client_id)
+                  ->where('attach_status','NO-ORDER')
+                  ->first();
+    //update or create
+    if($checkAttach){
+      $orders = \DB::table('order_attachments')
+              ->where('client_id','=',auth()->user()->client_id)
+              ->where('attach_status','NO-ORDER')
+              ->update(array('attachment'=>$status));
+    }else{
+      $orders = new \App\OrderAttachment();
+      $orders->client_id = auth()->user()->client_id;
+      $orders->attachment = $status;
+      $orders->attach_status = 'NO-ORDER';
       $orders->save();
     }
     
   }
 
 }
+

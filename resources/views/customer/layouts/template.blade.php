@@ -45,6 +45,7 @@
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-MSWC453');</script>
     <!-- End Google Tag Manager -->
+    
     <style type="text/css">
         #product_list .ribbon {
             position: absolute;
@@ -1462,7 +1463,7 @@
                                             Unggah dokumen
                                         </p>
                                         <input type="file" 
-                                                {{$attach == 'ON' ? 'required' : ''}}
+                                                {{$nAttach == 'ON' ? 'required' : ''}}
                                                 accept="image/*;capture=camera" 
                                                 class="imageNoOdr form-control" 
                                                 id="imageNoOdr"
@@ -1472,7 +1473,7 @@
                                                         border-top-left-radius:20px;
                                                         visibility:none;
                                                         display:none;">
-                                        <input type="hidden" id="attachParam" value="{{$attach}}">
+                                        <input type="hidden" id="attachParamNoOrder" value="{{$nAttach}}">
                                     </div>
                                 </div>
 
@@ -1923,7 +1924,7 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
     <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
     <!--<script src="{{ asset('assets/js/jquery.firstVisitPopup.js')}}"></script>-->
-    
+
     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"></script>-->
     <!--@include('sweetalert::alert')-->
     <!-- Google Tag Manager (noscript) -->
@@ -2731,7 +2732,7 @@
 
         function CkNoOdr(){
             let imgNoOdr = $('#imageNoOdr').val();
-            let attachNoOdr = $('#attachParam').val();
+            let attachNoOdr = $('#attachParamNoOrder').val();
             if(attachNoOdr == 'ON' && imgNoOdr == ''){
                 Swal.fire({
                     icon: 'error',
@@ -7120,6 +7121,7 @@
             return true;
             
         }
+
     </script>
     <script>
         $(document).ready(function(){

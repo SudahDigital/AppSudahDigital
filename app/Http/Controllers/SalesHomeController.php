@@ -128,11 +128,22 @@ class SalesHomeController extends Controller
                     /*->whereNull('order_product.group_id')*/
                     ->count();
         $orderAttach = \App\OrderAttachment::where('client_id',$client->id)
+                        ->where('attach_status','SUBMIT')
                         ->first();
+        $no_orderAttach = \App\OrderAttachment::where('client_id',$client->id)
+                        ->where('attach_status','NO-ORDER')
+                        ->first();
+
         if($orderAttach){
             $attach = $orderAttach->attachment;
         }else{
             $attach = 'NO_ATTACH';
+        }
+
+        if($no_orderAttach){
+            $nAttach = $no_orderAttach->attachment;
+        }else{
+            $nAttach = 'NO_ATTACH';
         }
         //dd($item_name->id);
         //dd($total_item);
@@ -153,7 +164,8 @@ class SalesHomeController extends Controller
                 'vendor'=>$vendor,
                 'stock_status'=>$stock_status,
                 'message'=>$message,
-                'attach'=>$attach
+                'attach'=>$attach,
+                'nAttach'=>$nAttach
             ];
         }else{
             $data=['total_item'=> $total_item, 
@@ -172,7 +184,8 @@ class SalesHomeController extends Controller
                 'vendor'=>$vendor,
                 'client'=>$client,
                 'message'=>$message,
-                'attach'=>$attach
+                'attach'=>$attach,
+                'nAttach'=>$nAttach
                 ];  
         }            
         

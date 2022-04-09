@@ -6,20 +6,29 @@
 			<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">
 				<i class="material-icons">settings</i>
 			</a>
-			<ul class="dropdown-menu pull-right">
-				<li>
-					<div class="demo-switch">
-						<span class="label label-warning" style="padding:12px;"><label>Order Attachment </label>
-							<div class="switch">
-								<label>OFF<input id="attachOnOff" type="checkbox" 
-									{{$orderAttach && $orderAttach->attachment == 'ON' ? 'checked' : ''}}>
-									<span class="lever"></span>ON</label>
-							</div>
-						</span>
-					</div>
-				</li>
+			<ul class="dropdown-menu pull-right" style="width:350px;">
+				<p style="text-align: center;font-weight:bold;">ORDER ATTACHMENTS SETTING</p>
+				<ul class="list-group">
+					<li class="list-group-item" style="border-left:none; border-right:none;">Order Attachment 
+						<div class="switch pull-right">
+							<label>OFF<input id="orderAttachOnOff" type="checkbox" 
+								{{$orderAttach && $orderAttach->attachment == 'ON' ? 'checked' : ''}}>
+								<span class="lever"></span>ON
+							</label>
+						</div>
+					</li>
+					<li class="list-group-item" style="border-left:none; border-right:none;">No Order Attachment 
+						<div class="switch pull-right">
+							<label>OFF<input id="noOrderAttachOnOff" type="checkbox" 
+								{{$noOrderAttach && $noOrderAttach->attachment == 'ON' ? 'checked' : ''}}>
+								<span class="lever"></span>ON
+							</label>
+						</div>
+					</li>
+				</ul>
 			</ul>
 		</div>
+
 	@endif
 @endsection
 
@@ -292,8 +301,8 @@
 		});
 	});
 
-	//on/off attachment
-	$("#attachOnOff").change(function() {
+	//on/off attachment submit(Order)
+	$("#orderAttachOnOff").change(function() {
 		if(this.checked) {
 			var status = 'ON';
 			$.ajax({
@@ -305,7 +314,7 @@
 				success: function(){
 					Swal.fire({
 						//title: 'Apakah anda yakin ?',
-						text: "Mandatory order attachment file is ON",
+						text: "Mandatory order attachments file is ON",
 						type: 'success',
 						showCancelButton: false,
 						confirmButtonColor: '#3085d6',
@@ -332,7 +341,65 @@
 				success: function(){
 					Swal.fire({
 						//title: 'Apakah anda yakin ?',
-						text: "Mandatory order attachment file is OFF",
+						text: "Mandatory order attachments file is OFF",
+						type: 'success',
+						showCancelButton: false,
+						confirmButtonColor: '#3085d6',
+						confirmButtonText: 'Ok',
+						showClass: {
+							popup: 'animate__animated animate__fadeInDown'
+						},
+						hideClass: {
+							popup: 'animate__animated animate__fadeOutUp'
+						}
+					})
+				}
+			});
+		
+		}
+	});
+
+	//on/off attachment no-order
+	$("#noOrderAttachOnOff").change(function() {
+		if(this.checked) {
+			var status = 'ON';
+			$.ajax({
+				url: '{{URL::to('/orders/change_noorder_attach')}}',
+				type: 'get',
+				data: {
+					'status' : status,
+				},
+				success: function(){
+					Swal.fire({
+						//title: 'Apakah anda yakin ?',
+						text: "Mandatory no-order attachments file is ON",
+						type: 'success',
+						showCancelButton: false,
+						confirmButtonColor: '#3085d6',
+						confirmButtonText: 'Ok',
+						showClass: {
+							popup: 'animate__animated animate__fadeInDown'
+						},
+						hideClass: {
+							popup: 'animate__animated animate__fadeOutUp'
+						}
+					})
+				}
+			});
+		}
+		else
+		{
+			var status = 'OFF';
+			$.ajax({
+				url: '{{URL::to('/orders/change_noorder_attach')}}',
+				type: 'get',
+				data: {
+					'status' : status,
+				},
+				success: function(){
+					Swal.fire({
+						//title: 'Apakah anda yakin ?',
+						text: "Mandatory no-order attachments file is OFF",
 						type: 'success',
 						showCancelButton: false,
 						confirmButtonColor: '#3085d6',

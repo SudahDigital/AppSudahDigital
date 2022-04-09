@@ -4,6 +4,8 @@ Home
 @endsection
 @section('content')
 <style>
+
+
     /* Chrome, Safari, Edge, Opera */
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
@@ -1123,9 +1125,9 @@ Home
         </div>
     </div>
 
-   
+       
 <script>
-    
+
     $('.dropdown-menu a.dropdown-toggle').on('click', function(e) {
         if (!$(this).next().hasClass('show')) {
             $(this).parents('.dropdown-menu').first().find('.show').removeClass("show");
