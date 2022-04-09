@@ -45,6 +45,7 @@
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-MSWC453');</script>
     <!-- End Google Tag Manager -->
+    
     <style type="text/css">
         #product_list .ribbon {
             position: absolute;
@@ -1419,7 +1420,9 @@
                             <div id="PreviewToko_CheckOut" style="overflow: hidden;">
                                 
                             </div>
-                            <form method="POST" action="{{route('checkout.no_order',[$vendor])}}">
+                            <form method="POST" enctype="multipart/form-data"
+                            action="{{route('checkout.no_order',[$vendor])}}"
+                            onsubmit="return ValidateNoOdr(this);">
                                 @csrf
                                 
                                 <div class="row mt-3">
@@ -1445,9 +1448,37 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+                                <div class="row">
+                                    <div class="col-select col-lg-12 pl-3 mb-1">
+                                        <img id="preview-imageNoOdr-before-upload" src="{{asset('assets/image/2428676_frame_gallery_image_landscape_mobile_icon.png')}}"
+                                            alt="preview image" class="img-thumbnail">
+                                    </div>
+                                    <div class="col-select col-lg-12 pl-3">
+                                        <label class="float-left" for="imageNoOdr" 
+                                                style="color: #ffff !important;
+                                                    cursor:pointer;">
+                                            <i class="fa fa-camera fa-2x" aria-hidden="true"></i>
+                                        </label>
+                                        <p class="text-left mt-2" style="color: #ffff !important; margin-left:50px;">
+                                            Unggah dokumen
+                                        </p>
+                                        <input type="file" 
+                                                {{$nAttach == 'ON' ? 'required' : ''}}
+                                                accept="image/*;capture=camera" 
+                                                class="imageNoOdr form-control" 
+                                                id="imageNoOdr"
+                                                name="imageNoOdr" 
+                                                style="width:100%;
+                                                        border-top-right-radius:20px;
+                                                        border-top-left-radius:20px;
+                                                        visibility:none;
+                                                        display:none;">
+                                        <input type="hidden" id="attachParamNoOrder" value="{{$nAttach}}">
+                                    </div>
+                                </div>
+
                                 <div class="mx-auto text-center">
-                                    <button type="submit" id="ga_checkout"class="btn btn_login_form" >{{ __('Konfirmasi') }}</button>
+                                    <button type="submit" id="ga_checkout" onclick="CkNoOdr()" class="btn btn_login_form" >{{ __('Konfirmasi') }}</button>
                                 </div>
                                 
                             </form>
@@ -1893,7 +1924,7 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
     <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
     <!--<script src="{{ asset('assets/js/jquery.firstVisitPopup.js')}}"></script>-->
-    
+
     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"></script>-->
     <!--@include('sweetalert::alert')-->
     <!-- Google Tag Manager (noscript) -->
@@ -2694,6 +2725,18 @@
                 Swal.fire({
                     icon: 'error',
                     text: 'Wajib menyertakan dokumen PO',
+                    
+                });
+            }
+        }
+
+        function CkNoOdr(){
+            let imgNoOdr = $('#imageNoOdr').val();
+            let attachNoOdr = $('#attachParamNoOrder').val();
+            if(attachNoOdr == 'ON' && imgNoOdr == ''){
+                Swal.fire({
+                    icon: 'error',
+                    text: 'Wajib menyertakan dokumen keterangan tidak order',
                     
                 });
             }
@@ -6976,7 +7019,18 @@
             });
         });
 
-        //validate upload PO
+        //upload No Order
+        $(document).ready(function (e) {
+            $('#imageNoOdr').change(function(){
+                let readerNo = new FileReader();
+                readerNo.onload = (e) => { 
+                        $('#preview-imageNoOdr-before-upload').attr('src', e.target.result); 
+                }
+                readerNo.readAsDataURL(this.files[0]); 
+            });
+        });
+
+        //validate upload PO & No Order
         var _validFileExtensions = [".jpg", ".jpeg", ".png"];    
         function ValidatePo(oForm) {
             var arrInputs = oForm.getElementsByClassName("imagePo");
@@ -7033,6 +7087,41 @@
             return true;
             
         }
+
+        function ValidateNoOdr(oForm) {
+            var arrInputs = oForm.getElementsByClassName("imageNoOdr");
+            //var file = document.getElementById('imagePo').files[0].name;
+            for (var i = 0; i < arrInputs.length; i++) {
+                var oInput = arrInputs[i];
+                if (oInput.type == "file") {
+                    var sFileName = oInput.value;
+                    if (sFileName.length > 0) {
+                        var blnValid = false;
+                        for (var j = 0; j < _validFileExtensions.length; j++) {
+                            var sCurExtension = _validFileExtensions[j];
+                            if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
+                                blnValid = true;
+                                break;
+                            }
+                        }
+                        
+                        if (!blnValid) {
+                            //alert("Sorry, " + sFileName + " is invalid, allowed extensions are: " + _validFileExtensions.join(", "));
+                            Swal.fire({
+                                icon: 'error',
+                                text: 'Maaf,  Jenis file dokumen tidak diizinkan...(ekstensi yang diizinkan adalah'+ _validFileExtensions.join(", ")+') ',
+                                
+                                });
+                            return false;
+                        }
+                    }
+                }
+            }
+            
+            return true;
+            
+        }
+
     </script>
     <script>
         $(document).ready(function(){

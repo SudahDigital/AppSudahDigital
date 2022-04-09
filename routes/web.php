@@ -404,7 +404,8 @@ Route::post('/ajax/post-sortable-reasons','AjaxAdminSearch@post_sortable_reasons
 Route::get('/ajax/products/code/search', 'AjaxAdminSearch@CodeProductSearch');
 Route::get('/ajax/categories/search', 'AjaxAdminSearch@CategorySearch');
 Route::get('/products/change_status_stock', 'AjaxAdminSearch@OnOff_stock');
-Route::get('/orders/change_status_attach', 'AjaxAdminSearch@OnOffAttachment');
+Route::get('/orders/change_status_attach', 'AjaxAdminSearch@OnOffOrderAttach');
+Route::get('/orders/change_noorder_attach', 'AjaxAdminSearch@OnOffNoOrderAttach');
 Route::get('/ajax/groups/search', 'AjaxAdminSearch@GroupNameSearch');
 Route::get('/ajax/paket/search', 'AjaxAdminSearch@PaketNameSearch');
 Route::get('/ajax/users/search', 'AjaxAdminSearch@CustomerajaxUserSearch');
