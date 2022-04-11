@@ -224,6 +224,16 @@
             top: 40%;
             }  
         }
+
+        @media(min-width:1920px){
+            .overlay_ajax {
+            left: 45%;
+            }
+            .preloader .loading {
+            left: 42%;
+            top: 42%;
+            }  
+        }
         
         .preloader{
             position: fixed;
@@ -1052,6 +1062,36 @@
         function logout_record(){
             $.ajax({
                 url : '{{URL::to('/sales/logout-record')}}',
+            });
+        }
+
+        function openItemNotAchieved(csId,period){
+            $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+            });
+            $.ajax({
+                url : '{{URL::to('/dashboard/detail-item-target')}}',
+                type:'POST',
+                data:{
+                    csId : csId,
+                    period : period,
+                },
+                /*beforeSend: function () { // Before we send the request, remove the .hidden class from the spinner and default to inline-block.
+                    $('#loader').removeClass('hidden')
+                },*/              
+                success: function (response){
+                    $("#detilItemTidakCapai").modal('show');
+                    $('#listItemTidakCapai' ).html(response);
+                },
+                /*complete: function () { // Set our complete callback, adding the .hidden class and hiding the spinner.
+                    $('#loader').addClass('hidden');
+                },*/
+                
+                error: function (response) {
+                console.log('Error:', response);
+                }
             });
         }
 

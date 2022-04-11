@@ -44,7 +44,7 @@ class DashboardSalesController extends Controller
                 ->where('period','<=',$date_now)
                 ->max('period');
         
-        
+        //dd($period_par);
         $order_ach = \App\Order::where('user_id',\Auth::user()->id)
                 ->whereNotNull('customer_id')
                 ->whereMonth('created_at', '=', $month)

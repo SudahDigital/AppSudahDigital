@@ -1037,11 +1037,12 @@ Home
                                 <div class="col-md-12 px-0 mt-4">
                                     <div class="form-group">
                                         <textarea name="notes" class="form-control p-3" rows="5" placeholder="Note..."
-                                        style="width: 100%;
-                                        border-top-left-radius:25px;
-                                        border-top-right-radius:25px;
-                                        border-bottom-right-radius:0;
-                                        border-bottom-left-radius:0;"></textarea>
+                                            style="width: 100%;
+                                            border-top-left-radius:25px;
+                                            border-top-right-radius:25px;
+                                            border-bottom-right-radius:0;
+                                            border-bottom-left-radius:0;">
+                                        </textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-12 px-0 mt-2">
