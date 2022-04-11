@@ -61,6 +61,7 @@ Route::group(['middleware' => ['auth','checkRole:SALES']],function(){
     Route::get('/ajax/latlon/search', 'AjaxCitySearch@get_latlon');
     Route::get('/claim/checkperiod','ClaimPointsController@checkperiod');
     Route::post('/claim/post', 'ClaimPointsController@ClaimRequest');
+    Route::post('/dashboard/detail-item-target','AjaxDetailPesananSales@detailItemTarget');
     //Route::post('/claim/checkpoints','ClaimPointsController@checkpoints');
     //Route::post('/claim/points_lists','ClaimPointsController@points_lists');
     

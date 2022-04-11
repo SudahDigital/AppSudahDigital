@@ -1165,7 +1165,7 @@
                                   @endphp
                                   @foreach($keys_exists as $k)
                                     <li class="list-group-item border-right-0 border-left-0" 
-                                    style="color: #1A4066;
+                                      style="color: #1A4066;
                                           border-bottom-right-radius:0;
                                           border-bottom-left-radius:0;">
                                       <div class="float-left ml-n3" style="margin-right:35%;">
@@ -1246,6 +1246,15 @@
                                           <b style="color: #1A4066">{{$OdrVisit_on}}</b>
                                         </a>
                                       @endif
+                                      
+                                      <br>
+                                      <a onclick="openItemNotAchieved('{{$cust_exists[$k]->id}}','{{$period_par}}')" 
+                                        style="cursor: pointer;">
+                                        <span class="style-badge badge text-light mt-2 ml-n3"
+                                            style="padding:5px 10px;background:#1A4066">
+                                            <small><b>Item belum capai</b></small>
+                                        </span>
+                                      </a>
                                     </li>
                                   @endforeach
                                 @else
@@ -1311,8 +1320,6 @@
               </div>
           </div>
         
-          
-
           <div class="row justify-content-center dashboard" style="">
             <div class="col-12 mt-2" style="z-index: 2;">
                 <!--<section class="statistics">-->
@@ -1435,6 +1442,25 @@
                   <!--</section>-->
             </div>
           </div>
+
+          <!-- Modal show -->
+          <div class="modal fade modal-paket" id="detilItemTidakCapai" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content modal-content-paket">
+                  
+                    <div class="modal-body pb-0"
+                    style="max-height: 540px;overflow-y: auto;">
+                        <button type="button" class="close mt-n2" data-dismiss="modal" aria-label="Close" style="">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <div id="listItemTidakCapai" class="mt-4 pb-4">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+        
         @endif
     </div>
 
