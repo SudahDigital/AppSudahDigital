@@ -99,6 +99,26 @@ class searchController extends Controller
                     ->count();
         //dd($item_name->id);
         //dd($total_item);
+
+        $orderAttach = \App\OrderAttachment::where('client_id',$client->id)
+                        ->where('attach_status','SUBMIT')
+                        ->first();
+        $no_orderAttach = \App\OrderAttachment::where('client_id',$client->id)
+                        ->where('attach_status','NO-ORDER')
+                        ->first();
+
+        if($orderAttach){
+            $attach = $orderAttach->attachment;
+        }else{
+            $attach = 'NO_ATTACH';
+        }
+
+        if($no_orderAttach){
+            $nAttach = $no_orderAttach->attachment;
+        }else{
+            $nAttach = 'NO_ATTACH';
+        }
+
         $data=['total_item'=> $total_item, 
                 'keranjang'=>$keranjang,
                 'top_product'=>$top_product,
@@ -115,6 +135,8 @@ class searchController extends Controller
                 'vendor'=>$vendor,
                 'client'=>$client,
                 'message'=>$message,
+                'attach'=>$attach,
+                'nAttach'=>$nAttach
                 ];  
                    
         return view('customer.content_customer',$data);
