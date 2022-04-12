@@ -1250,9 +1250,9 @@
                                       <br>
                                       <a onclick="openItemNotAchieved('{{$cust_exists[$k]->id}}','{{$period_par}}')" 
                                         style="cursor: pointer;">
-                                        <span class="style-badge badge text-light mt-2 ml-n3"
+                                        <span class="style-badge badge text-light mt-n4 mr-n3  float-right"
                                             style="padding:5px 10px;background:#1A4066">
-                                            <small><b>Item belum capai</b></small>
+                                            <small><b>Hasil</b></small>
                                         </span>
                                       </a>
                                     </li>

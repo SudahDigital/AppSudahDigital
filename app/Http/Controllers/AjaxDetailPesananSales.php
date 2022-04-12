@@ -586,26 +586,29 @@ class AjaxDetailPesananSales extends Controller
             $count = $detailItem->count();
             if($count > 0){
                 echo '<ul class="list-group">';
-                    $numb = 0;
+                    //$numb = 0;
                     foreach($detailItem as $dtl){
                         $itemOrder = $this->getItemOrder($csId,$dtl->productId);
-                        $numb += $itemOrder < $dtl->quantityValues;
+                        //$numb += $itemOrder < $dtl->quantityValues;
                         
-                        if($numb <= 0){
+                        /*if($numb <= 0){
                             echo
                             '<li class="list-group-item" style="color:#1A4066">
                                 <p style="line-height:1.2;font-weight:600;">Tidak ada item belum capai </p>
                             </li>';
-                        }
+                        }*/
                         
-                        if($itemOrder < $dtl->quantityValues){
+                        //if($itemOrder < $dtl->quantityValues){
                             echo
                             '<li class="list-group-item" style="color:#1A4066">
                                 <p style="line-height:1.2;font-weight:600;">'.$dtl->products->Product_name.'</p>
-                                <small>Jumlah Belum Capai</small>
-                                <span class="badge badge-danger badge-pill" style="float:right;">'.($dtl->quantityValues-$itemOrder).'</span>
+                                <small>Jumlah Target</small>
+                                <span class="badge badge-primary badge-pill" style="float:right;">'.$dtl->quantityValues.'</span>
+
+                                <br><small>Total Pesanan</small>
+                                <span class="badge badge-success badge-pill" style="float:right;">'.$itemOrder.'</span>
                             </li>';
-                        }
+                        //}
                     }
                 echo '</ul>';
             }else{
