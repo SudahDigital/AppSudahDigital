@@ -45,6 +45,7 @@
     @endcan
     
     @can('isSpv')
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
         <style type="text/css">
             
             .flex-nowrap {
@@ -134,6 +135,21 @@
                 .col-all-chart{
                     padding-right: 0;
                 }
+            }
+
+            [data-toggle="collapse"]:after {
+                display: inline-block;
+                font: normal normal normal 8px/1 FontAwesome;
+                font-size: inherit;
+                text-rendering: auto;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            content: "\f0d7";
+            transform: rotate(0deg) ;
+            transition: all linear 0.25s;
+            }   
+            [data-toggle="collapse"].collapsed:after {
+            transform: rotate(-90deg) ;
             }
 
         </style>
@@ -509,7 +525,44 @@
                                                                                             data-trigger="hover" data-container="body" data-placement="top" 
                                                                                             data-content="Order On Location."></i>
                                                                                             <b class="text-primary" style="color:#3F51B5">{{$OdrVisit_on}}</b>
-                                                                                        
+                                                                                        @endif
+
+                                                                                        <!--collaps info target order $date_now--->
+                                                                                        <?php
+                                                                                            [$detailItem,$hasNotAchieve] = \App\Http\Controllers\DashboardController::countAchTarget($cust_exists[$k]->id,$date_now);
+                                                                                        ?>
+                                                                                        @if($hasNotAchieve != 'noTarget')
+                                                                                            <span class="badge {{$hasNotAchieve > 0 ? 'bg-red' : 'bg-green'}}">
+                                                                                                <a class="collapsed pull-right" data-toggle="collapse" 
+                                                                                                    style="text-decoration: none;color:white"
+                                                                                                    href="#collTargOrder{{$cust_exists[$k]->id}}" aria-expanded="false" aria-controls="collapseExample">
+                                                                                                    Hasil
+                                                                                                </a>
+                                                                                            </span>    
+                                                                                            <div class="collapse m-t-15" id="collTargOrder{{$cust_exists[$k]->id}}" 
+                                                                                                aria-expanded="false" style="height: 0px;">
+                                                                                                <div class="well" style="overflow-y: auto;max-height: 300px !important;">
+                                                                                                    @if($detailItem != NULL)
+                                                                                                        <ul class="list-group" style="margin-bottom: -1px;">
+                                                                                                            @foreach($detailItem as $dtl)
+                                                                                                                <?php
+                                                                                                                    $itemOrder = \App\Http\Controllers\DashboardController::getItemOrder($cust_exists[$k]->id,$dtl->productId,$date_now);
+                                                                                                                ?>
+                                                                                                                <li class="list-group-item">
+                                                                                                                    <p class="font-bold">{{$dtl->products->Product_name}}</p>
+                                                                                                                    <small>Total Pesanan</small> 
+                                                                                                                    <span class="badge {{$itemOrder < $dtl->quantityValues ? 'bg-red' : 'bg-green'}}">
+                                                                                                                        {{$itemOrder}}
+                                                                                                                    </span>
+                                                                                                                    <br>
+                                                                                                                    <small>Jumlah Target</small>
+                                                                                                                    <span class="badge bg-blue">{{$dtl->quantityValues}}</span>
+                                                                                                                </li>
+                                                                                                            @endforeach
+                                                                                                        </ul>
+                                                                                                    @endif
+                                                                                                </div>
+                                                                                            </div>
                                                                                         @endif
                                                                                     </li>
                                                                                 @endforeach

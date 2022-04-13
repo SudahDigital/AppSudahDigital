@@ -1220,4 +1220,48 @@ class DashboardController extends Controller
         }
         return $jarak;
     }
+
+    //info order product in toko pareto sudah order
+    public static function countAchTarget($csId, $date_now){
+        $_this = new self;
+        $period_par = $_this->paramPeriod($date_now);
+        $storeTarget = \App\Store_Targets::where('customer_id',$csId)
+                      ->where('period',$period_par)
+                      ->first();
+        if($storeTarget){
+            $detailItem = \App\ProductTarget::where('storeTargetId',$storeTarget->id)
+                        ->get();
+            $totalItem = 0 ;
+            foreach($detailItem as $dtl){
+                //$_this = new self;
+                $itemOrder = $_this->getItemOrder($csId,$dtl->productId,$date_now);
+                $totalItem += $itemOrder < $dtl->quantityValues;
+            }
+            
+        }else{
+            $detailItem = NULL;
+            $totalItem = 'noTarget';
+        }
+
+        return [$detailItem,$totalItem];
+    }
+
+    public static function getItemOrder($csId,$productId,$date_now){
+        $month = date('m', strtotime($date_now));
+        $year = date('Y', strtotime($date_now));
+        $sumItem = \App\Order::whereHas('products', function ($q) use ($productId){
+                    $q->where('product_id',$productId);
+                })
+                ->where('customer_id',$csId)
+                ->where('status','!=','CANCEL')
+                ->where('status','!=','NO-ORDER')
+                ->whereMonth('created_at', $month)
+                ->whereYear('created_at', $year)
+                ->get();
+        
+        $sumQty = $sumItem->sum('TotalQuantity');
+              
+        return $sumQty;
+
+    }
 }

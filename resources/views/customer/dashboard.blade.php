@@ -1248,13 +1248,19 @@
                                       @endif
                                       
                                       <br>
-                                      <a onclick="openItemNotAchieved('{{$cust_exists[$k]->id}}','{{$period_par}}')" 
-                                        style="cursor: pointer;">
-                                        <span class="style-badge badge text-light mt-n4 mr-n3  float-right"
-                                            style="padding:5px 10px;background:#1A4066">
-                                            <small><b>Hasil</b></small>
-                                        </span>
-                                      </a>
+                                      <?php
+                                        $hasNotAchieve = \App\Http\Controllers\AjaxDetailPesananSales::countAchTarget($cust_exists[$k]->id,$period_par);
+                                      ?>
+                                      @if($hasNotAchieve != 'noTarget')
+                                        <a onclick="openItemNotAchieved('{{$cust_exists[$k]->id}}','{{$period_par}}')" 
+                                          style="cursor: pointer;">
+                                          <span class="style-badge badge text-light mt-n4 mr-n3  float-right"
+                                              style="padding:5px 10px;
+                                              {{$hasNotAchieve > 0 ? 'background:#dc3545!important' : 'background:#28a745!important'}}">
+                                              <small><b>Hasil</b></small>
+                                          </span>
+                                        </a>
+                                      @endif
                                     </li>
                                   @endforeach
                                 @else

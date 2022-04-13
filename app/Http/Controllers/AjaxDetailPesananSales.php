@@ -572,6 +572,27 @@ class AjaxDetailPesananSales extends Controller
         return redirect()->route('pesanan', [$vendor]);
     }
 
+    public static function countAchTarget($csId, $period){
+        $storeTarget = \App\Store_Targets::where('customer_id',$csId)
+                      ->where('period',$period)
+                      ->first();
+        if($storeTarget){
+            $detailItem = \App\ProductTarget::where('storeTargetId',$storeTarget->id)
+                        ->get();
+            $totalItem = 0 ;
+            foreach($detailItem as $dtl){
+                $_this = new self;
+                $itemOrder = $_this->getItemOrder($csId,$dtl->productId);
+                $totalItem += $itemOrder < $dtl->quantityValues;
+            }
+            
+        }else{
+            $totalItem = 'noTarget';
+        }
+
+        return $totalItem;
+    }
+
     public function detailItemTarget(Request $request){
         $csId = $request->get('csId');
         $period = $request->get('period');
@@ -597,16 +618,23 @@ class AjaxDetailPesananSales extends Controller
                                 <p style="line-height:1.2;font-weight:600;">Tidak ada item belum capai </p>
                             </li>';
                         }*/
+
+                        if($itemOrder < $dtl->quantityValues){
+                            $badgePs = 'badge-danger';
+                        }else{
+                            $badgePs = 'badge-success';
+                        }
                         
                         //if($itemOrder < $dtl->quantityValues){
                             echo
                             '<li class="list-group-item" style="color:#1A4066">
                                 <p style="line-height:1.2;font-weight:600;">'.$dtl->products->Product_name.'</p>
-                                <small>Jumlah Target</small>
-                                <span class="badge badge-primary badge-pill" style="float:right;">'.$dtl->quantityValues.'</span>
 
-                                <br><small>Total Pesanan</small>
-                                <span class="badge badge-success badge-pill" style="float:right;">'.$itemOrder.'</span>
+                                <small>Total Pesanan</small>
+                                <span class="badge '.$badgePs.' badge-pill" style="float:right;">'.$itemOrder.'</span>
+                                
+                                <br><small>Jumlah Target</small>
+                                <span class="badge badge-primary badge-pill" style="float:right;">'.$dtl->quantityValues.'</span>
                             </li>';
                         //}
                     }
