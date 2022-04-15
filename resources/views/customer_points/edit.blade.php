@@ -173,6 +173,16 @@
             $('.customer_id').select2({
                 placeholder: 'Select an item',
             });
+
+            $('select').on('change', function() {
+                $('option').prop('disabled', false);
+                $('select').each(function() {
+                    var val = this.value;
+                    $('select').not(this).find('option').filter(function() {
+                    return this.value === val;
+                    }).prop('disabled', true);
+                });
+            }).change();
         });
     
         $("body").on("click", ".remove", function () {

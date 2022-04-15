@@ -44,10 +44,22 @@ class CustomerPointController extends Controller
                     })
                     ->where('client_id',auth()->user()->client_id)
                     ->get();*/
+        $PrevPeriodCheck = \App\PointPeriod::where('client_id',\Auth::user()->client_id)
+                            ->where('expires_at', '<', $get_date->starts_at)
+                            ->orderBy('expires_at','DESC')
+                            ->first();
+        //dd($PrevPeriodCheck);
+
         $customers = \App\Customer::where('client_id',auth()->user()->client_id)
                     ->where('status','=','ACTIVE')
                     ->get();
-        return view('customer_points.create',['vendor'=>$vendor,'get_date'=>$get_date,'customers'=>$customers]);
+        return view('customer_points.create',
+                    [
+                        'vendor'=>$vendor,
+                        'get_date'=>$get_date,
+                        'customers'=>$customers,
+                        'PrevPeriodCheck'=>$PrevPeriodCheck
+                    ]);
     }
 
     public function store(Request $request, $vendor){
@@ -79,12 +91,14 @@ class CustomerPointController extends Controller
     
                     }
                 }
-                return redirect()->route('CustomerPoints.details',[$vendor,\Crypt::encrypt($request->period_id)])->with('status','Points Customers Succsessfully Created');
+                return redirect()->route('CustomerPoints.details',[$vendor,\Crypt::encrypt($request->period_id)])
+                ->with('status','Points Customers Succsessfully Created');
             }
             else{
                 return back()->withInput()->with('error','Failed to save, no customer added');
             } 
-        }elseif($choice_check == 'all_customer'){
+        }
+        /*elseif($choice_check == 'all_customer'){
             $customer = \App\Customer::where('client_id',\Auth::user()->client_id)
                         ->where('status','ACTIVE')->get();
             foreach($customer as $cs){
@@ -109,13 +123,36 @@ class CustomerPointController extends Controller
                 }
             return redirect()->route('CustomerPoints.details',[$vendor,\Crypt::encrypt($request->period_id)])->with('status','Points Customers Succsessfully Created');
         }
+        */
+        elseif($choice_check == 'prev_cust'){
+            $idPrev = $request->get('idPrev');
+            $prevCustCheck = \App\CustomerPoint::where('client_id',\Auth::user()->client_id)
+                            ->where('period_id',$idPrev)
+                            ->get();
+            if($prevCustCheck != NULL){
+                foreach($prevCustCheck as $pv){
+                    $newCustomerPoint = new \App\CustomerPoint();
+                    $newCustomerPoint->client_id = \Auth::user()->client_id;
+                    $newCustomerPoint->customer_id = $pv->customer_id;
+                    $newCustomerPoint->period_id = $request->period_id;
+                    $newCustomerPoint->file = $pv->file;
+                    $newCustomerPoint->save();
+                }
+                return redirect()->route('CustomerPoints.details',[$vendor,\Crypt::encrypt($request->period_id)])
+                ->with('status','Points Customers Succsessfully Created');    
+            }else{
+                return redirect()->route('CustomerPoints.details',[$vendor,\Crypt::encrypt($request->period_id)])
+                ->with('error','Points customers not created,  previous period doesn\'t have customers'); 
+            }
+
+        }
     }
 
     public function edit($vendor,$id)
     {
-        
-        $get_date = \App\PointPeriod::findOrFail(\Crypt::decrypt($id));
-        
+        $periodId = \Crypt::decrypt($id);
+        $get_date = \App\PointPeriod::findOrFail($periodId);
+        //dd($get_date);
         /*
         $param_id = \Crypt::decrypt($id);
         $period = \App\PointPeriod::findorFail($param_id);
@@ -126,9 +163,13 @@ class CustomerPointController extends Controller
                     ->where('client_id',auth()->user()->client_id)
                     ->get();
         */
-        $customers = \App\Customer::where('client_id',auth()->user()->client_id)
-                ->where('status','=','ACTIVE')
-                ->get();
+        
+        $customers = \App\Customer::whereDoesntHave('custPoints', function($q) use ($periodId){
+                        $q->where('period_id',$periodId);
+                    })
+                    ->where('client_id',auth()->user()->client_id)
+                    ->where('status','=','ACTIVE')
+                    ->get();
        
         //dd($end_date);
         return view('customer_points.edit',
