@@ -61,7 +61,8 @@
             <input type="radio" class="form-check-inline" value="customer_select" 
                 name="sel_input" id="cust_select" onclick='showTable();' required>
             <label for="cust_select">Choose Customers</label>
-            &nbsp;
+            <!--
+                &nbsp;
             <input type="radio" class="form-check-inline" value="all_customer" 
                 name="sel_input" id="all_cust" onclick='hideTable();'>
             <label for="all_cust">All Customers</label>
@@ -69,6 +70,14 @@
             <input type="radio" class="form-check-inline" value="customer_pareto" 
                 name="sel_input" id="pareto_cust" onclick='hideTable();'>
             <label for="pareto_cust">Pareto Customers Only</label>
+            -->
+            @if($PrevPeriodCheck)
+                <input type="hidden" value="{{$PrevPeriodCheck->id}}" name="idPrev">
+                &nbsp;
+                <input type="radio" class="form-check-inline" value="prev_cust" 
+                    name="sel_input" id="prev_cust" onclick='hideTable();'>
+                <label for="prev_cust">Same as the previous period</label>
+            @endif
         </div>
 
         <table class="table table-responsive table-striped show-dc-table showTable">
@@ -152,6 +161,16 @@
             $('.customer_id').select2({
                 placeholder: 'Select an item',
             });
+            
+            $('select').on('change', function() {
+                $('option').prop('disabled', false);
+                $('select').each(function() {
+                    var val = this.value;
+                    $('select').not(this).find('option').filter(function() {
+                    return this.value === val;
+                    }).prop('disabled', true);
+                });
+            }).change();
         });
     
         $("body").on("click", ".remove", function () {
@@ -188,8 +207,6 @@
         return fied1 + fied2 + del;
         
     }
-
-    
 
     (function() {
     'use strict';

@@ -78,12 +78,13 @@ class CustomerPointOrderController extends Controller
                     
                         /*cp.id,*/ 
                         sum(case when (date(o.created_at) between '$period->starts_at' and '$period->expires_at')
-                                AND  ((date(o.finish_time) between o.created_at AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY))
+                                AND  (
+                                        (date(o.finish_time) between date(o.created_at) AND DATE_ADD(date(o.created_at), INTERVAL 14 DAY))
                                             OR
                                         (date(o.finish_time) between '$period->starts_at' AND '$period->expires_at')
                                         
-                            )
-                            then 
+                                      )
+                                then 
                                 (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end
                             ) totalpoint,
                         

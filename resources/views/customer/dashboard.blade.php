@@ -1142,7 +1142,7 @@
                                   @endforeach
                                 @else
                                   <li class="list-group-item border-0" style="color: #1A4066;border-bottom-right-radius:0;
-                                  border-bottom-left-radius:0;"><b>Nihil</b></li>
+                                  border-bottom-left-radius:0;">Belum ada order atau belum ada target toko pareto</li>
                                 @endif  
                               </ul>
                             </div>
@@ -1248,24 +1248,26 @@
                                       @endif
                                       
                                       <br>
-                                      <?php
-                                        $hasNotAchieve = \App\Http\Controllers\AjaxDetailPesananSales::countAchTarget($cust_exists[$k]->id,$period_par);
-                                      ?>
-                                      @if($hasNotAchieve != 'noTarget')
-                                        <a onclick="openItemNotAchieved('{{$cust_exists[$k]->id}}','{{$period_par}}')" 
-                                          style="cursor: pointer;">
-                                          <span class="style-badge badge text-light mt-n4 mr-n3  float-right"
-                                              style="padding:5px 10px;
-                                              {{$hasNotAchieve > 0 ? 'background:#dc3545!important' : 'background:#28a745!important'}}">
-                                              <small><b>Hasil</b></small>
-                                          </span>
-                                        </a>
+                                      @if($period_par)
+                                        <?php
+                                          $hasNotAchieve = \App\Http\Controllers\AjaxDetailPesananSales::countAchTarget($cust_exists[$k]->id,$period_par);
+                                        ?>
+                                        @if($hasNotAchieve != 'noTarget')
+                                          <a onclick="openItemNotAchieved('{{$cust_exists[$k]->id}}','{{$period_par}}')" 
+                                            style="cursor: pointer;">
+                                            <span class="style-badge badge text-light mt-n4 mr-n3  float-right"
+                                                style="padding:5px 10px;
+                                                {{$hasNotAchieve > 0 ? 'background:#dc3545!important' : 'background:#28a745!important'}}">
+                                                <small><b>Hasil</b></small>
+                                            </span>
+                                          </a>
+                                        @endif
                                       @endif
                                     </li>
                                   @endforeach
                                 @else
                                   <li class="list-group-item border-0" style="color: #1A4066;border-bottom-right-radius:0;
-                                  border-bottom-left-radius:0;"><b>Nihil</b></li>
+                                  border-bottom-left-radius:0;">Belum ada order atau belum ada target toko pareto</li>
                                 @endif  
                               </ul>
                             </div>
