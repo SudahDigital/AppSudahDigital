@@ -84,7 +84,7 @@
 						</td>
 						<td>
 							{{//$c->users->sales_name
-								$c->users->name
+								$c->users->name ? $c->users->name : ''
 							}}
 							
 						</td>
