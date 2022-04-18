@@ -64,10 +64,11 @@ class CustomerPointOrderController extends Controller
     public static function getPoints($period_start,$csid)
     {   
         
+        //dd($period_start);
         $client_id = \Auth::user()->client_id;
 
         $period = \App\PointPeriod::where('client_id',$client_id)
-                ->whereDate('starts_at', $period_start)
+                ->where('starts_at', $period_start)
                 ->first();
         
         
@@ -288,7 +289,7 @@ class CustomerPointOrderController extends Controller
 
     public static function pointPartial($period_start,$csid){
         $period = \App\PointPeriod::where('client_id',\Auth::user()->client_id)
-                    ->whereDate('starts_at', $period_start)
+                    ->where('starts_at', $period_start)
                     ->first();
         $customers =\DB::select("SELECT o.id as oid, o.created_at, pr.created_at, pr.prod_point_val, pr.quantity_rule, pr.product_id,
                                         
