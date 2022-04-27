@@ -257,7 +257,7 @@
                                     request()->routeIs('customer_discount.index') ? 'active' : ''}}">
                             <a href="javascript:void(0);" class="menu-toggle">
                                 <i class="material-icons">hardware</i>
-                                <span>{{Gate::check('isSpv') ? 'Pruducts' : 'Manage Products'}}</span>
+                                <span>{{Gate::check('isSpv') ? 'Products' : 'Manage Products'}}</span>
                             </a>
                             <ul class="ml-menu">
                                 <li class="{{request()->routeIs('products.index') ? 'active' : '' }}">
