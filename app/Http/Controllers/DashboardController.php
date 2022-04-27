@@ -1249,7 +1249,7 @@ class DashboardController extends Controller
     public static function getItemOrder($csId,$productId,$date_now){
         $month = date('m', strtotime($date_now));
         $year = date('Y', strtotime($date_now));
-        $sumItem = \App\Order::whereHas('products', function ($q) use ($productId){
+        /*$sumItem = \App\Order::whereHas('products', function ($q) use ($productId){
                     $q->where('product_id',$productId);
                 })
                 ->where('customer_id',$csId)
@@ -1257,10 +1257,24 @@ class DashboardController extends Controller
                 ->where('status','!=','NO-ORDER')
                 ->whereMonth('created_at', $month)
                 ->whereYear('created_at', $year)
-                ->get();
+                ->get();*/
+        $sumItem = \DB::select("SELECT op.id, op.product_id, op.quantity, 
+                                    o.customer_id, o.created_at, o.status
+                                FROM `order_product` as op
+                                JOIN orders as o ON op.order_id = o.id
+                                WHERE o.customer_id = '$csId' 
+                                AND MONTH(o.created_at) = '$month'
+                                AND YEAR(o.created_at) = '$year'
+                                AND o.status != 'CANCEL'
+                                AND o.status != 'NO-ORDER'
+                                AND op.product_id = '$productId'");
         
-        $sumQty = $sumItem->sum('TotalQuantity');
-              
+        //$sumQty = $sumItem->sum('TotalQuantity');
+         $sumQty = 0;
+         foreach($sumItem as $si){
+            $sumQty += $si->quantity;
+         }
+
         return $sumQty;
 
     }
