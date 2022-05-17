@@ -42,12 +42,13 @@ class PointThisPeriodExport implements FromCollection, WithMapping, WithHeadings
             [$rest,$totalPotency] = \App\Http\Controllers\CustomerPointOrderController::starting_point($period->starts_at,$pn->id);
             $pointPartial = \App\Http\Controllers\CustomerPointOrderController::pointPartial($period->starts_at,$pn->id);
 			$pointPrevPartial = \App\Http\Controllers\CustomerPointOrderController::pointPrevPartial($period->starts_at,$pn->id);
+            $afterPointPartial = \App\Http\Controllers\CustomerPointOrderController::startPointPartial($period->starts_at,$pn->id);
 
             $start_point = number_format($rest,2);
-            $pointInPeriod = number_format(($point-$pointPrevPartial) + $pointPartial + $claim,2);
+            $pointInPeriod = number_format(($point-$pointPrevPartial) + $afterPointPartial + $pointPartial + $claim,2);
             $potencyPoints = number_format(($potencyPoint) + ($totalPotency),2);
             $pointClaim = number_format($claim,2);
-            $pointTotal = number_format(($point-$pointPrevPartial) + $pointPartial + $rest ,2);
+            $pointTotal = number_format(($point-$pointPrevPartial) + $afterPointPartial + $pointPartial + $rest ,2);
             return[
                 $pn->store_code,
                 $pn->store_name,

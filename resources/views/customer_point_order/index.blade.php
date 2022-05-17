@@ -77,6 +77,7 @@
 						$claim = App\Http\Controllers\CustomerPointOrderController::pointsClaim($period_start,$c->id);
 						$pointPartial = App\Http\Controllers\CustomerPointOrderController::pointPartial($period_start,$c->id);
 						$pointPrevPartial = App\Http\Controllers\CustomerPointOrderController::pointPrevPartial($period_start,$c->id);
+						$afterPointPartial = App\Http\Controllers\CustomerPointOrderController::startPointPartial($period_start,$c->id);
 					@endphp
 					<tr>
 						<td>
@@ -94,7 +95,7 @@
 						<td>
 							{{
 								//number_format((($c->grand_total-$pointPrevPartial) + $pointPartial + $claim),2)
-								number_format((($point-$pointPrevPartial) + $pointPartial + $claim),2)
+								number_format((($point-$pointPrevPartial)  + $afterPointPartial + $pointPartial + $claim),2)
 							}}
 						</td>
 						<td>
@@ -109,7 +110,7 @@
 							{{number_format($claim,2)}}
 						</td>
 						<td>
-							{{number_format((($point-$pointPrevPartial) + $pointPartial + $rest) ,2)}}	
+							{{number_format((($point-$pointPrevPartial) + $afterPointPartial + $pointPartial + $rest) ,2)}}	
 						</td>
 					</tr>
 				@endforeach
