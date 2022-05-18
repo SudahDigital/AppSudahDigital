@@ -31,7 +31,7 @@
     @can('isCounter')
         Hi <strong>{{ auth()->user()->name }}</strong>,
         {{ __('You are logged in as') }}
-        <span class="badge bg-green">Sales Counter</span>
+        <span class="badge bg-green">Sales Order</span>
         
         <!--
         @can('isSuperadmin')

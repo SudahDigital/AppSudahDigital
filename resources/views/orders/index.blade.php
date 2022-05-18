@@ -67,7 +67,7 @@
 		</ul>
 	</div>
 	<div class="col-md-2">
-		@if(\Auth::user()->roles == 'SUPERADMIN')
+		@if((\Auth::user()->roles == 'SUPERADMIN') || (\Auth::user()->roles == 'SALES-COUNTER'))
 			
 			<a class="btn btn-success pull-right" href="" data-toggle="modal" data-target="#exportOrderModal">
 				<i class="fas fa-file-excel fa-0x "></i> Export

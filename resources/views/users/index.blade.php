@@ -131,7 +131,7 @@
 									<br/>
 									<b>Roles:</b>
 									<br/>
-									{{$u->roles}}
+									{{$u->roles == 'SALES-COUNTER' ? 'SALES-ORDER' : $u->roles}}
 									</div>
 									<div class="modal-footer">
 										<button type="button" class="btn btn-link waves-effect" data-dismiss="modal">Close</button>
