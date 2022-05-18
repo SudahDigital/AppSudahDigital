@@ -49,7 +49,7 @@
                 <input class="form-control {{$errors->first('roles') ? "is-invalid" : "" }}" 
                     type="radio" name="roles" id="SLSCT" value="SALES-COUNTER" 
                     {{$user->roles == "SALES-COUNTER" ? "checked" : ""}} {{Auth::user()->id == $user->id ? 'disabled' : ''}}> 
-                <label for="SLSCT">Sales Counter</label>
+                <label for="SLSCT">Sales Order</label>
                 <div class="invalid-feedback">
                     {{$errors->first('roles')}}
                 </div>
