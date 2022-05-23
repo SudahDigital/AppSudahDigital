@@ -131,124 +131,36 @@ class OrdersThisPeriod implements FromCollection, WithMapping, WithHeadings, Wit
                 $reasons = null;
             }
             
-            $podNumber = \App\Http\Controllers\OrderController::getPodNumber($p->pivot->order_id,$p->pivot->id);
-            if($podNumber){
-                $countArrPod = count($podNumber);
-                foreach($podNumber as $key => $pod){
-                    if($pod->partial_id !== NULL){
-                        if($countArrPod > 1){
-                            if($key == ($countArrPod - 1)) {
-                                $qtyPart = $p->pivot->quantity - ($p->pivot->deliveryQty - $pod->partial_qty);
-                            }else{
-                                $qtyPart = $pod->partial_qty;
-                            }
-                        }else{
-                            $qtyPart = $p->pivot->quantity;
-                        }
-                        array_push($rows,[
-                            //$order->id,
-                            $order->invoice_number,
-                            $order->status,
-                            $order->customers->store_code,
-                            $order->customers->store_name,
-                            $order->customers->name,
-                            $order->users()->first()['name'],
-                            $order->user_loc,
-                            $product_name,
-                            $qtyPart,
-                            $pod->partial_qty,
-                            $pod->pod_number,
-                            $pod->pdCreate,
-                            $price,
-                            $price * $qtyPart,
-                            $order->payment_method,
-                            $p->pivot->paket_id,
-                            $p->pivot->group_id,
-                            $p->pivot->bonus_cat,
-                            $order->notes,
-                            $order->created_at,
-                            $order->process_time,
-                            $order->finish_time,
-                            $order->cancel_time,
-                            $reasons,
-                            $canceled_by,
-                            $order->notes_cancel,
-                            $order->notes_no_order,
-                            $order->NotesPartialShip,
-                            //Carbon::parse($order->created_at)->toFormattedDateString()
-                        ]);
-                    }else{
-
-                        array_push($rows,[
-                            //$order->id,
-                            $order->invoice_number,
-                            $order->status,
-                            $order->customers->store_code,
-                            $order->customers->store_name,
-                            $order->customers->name,
-                            $order->users()->first()['name'],
-                            $order->user_loc,
-                            $product_name,
-                            $p->pivot->quantity,
-                            $delivered,
-                            $pod->pod_number,
-                            $order->finish_time,
-                            $price,
-                            $price * $p->pivot->quantity,
-                            $order->payment_method,
-                            $p->pivot->paket_id,
-                            $p->pivot->group_id,
-                            $p->pivot->bonus_cat,
-                            $order->notes,
-                            $order->created_at,
-                            $order->process_time,
-                            $order->finish_time,
-                            $order->cancel_time,
-                            $reasons,
-                            $canceled_by,
-                            $order->notes_cancel,
-                            $order->notes_no_order,
-                            $order->NotesPartialShip,
-                            //Carbon::parse($order->created_at)->toFormattedDateString()
-                        ]);
-                    }
-                    
-                }
-            }else{
-                
-                array_push($rows,[
-                    //$order->id,
-                    $order->invoice_number,
-                    $order->status,
-                    $order->customers->store_code,
-                    $order->customers->store_name,
-                    $order->customers->name,
-                    $order->users()->first()['name'],
-                    $order->user_loc,
-                    $product_name,
-                    $p->pivot->quantity,
-                    $delivered,
-                    null,
-                    null,
-                    $price,
-                    $price * $p->pivot->quantity,
-                    $order->payment_method,
-                    $p->pivot->paket_id,
-                    $p->pivot->group_id,
-                    $p->pivot->bonus_cat,
-                    $order->notes,
-                    $order->created_at,
-                    $order->process_time,
-                    $order->finish_time,
-                    $order->cancel_time,
-                    $reasons,
-                    $canceled_by,
-                    $order->notes_cancel,
-                    $order->notes_no_order,
-                    $order->NotesPartialShip,
-                    //Carbon::parse($order->created_at)->toFormattedDateString()
-                ]);
-            }
+            array_push($rows,[
+                //$order->id,
+                $order->invoice_number,
+                $order->status,
+                $order->customers->store_code,
+                $order->customers->store_name,
+                $order->customers->name,
+                $order->users()->first()['name'],
+                $order->user_loc,
+                $product_name,
+                $p->pivot->quantity,
+                $delivered,
+                $price,
+                $price * $p->pivot->quantity,
+                $order->payment_method,
+                $p->pivot->paket_id,
+                $p->pivot->group_id,
+                $p->pivot->bonus_cat,
+                $order->notes,
+                $order->created_at,
+                $order->process_time,
+                $order->finish_time,
+                $order->cancel_time,
+                $reasons,
+                $canceled_by,
+                $order->notes_cancel,
+                $order->notes_no_order,
+                $order->notesPartialShip,
+                //Carbon::parse($order->created_at)->toFormattedDateString()
+            ]);
         }
         return $rows;
     }
@@ -265,8 +177,6 @@ class OrdersThisPeriod implements FromCollection, WithMapping, WithHeadings, Wit
            'Product',
            'Quantity',
            'Delivered',
-           'POD Number',
-           'Input Date POD',
            'Price',
            'Price Total',
            'Payment',

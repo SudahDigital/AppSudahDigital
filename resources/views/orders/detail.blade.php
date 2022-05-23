@@ -78,6 +78,28 @@
                                             <span class="badge bg-orange">Pre Order : {{$p->pivot->preorder}}</span>
                                         @endif
                                     @endif
+                                    @php
+                                        $podNumber = App\Http\Controllers\OrderController::getPodNumber($order->id,$p->pivot->id);
+                                        //dd($podNumber)
+                                    @endphp
+                                    @if($podNumber)
+                                        <br><label class="form-label m-t-10 m-b-0">POD Number :</label><br>
+                                        <ul class="list-group">
+                                            @foreach($podNumber as $pn)
+                                                <li class="list-group-item" style="padding: 2px 6px; border-left:none;border-right:none">
+                                                    {{$pn->pod_number}}
+                                                    <span class="badge bg-grey">
+                                                        {{$pn->pdCreate ? $pn->pdCreate : $pn->finish_time}} 
+                                                        @if($pn->partial_id) 
+                                                            (Qty : {{$pn->partial_qty ? $pn->partial_qty : $pn->quantity}})
+                                                        @else
+                                                            (Qty : {{$p->quantity}})
+                                                        @endif
+                                                    </span>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
                                 </td>
                                 <td style="padding-top:5px;">{{$p->pivot->quantity}}</td>
                                 <td style="padding-top:5px;">
@@ -213,7 +235,28 @@
                                             <span class="badge bg-orange">Pre Order : {{$p->preorder}}</span>
                                         @endif
                                     @endif
-                                    
+                                    @php
+                                        $podNumber = App\Http\Controllers\OrderController::getPodNumber($order->id,$p->id);
+                                        //dd($podNumber)
+                                    @endphp
+                                    @if($podNumber)
+                                        <br><label class="form-label m-t-10 m-b-0">POD Number :</label><br>
+                                        <ul class="list-group">
+                                            @foreach($podNumber as $pn)
+                                                <li class="list-group-item" style="padding: 2px 6px; border-left:none;border-right:none">
+                                                    {{$pn->pod_number}}
+                                                    <span class="badge bg-grey">
+                                                        {{$pn->pdCreate ? $pn->pdCreate : $pn->finish_time}}
+                                                        @if($pn->partial_id) 
+                                                            (Qty : {{$pn->partial_qty ? $pn->partial_qty : $pn->quantity}})
+                                                        @else
+                                                            (Qty : {{$p->quantity}})
+                                                        @endif
+                                                    </span>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
                                 </td>
                                 <td style="padding-top:5px;">{{$p->quantity}}</td>
                                 <td style="padding-top:5px;">
@@ -343,6 +386,16 @@
             <label id="partialDeliveryNotes-error" class="error" for="partialDeliveryNotes"></label>
         </div>
 
+        <div class="form-group" id="podNumber" style="{{$order->status == 'PARTIAL-SHIPMENT' ? 'display: block' : 'display:none'}}">
+            <div class="form-line">
+                <input type="text" class="form-control" id="inputPod" 
+                autocomplete="off" name="pod_number" required>
+                <label class="form-label" for="inputPod">POD Number</label> 
+            </div>
+            <label id="podNumber-error" class="error" for="inputPod"></label>
+        </div>
+        
+
         <div class="form-group"  style="{{$order->status == 'CANCEL' ? 'display: block' : 'display:none'}}" id="notes_cancel">
             <div class="form-line">
                 @if($order->canceled_by != null)
@@ -380,7 +433,7 @@
             </div>
         </div>
         @endif
-        @if($order->status == 'NO-ORDER')
+        @if($order->status == 'NO-ORDER' || $order->status == 'FINISH')
             <input type="submit" id="update_status" class="btn btn-primary waves-effect" value="UPDATE" disabled>
         @else
             <input type="submit" id="update_status" class="btn btn-primary waves-effect" value="UPDATE" {{\Auth::user()->roles == 'SUPERVISOR' ? 'disabled' : ''}}>
@@ -403,18 +456,38 @@
         });
 
         $(function () {
+            var prevSt = $('#prevStatus').val();
             $("input[name='status']").click(function () {
                 if ($("#CANCEL").is(":checked")) {
                     $("#notes_cancel").show();
                     $(".dlv_qty").hide();
                     $("#partialDeliveryNotes").hide();
+                    $("#podNumber").hide();
                 }
                 else if ($("#PARTIAL-SHIPMENT").is(":checked")) {
                     $("#notes_cancel").hide();
                     $(".dlv_qty").show();
                     $("#partialDeliveryNotes").show();
+                    $("#podNumber").show();
                 } 
                 else {
+                    
+                    if ($("#FINISH").is(":checked") && 
+                         (prevSt != 'PARTIAL-SHIPMENT') &&
+                         (prevSt != 'FINISH')
+                       )
+                    {
+                        $("#podNumber").show();
+                    }else if($("#FINISH").is(":checked") && 
+                                (prevSt == 'PARTIAL-SHIPMENT') &&
+                                (prevSt == 'FINISH')
+                            )
+                    {
+                        $("#podNumber").hide();
+                    
+                    }else{
+                        $("#podNumber").hide();
+                    }
                     $("#notes_cancel").hide();
                     $(".dlv_qty").hide();
                     $("#partialDeliveryNotes").hide();
@@ -465,6 +538,8 @@
             var orderId = $('#paramOrderId').val();
             $('input[type=radio][name=status]').change(function() {
                 if ((this.value == 'FINISH') && (prevStatus == 'PARTIAL-SHIPMENT')) {
+                    $("#podNumber").hide();
+                    $('#podNumber').prop('disabled', true);
                     $.ajax({
                         url: '{{URL::to('/ajax/cekForFinish/order')}}',
                         type: 'get',

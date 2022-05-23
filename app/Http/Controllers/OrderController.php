@@ -172,7 +172,13 @@ class OrderController extends Controller
                             }
                         }
                 }
+
+                $podNumber = new \App\PodNumber();
+                $podNumber->order_id = $order->id;
+                $podNumber->pod_number = $request->get('pod_number');
+                $podNumber->save();
             }
+            
             //$order->save();
         }else if($status == 'CANCEL'){
             $order->status = $status;
@@ -195,12 +201,20 @@ class OrderController extends Controller
                     $prd->stock -= $request->deliveryQty[$v];
                     $prd->save();
 
-                    $partDel = new \App\PartialDelivery();
-                    /*$partDel->orderProduct()->associate($)*/
-                    $partDel->op_id = $new_dtl->id;
-                    $partDel->partial_qty = $request->deliveryQty[$v];
-                    $partDel->save();
+                    $qtyPartDelv = $request->deliveryQty[$v];
+                    if($qtyPartDelv > 0){
+                        $partDel = new \App\PartialDelivery();
+                        /*$partDel->orderProduct()->associate($)*/
+                        $partDel->op_id = $new_dtl->id;
+                        $partDel->partial_qty = $request->deliveryQty[$v];
+                        $partDel->save();
 
+                        $podNumber = new \App\PodNumber();
+                        $podNumber->partialDelivery()->associate($partDel);
+                        $podNumber->order_id = $order->id;
+                        $podNumber->pod_number = $request->get('pod_number');
+                        $podNumber->save();
+                    }
                 }
             }
         }
@@ -408,4 +422,33 @@ class OrderController extends Controller
         
         return $odr; 
     }
+
+    public static function getPodNumber($order_id,$opId){
+
+        $cekExists = \App\PodNumber::where('order_id',$order_id)
+                    ->whereNull('partial_id')->count();
+        if($cekExists > 0){
+            $partial = \DB::select("SELECT pod.order_id, pod.partial_id, pod.pod_number,
+                                        pd.id as pdid, pd.op_id, pd.partial_qty, pd.created_at as pdCreate,
+                                        o.id as orderid, o.finish_time , op.id as opid, op.quantity
+                                FROM pod_numbers as pod
+                                JOIN orders as o ON o.id = pod.order_id
+                                LEFT JOIN partial_deliveries as pd ON pd.id = pod.partial_id
+                                LEFT JOIN order_product as op ON op.id = pd.op_id
+                                WHERE op.id = '$opId' OR pod.order_id = '$order_id'");
+        }else{
+            $partial = \DB::select("SELECT pod.order_id, pod.partial_id, pod.pod_number,
+                                        pd.id as pdid, pd.op_id, pd.partial_qty, pd.created_at as pdCreate,
+                                        o.id as orderid, o.finish_time , op.id as opid, op.quantity
+                                FROM pod_numbers as pod
+                                JOIN orders as o ON o.id = pod.order_id
+                                LEFT JOIN partial_deliveries as pd ON pd.id = pod.partial_id
+                                JOIN order_product as op ON op.id = pd.op_id
+                                WHERE op.id = '$opId'");
+        }
+        
+        return $partial;
+
+    }
+
 }
