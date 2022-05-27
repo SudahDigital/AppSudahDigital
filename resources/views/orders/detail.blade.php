@@ -83,7 +83,7 @@
                                         //dd($podNumber)
                                     @endphp
                                     @if($podNumber)
-                                        <br><label class="form-label m-t-10 m-b-0">POD Number :</label><br>
+                                        <br><label class="form-label m-t-10 m-b-0">Doc. Number :</label><br>
                                         <ul class="list-group">
                                             @foreach($podNumber as $pn)
                                                 <li class="list-group-item" style="padding: 2px 6px; border-left:none;border-right:none">
@@ -240,7 +240,7 @@
                                         //dd($podNumber)
                                     @endphp
                                     @if($podNumber)
-                                        <br><label class="form-label m-t-10 m-b-0">POD Number :</label><br>
+                                        <br><label class="form-label m-t-10 m-b-0">Doc. Number :</label><br>
                                         <ul class="list-group">
                                             @foreach($podNumber as $pn)
                                                 <li class="list-group-item" style="padding: 2px 6px; border-left:none;border-right:none">
@@ -390,7 +390,7 @@
             <div class="form-line">
                 <input type="text" class="form-control" id="inputPod" 
                 autocomplete="off" name="pod_number" required>
-                <label class="form-label" for="inputPod">POD Number</label> 
+                <label class="form-label" for="inputPod">Doc. Number</label> 
             </div>
             <label id="podNumber-error" class="error" for="inputPod"></label>
         </div>
