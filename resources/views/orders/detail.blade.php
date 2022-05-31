@@ -534,6 +534,20 @@
         }
 
         $(document).ready(function(){
+            
+            $('#inputPod').on('keypress', function(e) {
+                if (e.which == 32){
+                    //console.log('Space Detected');
+                    return false;
+                }
+            });
+
+            $("textarea").on("keydown", function (e) {
+                var c = $("textarea").val().length;
+                if(c == 0)
+                    return e.which !== 32;
+            });
+
             var prevStatus = $('#prevStatus').val();
             var orderId = $('#paramOrderId').val();
             $('input[type=radio][name=status]').change(function() {
