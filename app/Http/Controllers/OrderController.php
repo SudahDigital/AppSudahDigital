@@ -181,42 +181,52 @@ class OrderController extends Controller
             
             //$order->save();
         }else if($status == 'CANCEL'){
-            $order->status = $status;
-            $order->cancel_time = $dateNow;
-            $order->notes_cancel = $request->get('notes_cancel');
-            $order->canceled_by = \Auth::user()->id;
+            if($request->get('notes_cancel') != ''){
+                $order->status = $status;
+                $order->cancel_time = $dateNow;
+                $order->notes_cancel = $request->get('notes_cancel');
+                $order->canceled_by = \Auth::user()->id;
+            }else{
+                return redirect()->route('orders.detail', [$vendor,\Crypt::encrypt($order->id)])->with('error', 'Order status unsuccesfully updated');
+            }
+                
         }else if($status == 'PARTIAL-SHIPMENT'){
-            $order->status = $status;
-            $order->NotesPartialShip = $request->get('partialDeliveryNotes');
-            foreach ($request->order_productId as $i => $v){
-                /*$detail_order=array(
-                    'deliveryQty'=>$request->deliveryQty[$v],
-                );*/
-                $new_dtl = \App\order_product::where('id',$request->order_productId[$i])->first();
-                $new_dtl->deliveryQty += $request->deliveryQty[$v];
-                $new_dtl->save();
+            if($request->get('partialDeliveryNotes') != ''){
+                $order->status = $status;
+                $order->NotesPartialShip = $request->get('partialDeliveryNotes');
+                foreach ($request->order_productId as $i => $v){
+                    /*$detail_order=array(
+                        'deliveryQty'=>$request->deliveryQty[$v],
+                    );*/
+                    $new_dtl = \App\order_product::where('id',$request->order_productId[$i])->first();
+                    $new_dtl->deliveryQty += $request->deliveryQty[$v];
+                    $new_dtl->save();
 
-                if($new_dtl->save()){
-                    $prd = \App\product::findOrfail($request->productId[$i]);
-                    $prd->stock -= $request->deliveryQty[$v];
-                    $prd->save();
+                    if($new_dtl->save()){
+                        $prd = \App\product::findOrfail($request->productId[$i]);
+                        $prd->stock -= $request->deliveryQty[$v];
+                        $prd->save();
 
-                    $qtyPartDelv = $request->deliveryQty[$v];
-                    if($qtyPartDelv > 0){
-                        $partDel = new \App\PartialDelivery();
-                        /*$partDel->orderProduct()->associate($)*/
-                        $partDel->op_id = $new_dtl->id;
-                        $partDel->partial_qty = $request->deliveryQty[$v];
-                        $partDel->save();
+                        $qtyPartDelv = $request->deliveryQty[$v];
+                        if($qtyPartDelv > 0){
+                            $partDel = new \App\PartialDelivery();
+                            /*$partDel->orderProduct()->associate($)*/
+                            $partDel->op_id = $new_dtl->id;
+                            $partDel->partial_qty = $request->deliveryQty[$v];
+                            $partDel->save();
 
-                        $podNumber = new \App\PodNumber();
-                        $podNumber->partialDelivery()->associate($partDel);
-                        $podNumber->order_id = $order->id;
-                        $podNumber->pod_number = $request->get('pod_number');
-                        $podNumber->save();
+                            $podNumber = new \App\PodNumber();
+                            $podNumber->partialDelivery()->associate($partDel);
+                            $podNumber->order_id = $order->id;
+                            $podNumber->pod_number = $request->get('pod_number');
+                            $podNumber->save();
+                        }
                     }
                 }
+            }else{
+                return redirect()->route('orders.detail', [$vendor,\Crypt::encrypt($order->id)])->with('error', 'Order status unsuccesfully updated');
             }
+            
         }
         else{
             $order->status = $status;

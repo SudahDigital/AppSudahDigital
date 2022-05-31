@@ -7,6 +7,11 @@
 			{{session('status')}}
 		</div>
 	@endif
+    @if(session('error'))
+		<div class="alert alert-danger">
+			{{session('error')}}
+		</div>
+	@endif
     <?php
         $countPartial = App\Http\Controllers\OrderController::checkCountPartShip($order->id);
         $countforCancel = App\Http\Controllers\OrderController::checkCountDelivQty($order->id);
@@ -379,7 +384,7 @@
 
         <div class="form-group" id="partialDeliveryNotes" style="{{$order->status == 'PARTIAL-SHIPMENT' ? 'display: block' : 'display:none'}}">
             <div class="form-line">
-                <textarea name="partialDeliveryNotes" rows="4" class="form-control no-resize"  
+                <textarea name="partialDeliveryNotes" rows="4" class="textarea form-control no-resize"  
                 placeholder="Notes for partial shipment" id="partialDeliveryNotes"
                 autocomplete="off" required>{{$order->NotesPartialShip ? $order->NotesPartialShip : ''}}</textarea>
             </div>
@@ -389,8 +394,7 @@
         <div class="form-group" id="podNumber" style="{{$order->status == 'PARTIAL-SHIPMENT' ? 'display: block' : 'display:none'}}">
             <div class="form-line">
                 <input type="text" class="form-control" id="inputPod" 
-                autocomplete="off" name="pod_number" required>
-                <label class="form-label" for="inputPod">Doc. Number</label> 
+                autocomplete="off" name="pod_number" required placeholder="Doc. Number">
             </div>
             <label id="podNumber-error" class="error" for="inputPod"></label>
         </div>
@@ -401,6 +405,7 @@
                 @if($order->canceled_by != null)
                 <textarea name="notes_cancel" rows="4" class="form-control no-resize"  
                     placeholder="Give a reason to cancel the order"  {{(Auth::user()->id == $order->canceled_by) ? '' : 'readonly'}}
+                    id="notes_cancel"
                     autocomplete="off" required>{{$order->notes_cancel ? $order->notes_cancel : ''}}</textarea>
                 @else
                     <textarea name="notes_cancel" rows="4" class="form-control no-resize"  
@@ -542,8 +547,8 @@
                 }
             });
 
-            $("textarea").on("keydown", function (e) {
-                var c = $("textarea").val().length;
+            $(".textarea").on("keydown", function (e) {
+                var c = $(".textarea").val().length;
                 if(c == 0)
                     return e.which !== 32;
             });
