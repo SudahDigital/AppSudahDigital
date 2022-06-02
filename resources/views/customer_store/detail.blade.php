@@ -4,7 +4,14 @@
      
     <ul>
         <li>
-            <label class="form-label">Customer Code / Search key</label>
+            <label class="form-label">Customer Key</label>
+        </li>
+        <small class="text-muted">{{$customer->store_key ? "$customer->store_key" : 'No Key'}}</small>
+    </ul>
+    <hr style="margin-top:0; margin-bottom:10px;">
+    <ul>
+        <li>
+            <label class="form-label">Customer Code</label>
         </li>
         <small class="text-muted">{{$customer->store_code ? "$customer->store_code" : 'No Code'}}</small>
     </ul>
@@ -14,6 +21,13 @@
             <label class="form-label">Name</label>
         </li>
         <small class="text-muted">{{$customer->store_name ? "$customer->store_name" : '-'}}</small>
+    </ul>
+    <hr style="margin-top:0; margin-bottom:10px;">
+    <ul>
+        <li>
+            <label class="form-label">Group Code</label>
+        </li>
+        <small class="text-muted">{{$customer->group_id ? $customer->customerGroups->code : '-'}}</small>
     </ul>
     <hr style="margin-top:0; margin-bottom:10px;">
     <ul>
@@ -65,6 +79,13 @@
             <label class="form-label">Customer Type</label>
         </li>
         <small class="text-muted">{{$customer->cust_type ? $customer->type_cust->name : '-'}}</small>
+    </ul>
+    <hr style="margin-top:0; margin-bottom:10px;">
+    <ul>
+        <li>
+            <label class="form-label">Customer Price Type</label>
+        </li>
+        <small class="text-muted">{{$customer->pricelist_id ? $customer->CustomerPrice->name : '-'}}</small>
     </ul>
     <hr style="margin-top:0; margin-bottom:10px;">
     <ul>

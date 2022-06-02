@@ -29,8 +29,10 @@ class CustomerExport implements FromCollection, WithMapping, WithHeadings, WithC
             $latalang = $customer->lat.', '.$customer->lng;
         }
         return[
+                $customer->store_key,
                 $customer->store_code,
                 $customer->store_name,
+                $customer->group_id,
                 $customer->email,
                 $customer->city_id,
                 $customer->address,
@@ -50,8 +52,10 @@ class CustomerExport implements FromCollection, WithMapping, WithHeadings, WithC
     public function headings() : array {
 
         return [
+           'Cust_Key',
            'Cust_Code',
            'Name',
+           'Group_Id',
            'Email',
            'City_ID',
            'Address',

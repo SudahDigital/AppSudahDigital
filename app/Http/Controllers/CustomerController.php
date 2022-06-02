@@ -38,15 +38,28 @@ class CustomerController extends Controller
      */
     public function index(Request $request, $vendor)
     {
+        $CustomerKey = \App\Customer::whereNull('store_key')->get();
+
+        if($CustomerKey){
+            foreach($CustomerKey as $vc){
+                $updateKey = \App\Customer::findorFail($vc->id);
+                $updateKey->store_key = hash('crc32b',$vc->id);
+                $updateKey->save();
+            }
+        }
+        
+
         if(Gate::check('isSpv')){
             $client_id = \Auth::user()->client_id;
             $spv_id = \Auth::user()->id;
             $customers = \DB::select("SELECT c.*, type_customer.name as tp_name, ct.city_name, 
-                        u.id as user_id, u.name as user_name, cat_pareto.pareto_code, cd.name as cd_name
+                        u.id as user_id, u.name as user_name, cat_pareto.pareto_code, cd.name as cd_name,
+                        cg.code as cgCode
                         FROM customers c 
-                        left outer join type_customer ON type_customer.id = c.cust_type 
+                        left outer join type_customer ON type_customer.id = c.cust_type
+                        left join customer_groups ON customer_groups.id = c.group_id 
                         left outer join cat_pareto ON cat_pareto.id = c.pareto_id
-                        left join customer_discounts ON c.pricelist_id = customer_discounts.id,
+                        left join customer_discounts ON c.pricelist_id = customer_discounts.id, customer_groups cg,
                         cities ct, users u, customer_discounts cd WHERE c.status != 'NEW' AND c.client_id = $client_id 
                         AND c.user_id = u.id AND c.city_id = ct.id AND EXISTS
                             (
@@ -62,11 +75,13 @@ class CustomerController extends Controller
             if($status){
                 if($status == 'reg_point'){
                     $customers = \DB::select("SELECT c.*, type_customer.name as tp_name, ct.city_name, 
-                    u.id as user_id, u.name as user_name, cat_pareto.pareto_code, cd.name as cd_name 
+                    u.id as user_id, u.name as user_name, cat_pareto.pareto_code, cd.name as cd_name,
+                    cg.code as cgCode
                     FROM customers c 
                     left join type_customer ON type_customer.id = c.cust_type 
+                    left join customer_groups ON customer_groups.id = c.group_id
                     left outer join cat_pareto ON cat_pareto.id = c.pareto_id
-                    left join customer_discounts ON c.pricelist_id = customer_discounts.id,
+                    left join customer_discounts ON c.pricelist_id = customer_discounts.id, , customer_groups cg,
                     cities ct, users u, customer_discounts cd WHERE c.status != 'NEW' AND c.client_id = $client_id 
                     AND c.user_id = u.id AND c.city_id = ct.id AND c.reg_point = 'Y' AND EXISTS
                         (
@@ -77,11 +92,13 @@ class CustomerController extends Controller
                     ");
                 }else{
                     $customers = \DB::select("SELECT c.*, type_customer.name as tp_name, ct.city_name, 
-                    u.id as user_id, u.name as user_name, cat_pareto.pareto_code, cd.name as cd_name
+                    u.id as user_id, u.name as user_name, cat_pareto.pareto_code, cd.name as cd_name,
+                    cg.code as cgCode
                     FROM customers c 
-                    left join type_customer ON type_customer.id = c.cust_type 
+                    left join type_customer ON type_customer.id = c.cust_type
+                    left join customer_groups ON customer_groups.id = c.group_id 
                     left outer join cat_pareto ON cat_pareto.id = c.pareto_id
-                    left join customer_discounts ON c.pricelist_id = customer_discounts.id,
+                    left join customer_discounts ON c.pricelist_id = customer_discounts.id, , customer_groups cg,
                     cities ct, users u, customer_discounts cd WHERE c.status != 'NEW' AND c.client_id = $client_id 
                     AND c.user_id = u.id AND c.city_id = ct.id AND c.status LIKE '%$status%' AND EXISTS
                         (
@@ -157,6 +174,7 @@ class CustomerController extends Controller
             abort(403, 'Anda tidak memiliki cukup hak akses');
         }
     }
+    
 
     /**
      * Show the form for creating a new resource.
@@ -166,14 +184,22 @@ class CustomerController extends Controller
     public function create($vendor)
     {
         if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){
+            $groups = \App\CustomerGroup::where('client_id',auth()->user()->client_id)->get();
             $custPrice = \App\CustomerDiscount::where('client_id','=',auth()->user()->client_id)->get();
             $type = \App\TypeCustomer::where('client_id','=',auth()->user()->client_id)->get();
+            $user = \App\User::where('roles','=','SALES')
+                    ->where('client_id','=',auth()->user()->client_id)
+                    ->get();
             $pareto = \App\CatPareto::where('client_id','=',auth()->user()->client_id)
                     ->orderBy('position', 'ASC')
                     ->get();
+            $city = \App\City::get();
             return view('customer_store.create',
                             ['vendor'=>$vendor,
+                            'groups'=>$groups,
+                            'user'=>$user,
                             'type'=>$type,
+                            'city'=>$city,
                             'pareto'=>$pareto,
                             'custPrice'=>$custPrice]
                         );
@@ -213,11 +239,16 @@ class CustomerController extends Controller
     {
         \Validator::make($request->all(),[
             "city" => "required",
-            "user" => "required"
+            "sales" => "required",
+            "contact_person" => "required",
+            "store_name" => "required",
+            "address" => "required"
         ])->validate();
+        
         $new_cust = new \App\Customer;
         $new_cust->store_code = $request->get('store_code');
-        $new_cust->name = $request->get('name');
+        $new_cust->group_id = $request->get('group_id');
+        $new_cust->name = $request->get('contact_person');
         $new_cust->email = $request->get('email');
         $new_cust->phone = $request->get('phone');
         $new_cust->phone_owner = $request->get('phone_owner');
@@ -234,7 +265,7 @@ class CustomerController extends Controller
         }else{
             $new_cust->payment_term = $request->get('payment_term');
         }
-        $new_cust->user_id = $request->get('user');
+        $new_cust->user_id = $request->get('sales');
         $new_cust->client_id = $request->get('client_id');
 
         if($request->get('latlng') != ''){
@@ -253,7 +284,11 @@ class CustomerController extends Controller
         }
         //$new_cust->reg_point = $request->get('reg_point');
         $new_cust->save();
-        if ( $new_cust->save()){
+        $idCustomer = $new_cust->id;
+        $updateKey = \App\Customer::findOrFail($idCustomer);
+        $updateKey->store_key = hash('crc32b',$idCustomer);
+        $updateKey->save();
+        if ($updateKey->save()){
             return redirect()->route('customers.create',[$vendor])->with('status','Customer Succsessfully Created');
         }else{
             return redirect()->route('customers.create',[$vendor])->with('error','Customer Not Succsessfully Created');
@@ -333,6 +368,11 @@ class CustomerController extends Controller
                     ->orderBy('position', 'ASC')
                     ->get();
         $type = \App\TypeCustomer::where('client_id','=',auth()->user()->client_id)->get();
+        $groups = \App\CustomerGroup::where('client_id',auth()->user()->client_id)->get();
+        $city = \App\City::get();
+        $user = \App\User::where('roles','=','SALES')
+                    ->where('client_id','=',auth()->user()->client_id)
+                    ->get();
         if(Gate::check('isSpv')){
            
             return view('customer_store.edit',['cust' => $cust,'vendor'=>$vendor,'type'=>$type]);
@@ -340,8 +380,11 @@ class CustomerController extends Controller
             return view('customer_store.edit',
                         ['cust' => $cust,
                         'vendor'=>$vendor,
+                        'groups'=>$groups,
                         'cust_term'=>$cust_term,
+                        'city'=>$city,
                         'pareto'=>$pareto,
+                        'user'=>$user,
                         'type'=>$type,
                         'custPrice'=>$custPrice]
                     );
@@ -376,11 +419,15 @@ class CustomerController extends Controller
         if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){
             \Validator::make($request->all(),[
                 "city" => "required",
-                "user" => "required"
+                "sales" => "required",
+                "contact_person" => "required",
+                "store_name" => "required",
+                "address" => "required"
             ])->validate();
             $cust->store_code = $request->get('store_code');
-            $cust->name = $request->get('name');
+            $cust->name = $request->get('contact_person');
             $cust->email = $request->get('email');
+            $cust->group_id = $request->get('group_id');
             $cust->phone = $request->get('phone');
             $cust->phone_owner = $request->get('phone_owner');
             $cust->phone_store = $request->get('phone_store');
@@ -404,7 +451,7 @@ class CustomerController extends Controller
             }else{
                 $cust->payment_term = $request->get('payment_term');
             }
-            $cust->user_id = $request->get('user');
+            $cust->user_id = $request->get('sales');
 
             if($request->get('latlng') != ''){
                 $latln_explode = explode(',',$request->get('latlng'));
@@ -534,7 +581,7 @@ class CustomerController extends Controller
 
     public function import_data(Request $request, $vendor){
         \Validator::make($request->all(), [
-            "file" => "required|mimes:xls,xlsx"
+            'file' => 'required|mimes:xlsx,xls'
         ])->validate();
             
         $data = Excel::import(new CustomersImport, request()->file('file'));
@@ -584,4 +631,5 @@ class CustomerController extends Controller
     public function exportCustomerPareto($vendor) {
         return Excel::download( new CustomerParetoInfo(), 'CustomerPareto.xlsx') ;
     }
+
 }

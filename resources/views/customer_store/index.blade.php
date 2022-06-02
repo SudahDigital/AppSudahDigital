@@ -65,8 +65,8 @@
 		<thead>
 			<tr>
 				<th>Status</th>
-				<th>Customer Code</th>
-				<th>Name/Email/Type</th>
+				<th>Code</th>
+				<th>Name</th>
 				<th width="20%">Address</th>
 				<th>Phone</th>
 				<!--<th>Customer</th>-->
@@ -105,18 +105,24 @@
 
 				</td>
 				<td>
-					<small><b> Name : </b>{{$c->store_name ? "$c->store_name" : '-'}}</small><br>
-					<small><b> Email : </b>{{$c->email ? "$c->email" : '-'}}</small><br>
-					<small><b> Contact Person : </b>{{$c->name ? $c->name : '-'}}</small><br>
+					<small><b> Key : </b>{{$c->store_key ? "$c->store_key" : '-'}}</small><br>
 					@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+						<small><b>Group</b> : {{$c->group_id ? $c->customerGroups->code : ''}}</small><br>
 						<small><b>Type</b> : {{$c->type_cust ? $c->type_cust->name : ''}}</small><br>
-						<small><b>Price Type</b> : {{$c->pricelist_id ? $c->CustomerPrice->name : ''}}</small>
+						<!--<small><b>Price Type</b> : {{$c->pricelist_id ? $c->CustomerPrice->name : ''}}</small>-->
 					@else
 						@if(Gate::check('isSpv'))
+							<small><b>Group</b> :{{$c->group_id ? $c->cgCode : ''}}</b></small>
 							<small><b>Type</b> :{{$c->cust_type ? $c->tp_name : ''}}</b></small>
-							<small><b>Price Type</b> : {{$c->pricelist_id ? $c->cd_name : ''}}</small>
+							<!--<small><b>Price Type</b> : {{$c->pricelist_id ? $c->cd_name : ''}}</small>-->
 						@endif
 					@endif
+					<small><b> Name : </b>{{$c->store_name ? "$c->store_name" : '-'}}</small><br>
+					<!--
+					<small><b> Email : </b>{{$c->email ? "$c->email" : '-'}}</small><br>
+					<small><b> Contact Person : </b>{{$c->name ? $c->name : '-'}}</small><br>
+					-->
+					
 				</td>
 				<td>
 					{{$c->address}}<br>

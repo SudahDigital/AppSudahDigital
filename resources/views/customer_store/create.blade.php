@@ -7,6 +7,13 @@
 			{{session('status')}}
 		</div>
 	@endif
+    @if(count($errors) > 0)
+        <div class="alert alert-danger">
+            @foreach ($errors->all() as $error)
+                <div>{{ $error }}</div>
+            @endforeach
+        </div>
+    @endif
 	<!-- Form Create -->
     <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('customers.store',[$vendor])}}">
     	@csrf
@@ -14,51 +21,75 @@
         <div class="form-group form-float">
             <div class="form-line" id="code_">
                 <input type="text" value="{{old('store_code')}}" class="form-control" id="code"  name="store_code" autocomplete="off" required>
-                <label class="form-label">Customer Code / Search Key</label>
+                <label class="form-label">Customer Code</label>
             </div>
+            <!--
             <label id="name-error" class=""></label> 
             <small class=""></small>
+            -->
         </div>
 
         <div class="form-group form-float">
             <div class="form-line">
-                <input type="text" value="{{old('store_name')}}" class="form-control" name="store_name" autocomplete="off" required>
+                <input type="text" value="{{old('store_name')}}" class="form-control" 
+                name="store_name" autocomplete="off" required>
                 <label class="form-label">Name</label>
             </div>
         </div>
 
-        <p>
-            <b>Customer Type</b>
-        </p>
-        <select name="cust_type"  id="cust_type" class="form-control">
-            <option></option>
-            @foreach($type as $ty)
-                <option value="{{$ty->id}}">{{$ty->name}}</option>
-            @endforeach
-        </select>
+        <div class="form-group form-float">
+            <div class="form-line">
+                <input type="email" class="form-control" value="{{old('email')}}" 
+                name="email" autocomplete="off">
+                <label class="form-label">Email</label>
+            </div>
+        </div>
 
-        <div class="col-sm-12" style="padding:0;margin-top:30px;margin-bottom:20px;">
-            <b>Customer Price Type</b>
-            <select name="cust_price_type"  id="cust_price_type" class="form-control">
+        <div class="col-12" style="padding:0;margin-bottom:30px;">
+            <p><b>Group Code</b></p>
+            <select name="group_id"  id="group_id" class="form-control">
                 <option></option>
-                @foreach($custPrice as $cp)
-                    <option value="{{$cp->id}}">{{$cp->name}}</option>
+                @foreach($groups as $cg)
+                    <option value="{{$cg->id}}" {{(old('group_id') == $cg->id ? 'selected':'')}}>{{$cg->code}}</option>
                 @endforeach
             </select>
         </div>
         
-        <div class="form-group form-float m-t-110">
-            <div class="form-line">
-                <input type="email" class="form-control" value="{{old('email')}}" name="email" autocomplete="off">
-                <label class="form-label">Email</label>
-            </div>
-        </div>
         
+        <p><b>Customer Type</b></p>
+        <select name="cust_type"  id="cust_type" class="form-control">
+            <option></option>
+            @foreach($type as $ty)
+                <option value="{{$ty->id}}" {{(old('cust_type') == $ty->id ? 'selected':'')}}>{{$ty->name}}</option>
+            @endforeach
+        </select>
+
+        <div class="col-12" style="padding:0;margin-top:30px;margin-bottom:20px;">
+            <b>Customer Price Type</b>
+            <select name="cust_price_type"  id="cust_price_type" class="form-control">
+                <option></option>
+                @foreach($custPrice as $cp)
+                    <option value="{{$cp->id}}" {{(old('cust_price_type') == $cp->id ? 'selected':'')}}>{{$cp->name}}</option>
+                @endforeach
+            </select>
+        </div>
+        <!--
         <h2 class="card-inside-title" >City</h2>
             <select name="city"  id="city_id" class="form-control"></select>
             <small id="name-error" class="error merah" for="city_id">{{ $errors->first('city') }}</small>
         <br>
         <br>
+        -->
+        
+        <div class="col-12" style="padding:0;margin-top:30px;margin-bottom:30px;">
+            <b>City</b>
+            <select name="city"  id="city_id" class="form-control">
+                <option></option>
+                @foreach($city as $cty)
+                    <option value="{{$cty->id}}" {{(old('city') == $cty->id ? 'selected':'')}}>{{$cty->city_name}}</option>
+                @endforeach
+            </select>
+        </div>
 
         <div class="form-group">
             <div class="form-line">
@@ -98,7 +129,8 @@
 
         <div class="form-group form-float">
             <div class="form-line">
-                <input type="text" value="{{old('name')}}" class="form-control" name="name" autocomplete="off" required>
+                <input type="text" value="{{old('contact_person')}}" class="form-control" 
+                name="contact_person" autocomplete="off" required>
                 <label class="form-label">Contact Person</label>
             </div>
         </div>
@@ -145,22 +177,33 @@
             </div>
         </div>
         -->
-        <div class="col-sm-12" style="padding:0;">
-            <h2 class="card-inside-title">Pareto Code</h2>
+        <div class="col-12" style="padding:0;">
+            <b>Pareto Code</b>
             <select name="pareto_id"  id="pareto_id" class="form-control">
                 <option></option>
-                @foreach($pareto as $ty)
-                    <option value="{{$ty->id}}" >{{$ty->pareto_code}}</option>
+                @foreach($pareto as $prt)
+                    <option value="{{$prt->id}}" {{(old('pareto_id') == $prt->id ? 'selected':'')}}>{{$prt->pareto_code}}</option>
                 @endforeach
             </select>
         </div>
-        <br>
+       
+        <div class="col-12" style="padding:0;margin-top:30px">
+            <b>Sales Representative</b>
+            <select name="sales"  id="user" class="form-control">
+                <option></option>
+                @foreach($user as $usr)
+                    <option value="{{$usr->id}}" {{(old('sales') == $usr->id ? 'selected':'')}}>{{$usr->name}}</option>
+                @endforeach
+            </select>
+        </div>
+        <!--
         <div class="col-sm-12" style="padding:0;">
             <h2 class="card-inside-title">Sales Representative</h2>
             <select name="user"  id="user" class="form-control">
             </select>
             <small id="name-error" class="error merah" for="user">{{ $errors->first('user')}}</small>
         </div>
+        -->
         <br>
 
         <!--
@@ -187,12 +230,27 @@
     $('#cust_type').select2({
         placeholder: 'Select a Customer Type',
     });
+
+    $('#user').select2({
+        placeholder: 'Select a Sales Representative',
+    });
+
+    $('#city_id').select2({
+        placeholder: 'Select a City',
+    });
+
+    $('#group_id').select2({
+        placeholder: 'Select a Group Code',
+    });
+
     $('#cust_price_type').select2({
         placeholder: 'Select a Customer Price Type',
     });
+
     $('#pareto_id').select2({
         placeholder: 'Select a Pareto Code',
     });
+
     $('document').ready(function(){
         document.getElementById('pay_cust').disabled = document.getElementById('cash').checked;
      });
@@ -207,10 +265,12 @@
             return false;
             return true;
         }
+        
     $('#payment_term').select2({
         placeholder: 'Select a Payment Term'
     });
 
+    /*
     $('#user').select2({
       placeholder: 'Select a Sales Representative',
       ajax: {
@@ -229,6 +289,7 @@
         
       }
     });
+    
 
     $('#city_id').select2({
       placeholder: 'Select a City',
@@ -248,6 +309,7 @@
         
       }
     });
+    */
 
     $("#code").on({
         keydown: function(e) {
@@ -263,7 +325,27 @@
         }
     });
 
-    $('document').ready(function(){
+    /*$('#group_id').select2({
+      placeholder: 'Select a group code',
+      //templateResult: formatOutput,
+      ajax: {
+        url: '{{URL::to('/ajax/categories/search')}}',
+        processResults: function (data) {
+          return {
+            results:  $.map(data, function (item) {
+                  return {
+                        id: item.id,
+                        text: item.name
+                      
+                  }
+              })
+          };
+        }
+        
+      }
+    });*/
+
+    /*$('document').ready(function(){
         $('#code, .btn').on('keyup blur', function(){
         var code = $('#code').val();
             $.ajax({
@@ -291,7 +373,7 @@
                 }
             });
         });
-    });
+    });*/
 </script>
 
 @endsection

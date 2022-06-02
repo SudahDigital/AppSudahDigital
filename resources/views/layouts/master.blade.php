@@ -286,6 +286,7 @@
                             <!--manage customers-->
                             <li class="{{(request()->routeIs('customers.index')) || 
                                         (request()->routeIs('type_customers.index_type')) ||
+                                        (request()->routeIs('customerGroups.index')) ||
                                         (request()->routeIs('customers.index_target')) ||
                                         (request()->routeIs('customers.index_pareto')) ? 'active' : ''}}">
                                 <a href="javascript:void(0);" class="menu-toggle">
@@ -299,6 +300,9 @@
                                 
                                     @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
                                         
+                                        <li class="{{request()->routeIs('customerGroups.index') ? 'active' : '' }}">
+                                            <a href="{{route('customerGroups.index',[$vendor])}}">Customer Groups</a>
+                                        </li>
                                         <li class="{{request()->routeIs('type_customers.index_type') ? 'active' : '' }}">
                                             <a href="{{route('type_customers.index_type',[$vendor])}}">Customer Type</a>
                                         </li>
