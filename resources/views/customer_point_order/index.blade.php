@@ -1,6 +1,16 @@
 @extends('layouts.master')
 @section('title')Points Order Lists {{$period != null ? $period_name : '(Current period has not been created)'}}@endsection
 @section('content')
+<style>
+	.label {
+		padding-left :0;
+		text-align:left;
+		min-width: 40px !important;
+		display: inline-block;
+		color: #555;
+		background:transparent !important;
+	}
+</style>
 @if(session('status'))
 	<div class="alert alert-success">
 		{{session('status')}}
@@ -81,7 +91,9 @@
 					@endphp
 					<tr>
 						<td>
-							{{$c->store_name ? "$c->store_code - $c->store_name" : '-'}}
+							<span class="label label-default">Key</span> : <small class="font-bold">{{$c->store_key}}</small><br>
+							<span class="label label-default">Code </span> : <small class="font-bold">{{$c->store_code}}</small><br>
+							{{$c->store_name}}
 						</td>
 						<td>
 							{{//$c->users->sales_name

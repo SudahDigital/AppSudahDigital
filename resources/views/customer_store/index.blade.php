@@ -80,59 +80,31 @@
 			<?php $no++;?>
 			<tr>
 				<td>
-					@if($c->status=="NONACTIVE")
-						<span class="badge bg-red text-white">{{$c->status}}</span>
-							@else
-						<span class="badge bg-green">{{$c->status}}</span>
-					@endif
+					<span class="badge {{$c->status=='NONACTIVE' ? 'bg-red text-white' : 'bg-green'}}">
+						{{$c->status=="NONACTIVE" ? 'INACTIVE' : $c->status}}
+					</span>
 				</td>
 				<td>
-					@if($c->store_code)
-					{{$c->store_code}}
-					@else
-					-
-					@endif
+					{{$c->store_code ? $c->store_code : '-'}}
 					<br>
-					@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
-						@if($c->pareto_id)
-							<span class="badge bg-orange">{{$c->pareto->pareto_code}}</span>
-						@endif
-					@else
-						@if($c->pareto_id)
-							<span class="badge bg-orange">{{$c->pareto_code}}</span>
-						@endif
-					@endif
-
+					<span class="badge bg-orange">{{$c->pareto_id ? $c->pareto->pareto_code : ''}}</span>
 				</td>
 				<td>
 					<small><b> Key : </b>{{$c->store_key ? "$c->store_key" : '-'}}</small><br>
-					@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
-						<small><b>Group</b> : {{$c->group_id ? $c->customerGroups->code : ''}}</small><br>
-						<small><b>Type</b> : {{$c->type_cust ? $c->type_cust->name : ''}}</small><br>
-						<!--<small><b>Price Type</b> : {{$c->pricelist_id ? $c->CustomerPrice->name : ''}}</small>-->
-					@else
-						@if(Gate::check('isSpv'))
-							<small><b>Group</b> :{{$c->group_id ? $c->cgCode : ''}}</b></small>
-							<small><b>Type</b> :{{$c->cust_type ? $c->tp_name : ''}}</b></small>
-							<!--<small><b>Price Type</b> : {{$c->pricelist_id ? $c->cd_name : ''}}</small>-->
-						@endif
-					@endif
+					<small><b>Group</b> : {{$c->group_id ? $c->customerGroups->code : ''}}</small><br>
+					<small><b>Type</b> : {{$c->type_cust ? $c->type_cust->name : ''}}</small><br>
+					<!--<small><b>Price Type</b> : {{$c->pricelist_id ? $c->CustomerPrice->name : ''}}</small>-->
 					<small><b> Name : </b>{{$c->store_name ? "$c->store_name" : '-'}}</small><br>
 					<!--
 					<small><b> Email : </b>{{$c->email ? "$c->email" : '-'}}</small><br>
 					<small><b> Contact Person : </b>{{$c->name ? $c->name : '-'}}</small><br>
 					-->
-					
 				</td>
 				<td>
 					{{$c->address}}<br>
-					@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+					
 					{{$c->city_id ? $c->cities->city_name :''}}
-					@else 
-						@if(Gate::check('isSpv'))
-							{{$c->city_name}}
-						@endif
-					@endif
+					
 					@if($c->lat && $c->lng)
 						<span class="badge bg-blue">with coordinate</span>
 					@endif
@@ -152,26 +124,18 @@
 						@endif
 					@endif
 				</td>-->
-				@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
-					<td>@if($c->user_id > 0)
-							@php
-								if($c->users != null){
-									echo $c->users->name;
-								}else{
-									echo '';
-								}
-							@endphp
-						@else
-						-
-						@endif
-					</td>
-				@else 
-					@if(Gate::check('isSpv'))
-						<td>
-							{{$c->user_name}}	
-						</td>
+				<td>@if($c->user_id > 0)
+						@php
+							if($c->users != null){
+								echo $c->users->name;
+							}else{
+								echo '';
+							}
+						@endphp
+					@else
+					-
 					@endif
-				@endif
+				</td>
 				<td>
 					<div class="dropdown">
 						<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">

@@ -22,16 +22,20 @@ class CustomerParetoInfo implements FromCollection, WithMapping, WithHeadings
 
     public function map($customer) : array {
         return [
+            $customer->store_key,
             $customer->store_code,
             $customer->store_name,
+            $customer->group_id,
             $customer->pareto_id,
         ];
     }
 
     public function headings() : array {
         return [
+                'Customer_Key',
                 'Customer_Code',
                 'Name',
+                'GroupId',
                 'ParetoId',
         ] ; 
     }

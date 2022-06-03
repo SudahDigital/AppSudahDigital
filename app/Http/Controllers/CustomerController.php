@@ -52,76 +52,44 @@ class CustomerController extends Controller
         if(Gate::check('isSpv')){
             $client_id = \Auth::user()->client_id;
             $spv_id = \Auth::user()->id;
-            $customers = \DB::select("SELECT c.*, type_customer.name as tp_name, ct.city_name, 
-                        u.id as user_id, u.name as user_name, cat_pareto.pareto_code, cd.name as cd_name,
-                        cg.code as cgCode
-                        FROM customers c 
-                        left outer join type_customer ON type_customer.id = c.cust_type
-                        left join customer_groups ON customer_groups.id = c.group_id 
-                        left outer join cat_pareto ON cat_pareto.id = c.pareto_id
-                        left join customer_discounts ON c.pricelist_id = customer_discounts.id, customer_groups cg,
-                        cities ct, users u, customer_discounts cd WHERE c.status != 'NEW' AND c.client_id = $client_id 
-                        AND c.user_id = u.id AND c.city_id = ct.id AND EXISTS
-                            (
-                                SELECT * FROM  spv_sales
-                                WHERE   spv_sales.sls_id = c.user_id
-                                AND spv_sales.spv_id ='$spv_id'
-                            )
-                        ");
+            $customers = \App\Customer::whereHas('users' , function($q) use ($spv_id){
+                                $q->whereHas('sls', function($query) use ($spv_id){
+                                    $query->where('spv_id',$spv_id);
+                                })
+                                ->where('status','ACTIVE');
+                        })
+                        ->where('client_id',$client_id)
+                        ->where('status','!=','NEW')->orderBy('id','DESC')
+                        ->get();
             
             //dd($customers);
             $status = $request->get('status');
             
             if($status){
                 if($status == 'reg_point'){
-                    $customers = \DB::select("SELECT c.*, type_customer.name as tp_name, ct.city_name, 
-                    u.id as user_id, u.name as user_name, cat_pareto.pareto_code, cd.name as cd_name,
-                    cg.code as cgCode
-                    FROM customers c 
-                    left join type_customer ON type_customer.id = c.cust_type 
-                    left join customer_groups ON customer_groups.id = c.group_id
-                    left outer join cat_pareto ON cat_pareto.id = c.pareto_id
-                    left join customer_discounts ON c.pricelist_id = customer_discounts.id, , customer_groups cg,
-                    cities ct, users u, customer_discounts cd WHERE c.status != 'NEW' AND c.client_id = $client_id 
-                    AND c.user_id = u.id AND c.city_id = ct.id AND c.reg_point = 'Y' AND EXISTS
-                        (
-                            SELECT * FROM  spv_sales
-                            WHERE   spv_sales.sls_id = c.user_id
-                            AND spv_sales.spv_id ='$spv_id'
-                        )
-                    ");
+                    $customers = \App\Customer::whereHas('users' , function($q) use ($spv_id){
+                                            $q->whereHas('sls', function($query) use ($spv_id){
+                                                $query->where('spv_id',$spv_id);
+                                            })
+                                            ->where('status','ACTIVE');
+                                    })
+                                    ->where('client_id',$client_id)
+                                    ->where('reg_point', 'Y')
+                                    ->orderBy('id','DESC')
+                                    ->get();
                 }else{
-                    $customers = \DB::select("SELECT c.*, type_customer.name as tp_name, ct.city_name, 
-                    u.id as user_id, u.name as user_name, cat_pareto.pareto_code, cd.name as cd_name,
-                    cg.code as cgCode
-                    FROM customers c 
-                    left join type_customer ON type_customer.id = c.cust_type
-                    left join customer_groups ON customer_groups.id = c.group_id 
-                    left outer join cat_pareto ON cat_pareto.id = c.pareto_id
-                    left join customer_discounts ON c.pricelist_id = customer_discounts.id, , customer_groups cg,
-                    cities ct, users u, customer_discounts cd WHERE c.status != 'NEW' AND c.client_id = $client_id 
-                    AND c.user_id = u.id AND c.city_id = ct.id AND c.status LIKE '%$status%' AND EXISTS
-                        (
-                            SELECT * FROM  spv_sales
-                            WHERE   spv_sales.sls_id = c.user_id
-                            AND spv_sales.spv_id ='$spv_id'
-                        )
-                    ");
+                    $customers = \App\Customer::whereHas('users' , function($q) use ($spv_id){
+                                            $q->whereHas('sls', function($query) use ($spv_id){
+                                                $query->where('spv_id',$spv_id);
+                                            })
+                                            ->where('status','ACTIVE');
+                                    })
+                                    ->where('client_id',$client_id)
+                                    ->where('status', 'Like', "%$status")
+                                    ->orderBy('id','DESC')
+                                    ->get();
                 }
-                /*$customers = \DB::select("SELECT c.*, type_customer.name as tp_name, ct.city_name, 
-                u.id as user_id, u.name as user_name, cat_pareto.pareto_code, cd.name as cd_name
-                FROM customers c 
-                left join type_customer ON type_customer.id = c.cust_type 
-                left outer join cat_pareto ON cat_pareto.id = c.pareto_id
-                left join customer_discounts ON c.pricelist_id = customer_discounts.id,
-                cities ct, users u, customer_discounts cd WHERE c.status != 'NEW' AND c.client_id = $client_id 
-                AND c.user_id = u.id AND c.city_id = ct.id AND c.status LIKE '%$status%' AND EXISTS
-                    (
-                        SELECT * FROM  spv_sales
-                        WHERE   spv_sales.sls_id = c.user_id
-                        AND spv_sales.spv_id ='$spv_id'
-                    )
-                ");*/
+                
             }
             //dd($customers);
         }

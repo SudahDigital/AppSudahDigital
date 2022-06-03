@@ -44,10 +44,18 @@ class PointFilterPeriodExport implements FromCollection, WithMapping, WithHeadin
         $potencyPoints = number_format(($potencyPoint)+($totalPotency),2);
         $pointClaim = number_format($claim,2);
         $pointTotal = number_format(($point-$pointPrevPartial) + $afterPointPartial + $pointPartial + $rest ,2);
+        if($pn->user_id){
+            $salesName = $pn->users->name;
+        }
+        else{
+            $salesName = '';
+        }
         return[
+            $pn->store_key,
             $pn->store_code,
             $pn->store_name,
-            $pn->users->name,
+            $pn->group_id,
+            $salesName,
             $start_point,
             $pointInPeriod,
             $potencyPoints,
@@ -58,8 +66,10 @@ class PointFilterPeriodExport implements FromCollection, WithMapping, WithHeadin
 
     public function headings() : array {
         return [
+           'Cust. Key',
            'Cust. Code',
-           'Customer',
+           'Cust. Name',
+           'Cust. Group Id',
            'Sales',
            'Starting Points',
            'Points In Periods',

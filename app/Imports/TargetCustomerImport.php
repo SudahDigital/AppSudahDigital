@@ -32,20 +32,20 @@ class TargetCustomerImport implements ToModel, WithHeadingRow, WithBatchInserts,
     {
         //dd($rows);
         $productCode = $rows['product_code'];
-        $customerCode = $rows['customer_code'];
+        $customerKey = $rows['customer_key'];
 
         $cekProduct = \App\product::where('client_id','=',auth()->user()->client_id)
                     ->where('product_code',$productCode)->count();
 
         $cekCustomer = \App\Customer::where('client_id','=',auth()->user()->client_id)
-                     ->where('store_code',$customerCode)->count();
+                     ->where('store_key',$customerKey)->count();
 
         if($cekProduct > 0 && $cekCustomer > 0){
             $cp = \App\product::where('client_id','=',auth()->user()->client_id)
                     ->where('product_code',$productCode)->first();
 
             $cc = \App\Customer::where('client_id','=',auth()->user()->client_id)
-                     ->where('store_code',$customerCode)->first();
+                     ->where('store_key',$customerKey)->first();
             //$typeTarget = $this->type;
             $period = $this->year.'-'.$this->month.'-01';
             $store_target = Store_Targets::where('client_id','=',auth()->user()->client_id)
