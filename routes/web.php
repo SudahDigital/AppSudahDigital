@@ -298,12 +298,12 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::get('/customers/detail-target-item/{id}', 'TargetController@itemTargetDetail')->name('targetItem.detail');
     Route::delete('/customers/delete-target-item/{itemId}/{id}','TargetController@deleteItemTarget')->name('targetItem.delete-permanent');
     //customer groups 
-    Route::get('/customers/groups', 'CustomerGroupController@index')->name('customerGroups.index');
-    Route::get('/customers/groups/create', 'CustomerGroupController@create')->name('customerGroups.create');
-    Route::post('/customers/groups/store', 'CustomerGroupController@store')->name('customerGroups.store');
-    Route::get('/customers/groups/edit/{id}', 'CustomerGroupController@edit')->name('customerGroups.edit');
-    Route::put('/customers/groups/update/{id}', 'CustomerGroupController@update')->name('customerGroups.update');
-    Route::delete('/customers/groups/{id}/destroy','CustomerGroupController@destroy')->name('customerGroups.destroy');
+    // Route::get('/customers/groups', 'CustomerGroupController@index')->name('customerGroups.index');
+    // Route::get('/customers/groups/create', 'CustomerGroupController@create')->name('customerGroups.create');
+    // Route::post('/customers/groups/store', 'CustomerGroupController@store')->name('customerGroups.store');
+    // Route::get('/customers/groups/edit/{id}', 'CustomerGroupController@edit')->name('customerGroups.edit');
+    // Route::put('/customers/groups/update/{id}', 'CustomerGroupController@update')->name('customerGroups.update');
+    // Route::delete('/customers/groups/{id}/destroy','CustomerGroupController@destroy')->name('customerGroups.destroy');
     
     
     //work plan

@@ -1,6 +1,17 @@
 @extends('layouts.master')
 @section('title') Customer List @endsection
 @section('content')
+<style>
+	.label {
+		padding-left :0;
+		text-align:left;
+		min-width: 40px !important;
+		display: inline-block;
+		color: #555;
+		background:transparent !important;
+	}
+</style>
+
 @if(session('status'))
 	<div class="alert alert-success">
 		{{session('status')}}
@@ -65,8 +76,8 @@
 		<thead>
 			<tr>
 				<th>Status</th>
-				<th>Code</th>
-				<th>Name</th>
+				
+				<th>Customer</th>
 				<th width="20%">Address</th>
 				<th>Phone</th>
 				<!--<th>Customer</th>-->
@@ -85,20 +96,12 @@
 					</span>
 				</td>
 				<td>
-					{{$c->store_code ? $c->store_code : '-'}}
-					<br>
-					<span class="badge bg-orange">{{$c->pareto_id ? $c->pareto->pareto_code : ''}}</span>
-				</td>
-				<td>
-					<small><b> Key : </b>{{$c->store_key ? "$c->store_key" : '-'}}</small><br>
-					<small><b>Group</b> : {{$c->group_id ? $c->customerGroups->code : ''}}</small><br>
-					<small><b>Type</b> : {{$c->type_cust ? $c->type_cust->name : ''}}</small><br>
-					<!--<small><b>Price Type</b> : {{$c->pricelist_id ? $c->CustomerPrice->name : ''}}</small>-->
-					<small><b> Name : </b>{{$c->store_name ? "$c->store_name" : '-'}}</small><br>
-					<!--
-					<small><b> Email : </b>{{$c->email ? "$c->email" : '-'}}</small><br>
-					<small><b> Contact Person : </b>{{$c->name ? $c->name : '-'}}</small><br>
-					-->
+					<span class="label label-default">Key</span> : <small class="font-bold">{{$c->store_key ? "$c->store_key" : '-'}}</small><br>
+                    <span class="label label-default">Code </span> : <small class="font-bold">{{$c->store_code }}</small><br>
+					<span class="label label-default">Group </span> : <small class="font-bold">{{$c->group_code }}</small><br>
+					<span class="label label-default">Type </span> : <small class="font-bold">{{$c->type_cust ? $c->type_cust->name : ''}}</small><br>
+					<span class="label label-default">Pareto </span> : <small><span class="badge bg-orange">{{$c->pareto_id ? $c->pareto->pareto_code : ''}}</span></small><br>
+					<span class="label label-default">Name </span> : <small class="font-bold">{{$c->store_name ? "$c->store_name" : '-'}}</small>
 				</td>
 				<td>
 					{{$c->address}}<br>

@@ -93,6 +93,7 @@
 						<td>
 							<span class="label label-default">Key</span> : <small class="font-bold">{{$c->store_key}}</small><br>
 							<span class="label label-default">Code </span> : <small class="font-bold">{{$c->store_code}}</small><br>
+							<span class="label label-default">Group </span> : <small class="font-bold">{{$c->group_code}}</small><br>
 							{{$c->store_name}}
 						</td>
 						<td>

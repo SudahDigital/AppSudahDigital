@@ -27,7 +27,7 @@
         <li>
             <label class="form-label">Group Code</label>
         </li>
-        <small class="text-muted">{{$customer->group_id ? $customer->customerGroups->code : '-'}}</small>
+        <small class="text-muted">{{$customer->group_code ? $customer->group_code : '-'}}</small>
     </ul>
     <hr style="margin-top:0; margin-bottom:10px;">
     <ul>

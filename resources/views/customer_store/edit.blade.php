@@ -51,17 +51,12 @@
                 </div>
             </div>
 
-            <div class="col-12" style="padding:0;margin-bottom:30px;">
-                <b>Group Code</b>
-                <select name="group_id"  id="group_id" class="form-control">
-                    <option></option>
-                    @foreach($groups as $cg)
-                        <option value="{{$cg->id}}" 
-                             {{(old('group_id') == $cg->id || $cust->group_id == $cg->id ? 'selected':'')}}>
-                             {{$cg->code}}
-                        </option>
-                    @endforeach
-                </select>
+            <div class="form-group form-float">
+                <div class="form-line">
+                    <input type="text" value="{{old('group_code',$cust->group_code)}}" class="form-control" id="group_code"  
+                    name="group_code" autocomplete="off" >
+                    <label class="form-label" for="group_code">Group Code</label>
+                </div>
             </div>
         @endif
         @if(Gate::check('isSpv') || Gate::check('isSuperadmin') || Gate::check('isAdmin'))
@@ -313,7 +308,7 @@
     }
     
     //js store code input
-    $("#code").on({
+    $("#code,#group_code").on({
         keydown: function(e) {
         if (e.which === 32)
             return false;

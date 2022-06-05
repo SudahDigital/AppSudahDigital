@@ -25,7 +25,7 @@ class CustomerParetoInfo implements FromCollection, WithMapping, WithHeadings
             $customer->store_key,
             $customer->store_code,
             $customer->store_name,
-            $customer->group_id,
+            $customer->group_code,
             $customer->pareto_id,
         ];
     }
@@ -35,7 +35,7 @@ class CustomerParetoInfo implements FromCollection, WithMapping, WithHeadings
                 'Customer_Key',
                 'Customer_Code',
                 'Name',
-                'GroupId',
+                'Group_Code',
                 'ParetoId',
         ] ; 
     }

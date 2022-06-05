@@ -22,9 +22,9 @@ class Customer extends Model
         return $this->belongsTo('App\TypeCustomer','cust_type');
     }
 
-    public function customerGroups(){
+    /*public function customerGroups(){
         return $this->belongsTo('App\CustomerGroup','group_id');
-    }
+    }*/
 
     public function orders(){
         return $this->hasMany('App\Order','customer_id');

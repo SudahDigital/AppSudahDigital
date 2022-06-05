@@ -152,7 +152,7 @@ class CustomerController extends Controller
     public function create($vendor)
     {
         if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){
-            $groups = \App\CustomerGroup::where('client_id',auth()->user()->client_id)->get();
+            //$groups = \App\CustomerGroup::where('client_id',auth()->user()->client_id)->get();
             $custPrice = \App\CustomerDiscount::where('client_id','=',auth()->user()->client_id)->get();
             $type = \App\TypeCustomer::where('client_id','=',auth()->user()->client_id)->get();
             $user = \App\User::where('roles','=','SALES')
@@ -164,7 +164,7 @@ class CustomerController extends Controller
             $city = \App\City::get();
             return view('customer_store.create',
                             ['vendor'=>$vendor,
-                            'groups'=>$groups,
+                            //'groups'=>$groups,
                             'user'=>$user,
                             'type'=>$type,
                             'city'=>$city,
@@ -215,7 +215,7 @@ class CustomerController extends Controller
         
         $new_cust = new \App\Customer;
         $new_cust->store_code = $request->get('store_code');
-        $new_cust->group_id = $request->get('group_id');
+        $new_cust->group_code = $request->get('group_code');
         $new_cust->name = $request->get('contact_person');
         $new_cust->email = $request->get('email');
         $new_cust->phone = $request->get('phone');
@@ -336,7 +336,7 @@ class CustomerController extends Controller
                     ->orderBy('position', 'ASC')
                     ->get();
         $type = \App\TypeCustomer::where('client_id','=',auth()->user()->client_id)->get();
-        $groups = \App\CustomerGroup::where('client_id',auth()->user()->client_id)->get();
+        //$groups = \App\CustomerGroup::where('client_id',auth()->user()->client_id)->get();
         $city = \App\City::get();
         $user = \App\User::where('roles','=','SALES')
                     ->where('client_id','=',auth()->user()->client_id)
@@ -348,7 +348,7 @@ class CustomerController extends Controller
             return view('customer_store.edit',
                         ['cust' => $cust,
                         'vendor'=>$vendor,
-                        'groups'=>$groups,
+                        //'groups'=>$groups,
                         'cust_term'=>$cust_term,
                         'city'=>$city,
                         'pareto'=>$pareto,
@@ -395,7 +395,7 @@ class CustomerController extends Controller
             $cust->store_code = $request->get('store_code');
             $cust->name = $request->get('contact_person');
             $cust->email = $request->get('email');
-            $cust->group_id = $request->get('group_id');
+            $cust->group_code = $request->get('group_code');
             $cust->phone = $request->get('phone');
             $cust->phone_owner = $request->get('phone_owner');
             $cust->phone_store = $request->get('phone_store');

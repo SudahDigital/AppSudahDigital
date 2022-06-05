@@ -31,8 +31,8 @@ class CustomersImport implements ToModel,  WithHeadingRow, WithValidation
                 $customer = Customer::where('store_key','=',$rows['cust_key'])->first();
                 $customer->store_code = $rows['cust_code'];
                 $customer->store_name = $rows['name'];
-                if(!empty( $rows['group_id'])){
-                    $customer->group_id = $rows['group_id'];
+                if(!empty( $rows['group_code'])){
+                    $customer->group_code = $rows['group_code'];
                 }
                 if(!empty( $rows['email'])){
                     $customer->email = $rows['email'];
@@ -89,8 +89,8 @@ class CustomersImport implements ToModel,  WithHeadingRow, WithValidation
                 $customer = new Customer;
                 $customer->store_code = $rows['cust_code'];
                 $customer->store_name = $rows['name'];
-                if(!empty( $rows['group_id'])){
-                    $customer->group_id = $rows['group_id'];
+                if(!empty( $rows['group_code'])){
+                    $customer->group_code = $rows['group_code'];
                 }
                 if(!empty( $rows['email'])){
                     $customer->email = $rows['email'];

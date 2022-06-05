@@ -15,7 +15,7 @@ class AddGroupIdOnCustomersTable extends Migration
     {
         Schema::table('customers', function (Blueprint $table) {
             $table->string('store_key')->after('id')->nullable()->unique();
-            $table->bigInteger('group_id')->nullable()->after('store_code');
+            $table->string('group_code')->nullable()->after('store_code');
         });
     }
 
@@ -28,7 +28,7 @@ class AddGroupIdOnCustomersTable extends Migration
     {
         Schema::table('customers', function (Blueprint $table) {
             $table->dropColumn('store_key');
-            $table->dropColumn('group_id');
+            $table->dropColumn('group_code');
         });
     }
 }
