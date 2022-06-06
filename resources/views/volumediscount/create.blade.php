@@ -51,7 +51,7 @@
         <div class="form-group form-float">
             <div class="form-line">
                 <input type="number" onKeyUp="test_fn(this.value)" 
-                    onchange="document.getElementById('maxOrder').min = Number(1) + Number(this.value)"
+                    onchange="document.getElementById('maxOrder').min = Number(this.value)"
                     class="form-control" id="min_order" name="min_order" 
                     min="{{$vDiscounts && $vDiscounts->max_order > 0 ? $vDiscounts->max_order + 1 : 1}}" 
                     autocomplete="off" maxlength="9" required 
