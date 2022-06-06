@@ -30,28 +30,33 @@
         </div>
 
         <h2 class="card-inside-title">Type</h2>
-            <div class="form-group">
-                <input class="form-control" type="radio" 
-                    {{$vDiscounts->type ==1 ? 'checked' : ''}} 
-                    name="type" id="1" value="1" required
-                    {{$vDiscounts->type == 1 && $countInverse > 0 ? '' : 'disabled'}}
+        <div class="form-group">
+            <input class="form-control" type="radio" 
+                {{$vDiscounts->type ==1 ? 'checked' : ''}} 
+                name="type" id="1" value="1" required
+                @if($countInverse > 0)
+                    {{$vDiscounts->type == 1 ? '' : 'disabled'}}
+                @endif
+            > 
+            <label for="1">Combine</label>
+            <input class="form-control" type="radio" 
+                {{$vDiscounts->type ==2 ? 'checked' : ''}}
+                name="type" id="2" value="2"
+                @if($countInverse > 0)
+                    {{$vDiscounts->type == 2  ? '' : 'disabled'}}
+                @endif    
                 > 
-                <label for="1">Combine</label>
-                <input class="form-control" type="radio" 
-                    {{$vDiscounts->type ==2 ? 'checked' : ''}}
-                    name="type" id="2" value="2"
-                    {{$vDiscounts->type == 2 && $countInverse > 0 ? '' : 'disabled'}}    
-                 > 
-                <label for="2">Item</label>
-                <div class="invalid-feedback">
-                    {{$errors->first('type')}}
-                </div>
+            <label for="2">Item</label>
+            <div class="invalid-feedback">
+                {{$errors->first('type')}}
             </div>
+        </div>
         
         <div class="form-group form-float">
             <div class="form-line">
                 <input type="number" onKeyUp="test_fn(this.value)" 
-                    onchange="document.getElementById('maxOrder').min = Number(1) + Number(this.value)"
+                    onchange="document.getElementById('maxOrder').min = Number(this.value)"
+                    
                     value="{{$vDiscounts->min_order}}"
                     class="form-control" id="min_order" name="min_order" 
                     min="{{$vDiscMax ? $vDiscMax->max_order + 1 : 1}}" autocomplete="off" 
@@ -70,7 +75,7 @@
                 <label for="useMaxOrder">Use Max. Order</label>
             
                 <input type="number" onKeyUp="test_fn_1(this.value)" 
-                    class="form-control" id="maxOrder" name="max_order"
+                    class="form-control" id="maxOrder" name="max_order" min="{{$vDiscounts->min_order}}"
                     value="{{$vDiscounts->max_order > 0 ? $vDiscounts->max_order : ''}}"
                     autocomplete="off" maxlength="9" 
                     {{$vDiscMin ? 'max='.($vDiscMin->min_order-1).'' : ''}} 
@@ -264,13 +269,13 @@
 
         function test_fn_1(test_value){
             var test_value = test_value.replace(/[^0-9]+/g, "");
-            var inputnum = $('#min_order').val();
+            //var inputnum = $('#min_order').val();
             
-            if (inputnum > test_value) {
+            /*if (inputnum > test_value) {
                 document.getElementById('save').disabled = true;
             }else{
                 document.getElementById('save').disabled = false;
-            }
+            }*/
         }
 
         var checker = document.getElementById('useMaxOrder');
