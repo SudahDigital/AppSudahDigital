@@ -250,6 +250,7 @@ class CustomerPointOrderController extends Controller
                                 $pointstart[$key] = $restpoints[$key];
                                 $potencyPoint[$key] = $customers_cek[0]->potentcyPoint;
                             }
+                            
                             $total_start_point += $pointstart[$key]; 
                             $totalPotency += $potencyPoint[$key];
                 }
