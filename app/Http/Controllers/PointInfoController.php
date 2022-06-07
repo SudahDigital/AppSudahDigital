@@ -35,7 +35,7 @@ class PointInfoController extends Controller
                 $dateSt =date('Y-m-15', strtotime($last_period->starts_at));
                 $customers =\DB::select("SELECT *, points.totalpoint +ifnull( pointsRewards.Pointreward,0) as grand_total
                 FROM
-                (SELECT o.id as oid, cs.id csid, pr.created_at,
+                (SELECT o.id as oid, o.customer_id csid, pr.created_at,
                             
                             sum(case when(
                                     (   date(o.created_at) between '$last_period->starts_at' and '$last_period->expires_at'
@@ -60,13 +60,14 @@ class PointInfoController extends Controller
                             JOIN order_product as op ON o.id = op.order_id 
                             JOIN products on products.id = op.product_id 
                             JOIN product_rewards as pr on pr.product_id = products.id
-                            JOIN customers as cs on cs.id = o.customer_id
-                            JOIN users as u on u.id = cs.user_id
+                            /*JOIN customers as cs on cs.id = o.customer_id*/
+                            /*JOIN users as u on u.id = cs.user_id*/
                             /*LEFT JOIN partial_deliveries as pd on op.id = pd.op_id
                             /*JOIN customer_points as cp on cp.customer_id = cs.id*/
                             WHERE
                             /*EXISTS ( SELECT * FROM customer_points WHERE period_id = $last_period->id AND
                                     customer_points.customer_id = o.customer_id) AND*/
+                            o.customer_id = '$customer_id' AND
                             pr.created_at = (SELECT MAX(created_at) FROM 
                                             product_rewards GROUP BY product_id HAVING 
                                             product_id = pr.product_id) 
@@ -77,8 +78,8 @@ class PointInfoController extends Controller
                             date(o.finish_time) between '$dateSt' AND DATE_ADD(date('$last_period->expires_at'), INTERVAL 14 DAY)
                             )  
                             AND
-                            o.status != 'CANCEL' AND o.status != 'NO-ORDER'AND
-                            o.customer_id = '$customer_id'
+                            o.status != 'CANCEL' AND o.status != 'NO-ORDER'
+                            
                 ) as points
                 LEFT JOIN (SELECT pc.custpoint_id, prpc.period_id as ppid, sum(case when pc.Type = 1 then -(ifnull(pc.override_points, prpc.point_rule)) 
                                 when pc.Type = 2 then ifnull(pc.override_points,prpc.point_rule)
@@ -328,13 +329,13 @@ class PointInfoController extends Controller
                 $total_start_point = 0;
                 $totalPotency = 0;
                 foreach($prd_cek as $key => $period_cek){
-                    /*
+                    
                     $cust_exists = \DB::select("SELECT * FROM customer_points 
                                     WHERE period_id = $period_cek->id AND
                                     customer_points.customer_id = '$customer'");
                     if(!$cust_exists){
                         break;
-                    }*/
+                    }
                     $dateSt = date('Y-m-15', strtotime($period_cek->starts_at));
                     $customers_cek =\DB::select("SELECT *, points.totalpoint +ifnull( pointsRewards.Pointreward,0) as grand_total
                                 FROM
