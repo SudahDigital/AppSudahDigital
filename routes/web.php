@@ -337,17 +337,18 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::get('/orders/add-new-customer/{id}/{payment?}', 'OrderController@new_customer')->name('orders.addnew_customer') ;
     //Route::get('/orders/add-new-no-order/{id}', 'OrderController@new_no_order')->name('orders.addnew_no_order') ;
     Route::put('/orders/new-customer/{id}/update', 'OrderController@save_new_customer')->name('orders.newcustomer.update');
-    //Order point
-    Route::get('/orders/customer-point', 'CustomerPointOrderController@index')->name('customers_points.index');
-    Route::post('/orders/filter-list-point', function(Illuminate\Http\Request $request, $vendor){
+    
+    //Customer point
+    Route::get('/customer-points', 'CustomerPointOrderController@index')->name('customers_points.index');
+    Route::post('/customer-points/filter-list-point', function(Illuminate\Http\Request $request, $vendor){
         $get_period = \App\PointPeriod::findOrFail($request['period']);
         $text_name =  $get_period->name;
         $replace_name = str_replace(" ", "-", $text_name);
         return redirect()->route('periodpoint.getfilter', [$vendor,'period_name'=>$replace_name,'period_id'=>\Crypt::encrypt($request['period'])]);
     })->name('periodpoint.postfilter');
-    Route::get('/orders/customer-point/period/{period_name?}/{period_id}', 'CustomerPointOrderController@filter_period')->name('periodpoint.getfilter');
-    Route::get('/orders/points-this-period-export','CustomerPointOrderController@exportThisPeriod')->name('PointThisPeriod.Export');
-    Route::get('/orders/points-filter-period-export/{period_id}','CustomerPointOrderController@exportFilterPeriod')->name('PointFilterPeriod.Export');
+    Route::get('/customer-points/period/{period_name?}/{period_id}', 'CustomerPointOrderController@filter_period')->name('periodpoint.getfilter');
+    Route::get('/customer-points/points-this-period-export','CustomerPointOrderController@exportThisPeriod')->name('PointThisPeriod.Export');
+    Route::get('/customer-points/points-filter-period-export/{period_id}','CustomerPointOrderController@exportFilterPeriod')->name('PointFilterPeriod.Export');
     
     //reasons
     Route::get('/orders/checkout-reason/list', 'CheckoutReasonsController@index')->name('reasons.index');
