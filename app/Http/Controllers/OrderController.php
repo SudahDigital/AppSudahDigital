@@ -34,12 +34,27 @@ class OrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, $vendor)
+    public function index(Request $request, $vendor, $periodFilter = null) 
     {
         $user =\Auth::user()->roles;
         $id_user =\Auth::user()->id;
         $client_id = \Auth::user()->client_id;
         $datefrom = date('2021-06-01');
+        if($periodFilter != null){
+            //dd($periodFilter);
+            $period_explode = explode('-',$periodFilter);
+            
+            $year = $period_explode[0];
+            $month = $period_explode[1];
+            
+            $thisMonth = $month;
+            $thisYear = $year;
+            
+        }else{
+            $thisMonth = date('m');
+            $thisYear = date('Y');
+        }
+        
         $orderAttach = \App\OrderAttachment::where('client_id', $client_id)
                             ->where('attach_status','SUBMIT')
                             ->first();
@@ -52,16 +67,24 @@ class OrderController extends Controller
             if($status){
             $stts = strtoupper($status);
             $orders = \DB::select("SELECT * FROM orders WHERE 
-                        client_id = $client_id AND customer_id IS NOT NULL AND 
-                        status='$stts' AND created_at >= $datefrom AND EXISTS 
-                    (SELECT spv_id,sls_id FROM spv_sales WHERE 
-                    spv_sales.sls_id = orders.user_id AND spv_id='$id_user') ORDER BY created_at DESC");
+                        client_id = $client_id 
+                        AND customer_id IS NOT NULL 
+                        AND status='$stts' 
+                        AND MONTH(created_at) = '$thisMonth'
+                        AND YEAR(created_at) = '$thisYear' /*created_at >= $datefrom*/ 
+                        AND EXISTS 
+                        (SELECT spv_id,sls_id FROM spv_sales WHERE 
+                        spv_sales.sls_id = orders.user_id AND spv_id='$id_user') ORDER BY created_at DESC");
             }
             else{
-                $orders = \DB::select("SELECT * FROM orders WHERE client_id = $client_id AND 
-                customer_id IS NOT NULL AND created_at >= $datefrom AND EXISTS 
-                (SELECT spv_id,sls_id FROM spv_sales WHERE 
-                spv_sales.sls_id = orders.user_id AND spv_id='$id_user') ORDER BY created_at DESC");
+                $orders = \DB::select("SELECT * FROM orders WHERE 
+                        client_id = $client_id 
+                        AND customer_id IS NOT NULL 
+                        AND MONTH(created_at) = '$thisMonth'
+                        AND YEAR(created_at) = '$thisYear' /*created_at >= $datefrom*/
+                        AND EXISTS 
+                        (SELECT spv_id,sls_id FROM spv_sales WHERE 
+                        spv_sales.sls_id = orders.user_id AND spv_id='$id_user') ORDER BY created_at DESC");
                 //dd($orders);
             }
         }
@@ -69,21 +92,25 @@ class OrderController extends Controller
             $status = $request->get('status');
             if($status){
             $orders = \App\Order::with('products')
-            ->where('client_id','=',$client_id)
-            ->whereNotNull('customer_id')
-            ->where('status',strtoupper($status))
-            ->where('created_at','>=',$datefrom)
-            ->orderBy('created_at', 'desc')
-            ->get();//paginate(10);
+                    ->where('client_id','=',$client_id)
+                    ->whereNotNull('customer_id')
+                    ->where('status',strtoupper($status))
+                    //->where('created_at','>=',$datefrom)
+                    ->whereMonth('created_at',$thisMonth)
+                    ->whereYear('created_at',$thisYear)
+                    ->orderBy('created_at', 'desc')
+                    ->get();//paginate(10);
             }
             else{
                 $orders = \App\Order::with('products')
-                ->with('customers')
-                ->where('client_id','=',$client_id)
-                ->whereNotNull('customer_id')
-                ->where('created_at','>=',$datefrom)
-                ->orderBy('created_at', 'desc')
-                ->get();
+                    ->with('customers')
+                    ->where('client_id','=',$client_id)
+                    ->whereNotNull('customer_id')
+                    //->where('created_at','>=',$datefrom)
+                    ->whereMonth('created_at',$thisMonth)
+                    ->whereYear('created_at',$thisYear)
+                    ->orderBy('created_at', 'desc')
+                    ->get();
             //dd($orders);
             }
         }
@@ -92,8 +119,20 @@ class OrderController extends Controller
                         'orders' => $orders,
                         'orderAttach'=>$orderAttach,
                         'noOrderAttach'=>$noOrderAttach,
-                        'vendor'=>$vendor
+                        'vendor'=>$vendor,
+                        'thisMonth'=>$thisMonth,
+                        'thisYear'=>$thisYear,
+                        'periodFilter'=>$periodFilter
                     ]);
+    }
+
+    public function filter(Request $request, $vendor){
+        $periodFilter = $request->get('listFilter');
+        //dd( $periodFilter);
+        //$year = $period_explode[0];
+        //$month =$period_explode[1];
+
+        return redirect()->route('orders.index', [$vendor,$periodFilter]);
     }
 
     /**
