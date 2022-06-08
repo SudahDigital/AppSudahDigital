@@ -327,7 +327,8 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::post('/work-plan/export', 'SalesLoginController@export')->name('sales_login.export');
 
     //Order
-    Route::get('/orders', 'OrderController@index')->name('orders.index');
+    Route::get('/orders/{periodFilter?}', 'OrderController@index')->name('orders.index');
+    Route::post('/orders/post-filter', 'OrderController@filter')->name('ordersFilter.filter');
     Route::put('/orders/{id}/update', 'OrderController@update')->name('orders.update');
     Route::get('/orders/{id}/edit', 'OrderController@edit')->name('orders.edit');
     Route::get('/orders/{id}/detail', 'OrderController@detail')->name('orders.detail');
