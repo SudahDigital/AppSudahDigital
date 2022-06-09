@@ -29,7 +29,8 @@ class ClaimExport implements FromCollection, WithMapping, WithHeadings
         if($lastPeriod){
             $claim = \DB::select("SELECT pc.id, pc.custpoint_id, pc.reward_id, pc.type,
                                 pc.created_at, pc.status,pr.point_rule, pr.bonus_amount, 
-                                cs.store_name, cs.client_id
+                                cs.store_name, cs.client_id, cs.store_key, cs.store_code,
+                                cs.group_code
                                 FROM point_claims as pc 
                                 JOIN point_rewards as pr ON pc.reward_id = pr.id
                                 JOIN customers as cs ON cs.id = pc.custpoint_id
@@ -41,7 +42,8 @@ class ClaimExport implements FromCollection, WithMapping, WithHeadings
         }else{
             $claim = \DB::select("SELECT pc.id, pc.custpoint_id, pc.reward_id, pc.type,
                                 pc.created_at, pc.status,pr.point_rule, pr.bonus_amount, 
-                                cs.store_name, cs.client_id
+                                cs.store_name, cs.client_id, cs.store_key, cs.store_code,
+                                cs.group_code
                                 FROM point_claims as pc 
                                 JOIN point_rewards as pr ON pc.reward_id = pr.id
                                 JOIN customers as cs ON cs.id = pc.custpoint_id
@@ -58,6 +60,9 @@ class ClaimExport implements FromCollection, WithMapping, WithHeadings
     public function map($claim) : array {
        
         return[
+            $claim->store_key,
+            $claim->store_code,
+            $claim->group_code,
             $claim->store_name,
             $claim->point_rule,
             number_format($claim->bonus_amount,2),
@@ -68,11 +73,14 @@ class ClaimExport implements FromCollection, WithMapping, WithHeadings
 
     public function headings() : array {
         return [
-           'Customer',
-           'Points Claim',
-           'Bonus Amount',
-           'Claim Date',
-           'Status',
+            'Cust. Key',
+            'Cust. Code',
+            'Group Code',
+            'Cust. Name',
+            'Points Claim',
+            'Bonus Amount',
+            'Claim Date',
+            'Status',
         ] ;
     }
 }

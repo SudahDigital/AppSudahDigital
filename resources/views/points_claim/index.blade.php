@@ -1,6 +1,16 @@
 @extends('layouts.master')
 @section('title')Points Claim Lists @endsection
 @section('content')
+<style>
+	.label {
+		padding-left :0;
+		text-align:left;
+		min-width: 40px !important;
+		display: inline-block;
+		color: #555;
+		background:transparent !important;
+	}
+</style>
 @if(session('status'))
 	<div class="alert alert-success">
 		{{session('status')}}
@@ -82,7 +92,10 @@
 			@foreach($claim as $c)
 				<tr>
 					<td>
-						{{$c->store_name ? "$c->store_name" : $c->id}}
+						<span class="label label-default">Key</span> : <small class="font-bold">{{$c->store_key}}</small><br>
+						<span class="label label-default">Code </span> : <small class="font-bold">{{$c->store_code}}</small><br>
+						<span class="label label-default">Group </span> : <small class="font-bold">{{$c->group_code}}</small><br>
+						{{$c->store_name}}
 					</td>
 					<td>
 						{{$c->point_rule}}

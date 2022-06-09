@@ -15,7 +15,13 @@
 			{{session('status')}}
 		</div>
 	@endif
-   
+    @if(count($errors) > 0)
+        <div class="alert alert-danger">
+            @foreach ($errors->all() as $error)
+                <div>{{ $error }}</div>
+            @endforeach
+        </div>
+    @endif
 	<!-- Form Edit -->
     <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('customers.update',[$vendor,$cust->id])}}">
     	@csrf
@@ -23,33 +29,51 @@
         @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
             <div class="form-group form-float">
                 <div class="form-line" id="code_">
-                    <input type="text" class="form-control" name="store_code" autocomplete="off" 
-                    value="{{old('store_code',$cust->store_code)}}" readonly required>
-                    <label class="form-label">Customer Code / Search Key</label>
+                    <input type="text" id="code" class="form-control" name="store_code" autocomplete="off" 
+                    value="{{old('store_code',$cust->store_code)}}" required>
+                    <label class="form-label">Customer Code</label>
                 </div>
             </div>
 
             <div class="form-group form-float">
                 <div class="form-line">
-                    <input type="text" class="form-control" name="store_name" value="{{old('store_name',$cust->store_name)}}" autocomplete="off" required>
+                    <input type="text" class="form-control" name="store_name" 
+                    value="{{old('store_name',$cust->store_name)}}" autocomplete="off" required>
                     <label class="form-label">Name</label>
+                </div>
+            </div>
+
+            <div class="form-group form-float">
+                <div class="form-line">
+                    <input type="email" class="form-control" value="{{old('email',$cust->email)}}" 
+                    name="email" autocomplete="off">
+                    <label class="form-label">Email</label>
+                </div>
+            </div>
+
+            <div class="form-group form-float">
+                <div class="form-line">
+                    <input type="text" value="{{old('group_code',$cust->group_code)}}" class="form-control" id="group_code"  
+                    name="group_code" autocomplete="off" >
+                    <label class="form-label" for="group_code">Group Code</label>
                 </div>
             </div>
         @endif
         @if(Gate::check('isSpv') || Gate::check('isSuperadmin') || Gate::check('isAdmin'))
-            <p>
-                <b>Customer Type</b>
-            </p>
+            <b>Customer Type</b>
             <select name="cust_type"  id="cust_type" class="form-control" 
                 {{Gate::check('isSuperadmin') || Gate::check('isAdmin') ? '' : 'required'}}>
                 <option></option>
                 @foreach($type as $ty)
-                    <option value="{{$ty->id}}" {{$ty->id == $cust->cust_type ? 'selected' : ''}}>{{$ty->name}}</option>
+                    <option value="{{$ty->id}}" 
+                        {{(old('cust_type') == $ty->id || $ty->id == $cust->cust_type ? 'selected' : '')}}>
+                        {{$ty->name}}
+                    </option>
                 @endforeach
             </select>
         @endif
         @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
-            <div class="col-sm-12" style="padding:0;margin-top:30px;margin-bottom:20px;">
+            <div class="col-12" style="padding:0;margin-top:30px;margin-bottom:20px;">
                 <b>Customer Price Type</b>
                 <select name="cust_price_type"  id="cust_price_type" class="form-control">
                     <option></option>
@@ -57,23 +81,28 @@
                         <option value="0">Don't use customer price type</option>
                     @endif
                     @foreach($custPrice as $cp)
-                        <option value="{{$cp->id}}" {{$cust->pricelist_id == $cp->id ? 'selected' : ''}}>{{$cp->name}}</option>
+                        <option value="{{$cp->id}}" 
+                            {{(old('cust_price_type') == $cp->id || $cust->pricelist_id == $cp->id ? 'selected':'')}}>
+                            {{$cp->name}}
+                        </option>
                     @endforeach
                 </select>
             </div>
 
-            <div class="form-group form-float m-t-110">
-                <div class="form-line">
-                    <input type="email" class="form-control" value="{{old('email',$cust->email)}}" name="email" autocomplete="off">
-                    <label class="form-label">Email</label>
-                </div>
+            <div class="col-12" style="padding:0;margin-top:30px;margin-bottom:30px;">
+                <b>City</b>
+                <select name="city"  id="city_id" class="form-control">
+                    <option></option>
+                    @foreach($city as $cty)
+                        <option value="{{$cty->id}}" 
+                            {{(old('city') == $cty->id || $cust->city_id == $cty->id ? 'selected':'')}}>
+                            {{$cty->city_name}}
+                        </option>
+                    @endforeach
+                </select>
             </div>
             
-            <h2 class="card-inside-title" >City</h2>
-                <select name="city"  id="city_id" class="form-control"></select>
-                <small id="name-error" class="error merah" for="city_id">{{ $errors->first('city') }}</small>
-            <br>
-            <br>
+            
             <div class="form-group">
                 <div class="form-line">
                     <textarea name="address" rows="4" class="form-control no-resize" placeholder="Address" autocomplete="off" required>{{old('address',$cust->address)}}</textarea>
@@ -112,7 +141,8 @@
 
             <div class="form-group form-float">
                 <div class="form-line">
-                    <input type="text" class="form-control" name="name" value="{{old('name',$cust->name)}}" autocomplete="off" required>
+                    <input type="text" class="form-control" name="contact_person" 
+                    value="{{old('contact_person',$cust->name)}}" autocomplete="off" required>
                     <label class="form-label">Contact Person</label>
                 </div>
             </div>
@@ -161,20 +191,22 @@
             </div>
             -->
 
-            <div class="col-sm-12" style="padding:0;">
-                <h2 class="card-inside-title">Pareto Code</h2>
+            <div class="col-12" style="padding:0;">
+                <b>Pareto Code</b>
                 <select name="pareto_id"  id="pareto_id" class="form-control">
                     <option></option>
                     @if ($cust->pareto_id)
                         <option value="0">Not Pareto</option>
                     @endif
-                    @foreach($pareto as $ty)
-                        <option value="{{$ty->id}}" {{$ty->id == $cust->pareto_id ? 'selected' : ''}}>{{$ty->pareto_code}}</option>
+                    @foreach($pareto as $prt)
+                        <option value="{{$prt->id}}" 
+                            {{(old('pareto_id') == $prt->id || $prt->id == $cust->pareto_id ? 'selected' : '')}}>
+                            {{$prt->pareto_code}}
+                        </option>
                     @endforeach
                 </select>
             </div>
-            <br>
-
+            
             <!--
             <div class="input-group">
                 <div class="form-line">
@@ -186,9 +218,17 @@
             </div>
             -->
             
-            <div class="col-sm-12" style="padding:0;">
-                <h2 class="card-inside-title">Sales Representative</h2>
-                <select name="user"  id="user" class="form-control" required></select>
+            <div class="col-12" style="padding:0;margin-top:30px">
+                <b>Sales Representative</b>
+                <select name="sales"  id="user" class="form-control">
+                    <option></option>
+                    @foreach($user as $usr)
+                        <option value="{{$usr->id}}" 
+                            {{(old('sales') == $usr->id || $usr->id == $cust->user_id? 'selected':'')}}>
+                            {{$usr->name}}
+                        </option>
+                    @endforeach
+                </select>
             </div>
 
             <h2 class="card-inside-title">Status</h2>
@@ -226,9 +266,32 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 <script>
+    //select2 option list
     $('#cust_price_type').select2({
         placeholder: 'Select a Customer Price Type',
     });
+
+    $('#cust_type').select2({
+        placeholder: 'Select a Customer Type',
+    });
+
+    $('#pareto_id').select2({
+        placeholder: 'Select a Pareto Code',
+    });
+
+    $('#group_id').select2({
+        placeholder: 'Select a Group Code',
+    });
+
+    $('#city_id').select2({
+        placeholder: 'Select a City',
+    });
+
+    $('#user').select2({
+        placeholder: 'Select a Sales Representative',
+    });
+
+    //cash or top
     $('document').ready(function(){
         document.getElementById('pay_cust').disabled = document.getElementById('cash').checked;
      });
@@ -236,23 +299,31 @@
         document.getElementById('pay_cust').disabled = document.getElementById('cash').checked;
     }
 
-    function isNumberKey(evt)
-        {
-            var charCode = (evt.which) ? evt.which : evt.keyCode;
-            if (charCode != 46 && charCode > 31 
-            && (charCode < 48 || charCode > 57))
+    function isNumberKey(evt){
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31 
+        && (charCode < 48 || charCode > 57))
+        return false;
+        return true;
+    }
+    
+    //js store code input
+    $("#code,#group_code").on({
+        keydown: function(e) {
+        if (e.which === 32)
             return false;
-            return true;
+        },
+        keyup: function(){
+        this.value = this.value.toUpperCase();
+        },
+        change: function() {
+            this.value = this.value.replace(/\s/g, "");
+            
         }
-    $('#cust_type').select2({
-        placeholder: 'Select a Customer Type',
     });
 
-    $('#pareto_id').select2({
-        placeholder: 'Select a Pareto Code',
-    }); 
-
-    $('#user').select2({
+    
+    /*$('#user').select2({
       placeholder: 'Select a Sales Representative',
       ajax: {
         url: '{{URL::to('/ajax/users/search')}}',
@@ -276,10 +347,10 @@
     users.forEach(function(cust){
     var option = new Option(cust.name, cust.id, true, true);
     $('#user').append(option).trigger('change');
-    });
+    });*/
 
     //city
-    $('#city_id').select2({
+    /*$('#city_id').select2({
         placeholder: 'Select a City',
         ajax: {
             url: '{{URL::to('/customer/ajax/city_search')}}',
@@ -303,6 +374,6 @@
     cities.forEach(function(cust_city){
     var option_city = new Option(cust_city.city_name, cust_city.id, true, true);
     $('#city_id').append(option_city).trigger('change');
-    });
+    });*/
 </script>
 @endsection

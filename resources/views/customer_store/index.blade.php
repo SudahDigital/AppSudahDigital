@@ -1,6 +1,17 @@
 @extends('layouts.master')
 @section('title') Customer List @endsection
 @section('content')
+<style>
+	.label {
+		padding-left :0;
+		text-align:left;
+		min-width: 40px !important;
+		display: inline-block;
+		color: #555;
+		background:transparent !important;
+	}
+</style>
+
 @if(session('status'))
 	<div class="alert alert-success">
 		{{session('status')}}
@@ -65,8 +76,8 @@
 		<thead>
 			<tr>
 				<th>Status</th>
-				<th>Customer Code</th>
-				<th>Name/Email/Type</th>
+				
+				<th>Customer</th>
 				<th width="20%">Address</th>
 				<th>Phone</th>
 				<!--<th>Customer</th>-->
@@ -80,53 +91,23 @@
 			<?php $no++;?>
 			<tr>
 				<td>
-					@if($c->status=="NONACTIVE")
-						<span class="badge bg-red text-white">{{$c->status}}</span>
-							@else
-						<span class="badge bg-green">{{$c->status}}</span>
-					@endif
+					<span class="badge {{$c->status=='NONACTIVE' ? 'bg-red text-white' : 'bg-green'}}">
+						{{$c->status=="NONACTIVE" ? 'INACTIVE' : $c->status}}
+					</span>
 				</td>
 				<td>
-					@if($c->store_code)
-					{{$c->store_code}}
-					@else
-					-
-					@endif
-					<br>
-					@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
-						@if($c->pareto_id)
-							<span class="badge bg-orange">{{$c->pareto->pareto_code}}</span>
-						@endif
-					@else
-						@if($c->pareto_id)
-							<span class="badge bg-orange">{{$c->pareto_code}}</span>
-						@endif
-					@endif
-
-				</td>
-				<td>
-					<small><b> Name : </b>{{$c->store_name ? "$c->store_name" : '-'}}</small><br>
-					<small><b> Email : </b>{{$c->email ? "$c->email" : '-'}}</small><br>
-					<small><b> Contact Person : </b>{{$c->name ? $c->name : '-'}}</small><br>
-					@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
-						<small><b>Type</b> : {{$c->type_cust ? $c->type_cust->name : ''}}</small><br>
-						<small><b>Price Type</b> : {{$c->pricelist_id ? $c->CustomerPrice->name : ''}}</small>
-					@else
-						@if(Gate::check('isSpv'))
-							<small><b>Type</b> :{{$c->cust_type ? $c->tp_name : ''}}</b></small>
-							<small><b>Price Type</b> : {{$c->pricelist_id ? $c->cd_name : ''}}</small>
-						@endif
-					@endif
+					<span class="label label-default">Key</span> : <small class="font-bold">{{$c->store_key ? "$c->store_key" : '-'}}</small><br>
+                    <span class="label label-default">Code </span> : <small class="font-bold">{{$c->store_code }}</small><br>
+					<span class="label label-default">Group </span> : <small class="font-bold">{{$c->group_code }}</small><br>
+					<span class="label label-default">Type </span> : <small class="font-bold">{{$c->type_cust ? $c->type_cust->name : ''}}</small><br>
+					<span class="label label-default">Pareto </span> : <small><span class="badge bg-orange">{{$c->pareto_id ? $c->pareto->pareto_code : ''}}</span></small><br>
+					<span class="label label-default">Name </span> : <small class="font-bold">{{$c->store_name ? "$c->store_name" : '-'}}</small>
 				</td>
 				<td>
 					{{$c->address}}<br>
-					@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
+					
 					{{$c->city_id ? $c->cities->city_name :''}}
-					@else 
-						@if(Gate::check('isSpv'))
-							{{$c->city_name}}
-						@endif
-					@endif
+					
 					@if($c->lat && $c->lng)
 						<span class="badge bg-blue">with coordinate</span>
 					@endif
@@ -146,26 +127,18 @@
 						@endif
 					@endif
 				</td>-->
-				@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
-					<td>@if($c->user_id > 0)
-							@php
-								if($c->users != null){
-									echo $c->users->name;
-								}else{
-									echo '';
-								}
-							@endphp
-						@else
-						-
-						@endif
-					</td>
-				@else 
-					@if(Gate::check('isSpv'))
-						<td>
-							{{$c->user_name}}	
-						</td>
+				<td>@if($c->user_id > 0)
+						@php
+							if($c->users != null){
+								echo $c->users->name;
+							}else{
+								echo '';
+							}
+						@endphp
+					@else
+					-
 					@endif
-				@endif
+				</td>
 				<td>
 					<div class="dropdown">
 						<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">

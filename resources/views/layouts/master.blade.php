@@ -286,6 +286,7 @@
                             <!--manage customers-->
                             <li class="{{(request()->routeIs('customers.index')) || 
                                         (request()->routeIs('type_customers.index_type')) ||
+                                        //(request()->routeIs('customerGroups.index')) ||
                                         (request()->routeIs('customers.index_target')) ||
                                         (request()->routeIs('customers.index_pareto')) ? 'active' : ''}}">
                                 <a href="javascript:void(0);" class="menu-toggle">

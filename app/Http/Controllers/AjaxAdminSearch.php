@@ -182,6 +182,32 @@ class AjaxAdminSearch extends Controller
      //$cust = \App\TypeCustomer::whereRaw("BINARY 'name'= ?",[$keyword])->count();
   }
 
+  public function CustomerGroupsSearch(Request $request){
+    if ($request->has('old_code')){
+      $key_old = $request->get('old_code');
+      $keyword = $request->get('code');
+      $cust = \App\CustomerGroup::where('id','!=',$key_old)
+              ->where('client_id','=',auth()->user()->client_id)
+              ->where('code','=',$keyword)->count();
+      if ($cust > 0) {
+          echo "taken";	
+        }else{
+          echo 'not_taken';
+        }
+    }else{
+      $keyword = $request->get('code');
+      $cust = \App\CustomerGroup::where('code','=',$keyword)
+            ->where('client_id','=',auth()->user()->client_id)
+            ->count();
+      if ($cust > 0) {
+          echo "taken";	
+        }else{
+          echo 'not_taken';
+        }
+    }
+     //$cust = \App\TypeCustomer::whereRaw("BINARY 'name'= ?",[$keyword])->count();
+  }
+
   public function ParetoCodeSearch(Request $request){
     if ($request->has('old_code')){
       $key_old = $request->get('old_code');

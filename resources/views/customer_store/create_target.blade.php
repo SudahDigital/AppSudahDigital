@@ -28,6 +28,16 @@
         </ul>
     @endsection 
     @section('content')
+    <style>
+        .label {
+            padding-left :0;
+            text-align:left;
+            min-width: 40px !important;
+            display: inline-block;
+            color: #555;
+            background:transparent !important;
+        }
+    </style>
         @if(session('status'))
             <div class="alert alert-success">
                 {{session('status')}}
@@ -156,8 +166,13 @@
                             <tr>
                                 <!--<td>{{$no}}</td>-->
                                 <td>
-                                    {{$u->customers->store_code}} | {{$u->customers->store_name}}
+                                    <span class="label label-default">Key</span> : <small class="font-bold">{{$u->customers->store_key}}</small><br>
+                                    <span class="label label-default">Code </span> : <small class="font-bold">{{$u->customers->store_code}}</small><br>
+                                    {{$u->customers->store_name}}
                                     
+                                    <!--
+                                    {{$u->customers->store_code}} | {{$u->customers->store_name}}
+                                    -->
                                 </td>
                                 <td>
                                     {{$u->pareto->pareto_code}}

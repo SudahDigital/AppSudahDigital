@@ -106,8 +106,10 @@ class CustomerNotOrderExport implements FromCollection, WithMapping, WithHeading
         $last_odr = \App\Http\Controllers\DashboardController::lastOrder($notOrder->id,$date_now);
 
         return[
+            $notOrder->store_key,
             $notOrder->store_code,
             $notOrder->store_name,
+            $notOrder->group_code,
             $notOrder->address,
             $pareto,
             $trgNml,
@@ -119,8 +121,10 @@ class CustomerNotOrderExport implements FromCollection, WithMapping, WithHeading
 
     public function headings() : array {
         return [
+            'Customer Key',
             'Customer Code',
             'Customer Name',
+            'Group Code',
             'Address',
             'Pareto',
             'Max Nml Target (Non PPN)',

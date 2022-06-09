@@ -424,6 +424,7 @@ Route::get('/customer/ajax/city_search', 'AjaxAdminSearch@CustomerajaxCitySearch
 Route::get('/ajax/code_cust/search', 'AjaxAdminSearch@CustomerCodeSearch');
 Route::get('/ajax/name_client_so/search', 'AjaxAdminSearch@ClientsoCodeSearch');
 Route::get('/ajax/email_client_so/search', 'AjaxAdminSearch@email_so_search');
+Route::get('/ajax/customerGroups/search', 'AjaxAdminSearch@CustomerGroupsSearch');
 Route::get('/ajax/type_customers/search', 'AjaxAdminSearch@TypeCustomerSearch');
 Route::get('/ajax/pareto_code/search', 'AjaxAdminSearch@ParetoCodeSearch');
 Route::get('/ajax/exist_user/search', 'AjaxAdminSearch@UserExistSearch');

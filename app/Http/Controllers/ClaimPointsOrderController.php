@@ -34,7 +34,8 @@ class ClaimPointsOrderController extends Controller
         if($status){
             $claim = \DB::select("SELECT pc.id, pc.custpoint_id, pc.reward_id, pc.type,
                                 pc.created_at, pc.status,pr.point_rule, pr.bonus_amount, 
-                                cs.store_name, cs.client_id
+                                cs.store_name, cs.client_id, cs.store_key, cs.store_code,
+                                cs.group_code
                                 FROM point_claims as pc 
                                 JOIN point_rewards as pr ON pc.reward_id = pr.id
                                 JOIN customers as cs ON cs.id = pc.custpoint_id
@@ -46,7 +47,8 @@ class ClaimPointsOrderController extends Controller
         }else{
             $claim = \DB::select("SELECT pc.id, pc.custpoint_id, pc.reward_id, pc.type,
                                 pc.created_at, pc.status,pr.point_rule, pr.bonus_amount, 
-                                cs.store_name, cs.client_id
+                                cs.store_name, cs.client_id, cs.store_key, cs.store_code,
+                                cs.group_code
                                 FROM point_claims as pc 
                                 JOIN point_rewards as pr ON pc.reward_id = pr.id
                                 JOIN customers as cs ON cs.id = pc.custpoint_id

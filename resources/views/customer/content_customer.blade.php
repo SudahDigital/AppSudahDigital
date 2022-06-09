@@ -399,7 +399,7 @@ Home
                                                     <input type="hidden" id="jumlah_top{{$top_product[$key]->id}}" name="quantity" value="1">
                                                     <input type="hidden" id="harga_top{{$top_product[$key]->id}}" name="price" value="{{ $priceTop }}">
                                                     <input type="hidden" id="top{{$top_product[$key]->id}}" name="Product_id" value="{{$top_product[$key]->id}}">
-                                                    <button class="btn btn-block button_add_to_cart respon" onclick="add_tocart_top('{{$top_product[$key]->id}}')" {{($top_product[$key]->stock == 0) && ($stock_status->stock_status == 'ON') ? 'disabled' : ''}}>Tambah</button>
+                                                    <button class="btn btn-block button_add_to_cart respon" onclick="add_tocart_top('{{$top_product[$key]->id}}')" >Tambah</button>
                                                     
                                                 </td>
                                                 <td width="30%" align="left" id="td-text-quantity" class="td-text-quantity" valign="middle" rowspan="2" >

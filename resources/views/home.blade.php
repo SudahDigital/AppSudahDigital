@@ -387,7 +387,7 @@
                                                                                     @if($last_orders[$key] == '')
                                                                                         <?php $cust_id = $cust_not_exists[$key]->id;?>
                                                                                         <li class="list-group-item">
-                                                                                            <b>{{$cust_not_exists[$key]->store_code}} - {{$cust_not_exists[$key]->store_name}}</b>,
+                                                                                            <b>{{$cust_not_exists[$key]->store_key}} - {{$cust_not_exists[$key]->store_code}} - {{$cust_not_exists[$key]->store_name}}</b>,
                                                                                             @if($last_orders[$key] != '')
                                                                                                 <span class="badge bg-cyan popoverData" id="popoverData" data-trigger="hover" data-container="body" data-placement="top" 
                                                                                                 data-content="{{$last_orders[$key] == '' ? '': 'Jumlah hari belum order'}}">{{$last_orders[$key]}} Hari</span> 
@@ -417,7 +417,7 @@
                                                                                     @if($last_orders[$key] != '')
                                                                                         <?php $cust_id = $cust_not_exists[$key]->id;?>
                                                                                         <li class="list-group-item">
-                                                                                            <b>{{$cust_not_exists[$key]->store_code}} - {{$cust_not_exists[$key]->store_name}}</b>,
+                                                                                            <b>{{$cust_not_exists[$key]->store_key}} - {{$cust_not_exists[$key]->store_code}} - {{$cust_not_exists[$key]->store_name}}</b>,
                                                                                             @if($last_orders[$key] != '')
                                                                                                 <span class="badge bg-cyan popoverData" id="popoverData" data-trigger="hover" data-container="body" data-placement="top" 
                                                                                                 data-content="{{$last_orders[$key] == '' ? '': 'Jumlah hari belum order'}}">{{$last_orders[$key]}} Hari</span> 
@@ -482,7 +482,7 @@
                                                                                 @foreach($keys_exists as $k)
                                                                                     <?php $cust_id_ex = $cust_exists[$k]->id;?>
                                                                                     <li class="list-group-item">
-                                                                                        <b>{{$cust_exists[$k]->store_code}} - {{$cust_exists[$k]->store_name}}</b>,
+                                                                                        <b>{{$cust_exists[$k]->store_key}} - {{$cust_exists[$k]->store_code}} - {{$cust_exists[$k]->store_name}}</b>,
                                                                                         @if($last_odrs[$k] != '')
                                                                                             <span class="badge bg-cyan popoverData" id="popoverData" data-trigger="hover" data-container="body" data-placement="top" 
                                                                                             data-content="{{$last_odrs[$k] == '' ? '': 'Jumlah hari belum order'}}">{{$last_odrs[$k]}} Hari</span> 
@@ -614,7 +614,7 @@
                                                                                                 data-content="{{$distances[$ky] == '' ? '': 'Jumlah hari order belum kirim'}}">{{$distances[$ky]}} Hari</span> 
                                                                                             @endif
                                                                                             <br>
-                                                                                            <b>{{$order_overday[$ky]->customer_id ? $order_overday[$ky]->customers->store_name : ''}}</b>,
+                                                                                            <b>{{$order_overday[$ky]->customer_id ?  $order_overday[$ky]->customers->store_key.' - '.$order_overday[$ky]->customers->store_name : ''}}</b>,
                                                                                             <br><span>{{$order_overday[$ky]->customer_id ? $order_overday[$ky]->customers->address :''}}</span><br>
                                                                                         </li>
                                                                                     @endforeach
