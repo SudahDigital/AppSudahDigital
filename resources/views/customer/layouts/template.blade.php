@@ -295,7 +295,7 @@
             font-weight: 600;
         }
 
-        .select2-results__options { max-height: 100px !important;}
+        .select2-results__options { max-height: 200px !important;}
 
         
         #LocationForm .modal-dialog-full-width {

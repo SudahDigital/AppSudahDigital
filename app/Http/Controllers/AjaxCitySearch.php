@@ -116,7 +116,7 @@ class AjaxCitySearch extends Controller
         foreach($store as $toko){
             $response[] = array(
                 "id"=>$toko->id,
-                "text"=>$toko->store_code.' - '.$toko->store_name
+                "text"=>$toko->store_code.' - '.$toko->store_name.'<p style="font-size:10px;margin-bottom:5px;">'.$toko->address.'</p>'
             );
         }
 
