@@ -43,7 +43,7 @@ class CustomerController extends Controller
         if($CustomerKey){
             foreach($CustomerKey as $vc){
                 $updateKey = \App\Customer::findorFail($vc->id);
-                $updateKey->store_key = hash('crc32b',$vc->id);
+                $updateKey->store_key = 'KY-'.hash('crc32b',$vc->id);
                 $updateKey->save();
             }
         }
@@ -254,7 +254,7 @@ class CustomerController extends Controller
         $new_cust->save();
         $idCustomer = $new_cust->id;
         $updateKey = \App\Customer::findOrFail($idCustomer);
-        $updateKey->store_key = hash('crc32b',$idCustomer);
+        $updateKey->store_key = 'KY-'.hash('crc32b',$idCustomer);
         $updateKey->save();
         if ($updateKey->save()){
             return redirect()->route('customers.create',[$vendor])->with('status','Customer Succsessfully Created');

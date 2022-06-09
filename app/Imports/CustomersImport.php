@@ -142,7 +142,7 @@ class CustomersImport implements ToModel,  WithHeadingRow, WithValidation
 
                 $idCustomer = $customer->id;
                 $updateKey = \App\Customer::findOrFail($idCustomer);
-                $updateKey->store_key = hash('crc32b',$idCustomer);
+                $updateKey->store_key = 'KY-'.hash('crc32b',$idCustomer);
                 $updateKey->save();
             }
             /*return new Customer([

@@ -4037,9 +4037,9 @@
                                                 }else{
                                                     var viewStockItem = 0;
                                                 }
-                                                if(viewStockItem <= 0){
-                                                    $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", true );
-                                                }
+                                                // if(viewStockItem <= 0){
+                                                //     $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", true );
+                                                // }
                                                 $('.stok_pkt'+id).text(viewStockItem);
                                                 $('.stok_bns'+id).text(viewStockItem);
                                             }
@@ -4169,9 +4169,9 @@
                                     }else{
                                         var viewStockItem = 0;
                                     }
-                                    if(viewStockItem <= 0){
-                                        $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", true );
-                                    }
+                                    // if(viewStockItem <= 0){
+                                    //     $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", true );
+                                    // }
                                     $('.stok_pkt'+id).text(viewStockItem);
                                     $('.stok_bns'+id).text(viewStockItem);
 
@@ -4877,9 +4877,9 @@
                                                                             var viewStockItem = 0;
                                                                         }
                                                                         
-                                                                        if(viewStockItem <= 0){
-                                                                            $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", true );
-                                                                        }
+                                                                        // if(viewStockItem <= 0){
+                                                                        //     $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", true );
+                                                                        // }
                                                                         $('.stok_pkt'+id).text(viewStockItem);
                                                                         $('.stok_bns'+id).text(viewStockItem);
                                                                     }
@@ -5045,9 +5045,9 @@
                                                             }else{
                                                                 var viewStockItem = 0;
                                                             }
-                                                            if(viewStockItem <= 0){
-                                                                $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", true );
-                                                            }
+                                                            // if(viewStockItem <= 0){
+                                                            //     $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", true );
+                                                            // }
                                                             $('.stok_pkt'+id).text(viewStockItem);
                                                             $('.stok_bns'+id).text(viewStockItem);
 
@@ -6247,11 +6247,11 @@
                                                     }else{
                                                         var viewStockItem = 0;
                                                     }
-                                                    if(viewStockItem <= 0){
-                                                        $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", true );
-                                                    }else{
-                                                        $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", false );
-                                                    }
+                                                    // if(viewStockItem <= 0){
+                                                    //     $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", true );
+                                                    // }else{
+                                                    //     $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", false );
+                                                    // }
                                                     $('.stok_pkt'+id).text(viewStockItem);
                                                     $('.stok_bns'+id).text(viewStockItem);
                                                 }
@@ -6366,11 +6366,11 @@
                                     }else{
                                         var viewStockItem = 0;
                                     }
-                                    if(viewStockItem <= 0){
-                                        $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", true );
-                                    }else{
-                                        $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", false );
-                                    }
+                                    // if(viewStockItem <= 0){
+                                    //     $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", true );
+                                    // }else{
+                                    //     $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", false );
+                                    // }
                                     $('.stok_pkt'+id).text(viewStockItem);
                                     $('.stok_bns'+id).text(viewStockItem);
                                 }
@@ -6512,12 +6512,12 @@
                                     }else{
                                         var viewStockItem = 0;
                                     }
-                                    if(viewStockItem <= 0){
-                                        //$( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", true );
-                                        $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", false );
-                                    }else{
-                                        $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", false );
-                                    }
+                                    // if(viewStockItem <= 0){
+                                    //     //$( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", true );
+                                    //     $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", false );
+                                    // }else{
+                                    //     $( '#disabled_button_bonus'+id+'_'+group_id ).prop( "disabled", false );
+                                    // }
                                     $('.stok_pkt'+id).text(viewStockItem);
                                     $('.stok_bns'+id).text(viewStockItem);
                                 }
