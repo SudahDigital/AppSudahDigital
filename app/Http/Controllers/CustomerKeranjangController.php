@@ -581,9 +581,22 @@ $no=$count_nt_paket;
                         $group_name =\App\Group::where('id',$dtl_pkt->group_id)
                                     ->first();
 
-                        $ttle_pesan_pkt.= $no.'. '.$paket_name->display_name.' - '.$group_name->display_name.' :
+                        //if diskon paket
+                        if($paket_name->discount){
+                            if($paket_name->discount_type = 'PERCENT'){
+                                $discPktName = '(Diskon '.$paket_name->discount.' %)';
+                            }else{
+                                $discPktName = '(Diskon Rp. '.number_format($paket_name->discount, 2, ',', '.').')';
+                            }
+                        }else{
+                            $discPktName = '';
+                        }
+
+                        //for wa text
+                        $newline= urldecode('%0A');
+                        $ttle_pesan_pkt.=$newline.$no.'. '.$paket_name->display_name.' - '.$group_name->display_name.' '.$discPktName.':
 ';
-                        
+                        //for email text
                         $ttl_email_pkt .='<tr><td height="1" colspan="3">'. $no.'. '.$paket_name->display_name.' - '.$group_name->display_name.' :</td></tr>';
 
                         $data_paket = DB::table('order_product')
@@ -595,6 +608,7 @@ $no=$count_nt_paket;
                                     ->get(['order_product.*','products.Product_name']);
 
                         //dd($data_paket);
+                        
                         $no_pkt = 0;
                         foreach($data_paket as $key=>$dp){
 

@@ -15,7 +15,7 @@ class CategoryExport implements FromCollection, WithMapping, WithHeadings
     */
     public function collection()
     {
-        $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
+        //$client=\App\B2b_client::findOrfail(auth()->user()->client_id);
         return Category::where('client_id',auth()->user()->client_id)
         ->get();
     }
