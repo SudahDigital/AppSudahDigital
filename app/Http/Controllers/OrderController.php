@@ -304,7 +304,7 @@ class OrderController extends Controller
                 ->whereNotNull('group_id')
                 ->whereNull('bonus_cat')
                 ->distinct()
-                ->get(['paket_id','group_id']);
+                ->get(['paket_id','group_id','discount_pkt','discount_pkt_type']);
                 //dd($paket_list);
         return view('orders.detail', ['order' => $order, 'paket_list'=>$paket_list, 'vendor'=>$vendor,'order_cancel'=>$order_cancel]);
     }
@@ -418,11 +418,33 @@ class OrderController extends Controller
         }
 
         foreach($amountNodisc as $amNoDisc){
-            $totalPriceNoDisc += $amNoDisc->quantity * $amNoDisc->price_item_promo;
+            $totalPriceNoDisc += $amNoDisc->quantity * $amNoDisc->price_item;
         }
 
 
-        return $totalPriceNoDisc + $totalPriceDisc;
+        //cekdiscount pkt
+        $totalDiscPkt = 0;
+        $selectDiscPaket = \DB::select("SELECT paket_id,discount_pkt,discount_pkt_type, 
+                                        SUM(price_item * quantity) AS sumPrice 
+                                        FROM order_product 
+                                        WHERE order_id = '$order_id'
+                                        AND discount_pkt IS NOT NULL
+                                        GROUP BY paket_id
+                                      ");
+        
+        foreach($selectDiscPaket as $opPkt){
+            if($opPkt->discount_pkt_type == 'PERCENT'){
+                $disc = ($opPkt->discount_pkt/100) * $opPkt->sumPrice;
+                //$sumPrice = $opPkt->sumPrice - $disc; 
+            }else{
+                $disc = $opPkt->discount_pkt;
+                //$sumPrice = $opPkt->sumPrice - $opPkt->discount_pkt;
+            }
+
+            $totalDiscPkt +=  $disc;
+        }
+
+        return ($totalPriceNoDisc + $totalPriceDisc) - $totalDiscPkt;
     }
 
     public static function PriceNoPktTotal($order_id){

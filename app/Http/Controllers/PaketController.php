@@ -75,6 +75,17 @@ class PaketController extends Controller
         $newPaket->bonus_quantity = $request->get('bonus_quantity');
         $newPaket->purchase_quantity = $request->get('purchase_quantity');
         $newPaket->client_id = $request->get('client_id');
+        if($request->has('useExtraDisc')){
+            if($request->get('discount_type') == 'PERCENT'){
+                $newPaket->discount = $request->get('valuePercent');
+                $newPaket->discount_type = $request->get('discount_type');
+            }else{
+                $nmlValue = str_replace( ',', '',$request->get('valueNominal'));
+                $newPaket->discount = $nmlValue;
+                $newPaket->discount_type = $request->get('discount_type');
+            }
+        }
+
         $newPaket->save();
         if($request->get('save_action') == 'SAVE'){
           return redirect()
@@ -105,6 +116,17 @@ class PaketController extends Controller
         $id = \Crypt::decrypt($id);
         $cek = \App\order_product::where('paket_id',$id)->first();
         if($cek){
+            $exists = 1;
+        }
+        else{
+            $exists = 0;
+             
+        }
+
+        $pakets = \App\Paket::findOrfail($id);
+        return view('paket.edit', ['pakets' => $pakets,'exists'=>$exists,'vendor'=>$vendor]);
+        
+        /*if($cek){
             return redirect()
                 ->route('paket.index',[$vendor])
                 ->with('error_edit', 'Can\'t edit, this paket already exists in order');
@@ -112,7 +134,7 @@ class PaketController extends Controller
         else{
             $pakets = \App\Paket::findOrfail($id);
             return view('paket.edit', ['pakets' => $pakets,'vendor'=>$vendor]); 
-        }
+        }*/
     }
 
     /**
@@ -129,6 +151,19 @@ class PaketController extends Controller
         $paket->display_name = $request->input('display_name');
         $paket->bonus_quantity = $request->input('bonus_quantity');
         $paket->purchase_quantity = $request->input('purchase_quantity');
+        if($request->has('useExtraDisc')){
+            if($request->get('discount_type') == 'PERCENT'){
+                $paket->discount = $request->get('valuePercent');
+                $paket->discount_type = $request->get('discount_type');
+            }else{
+                $nmlValue = str_replace( ',', '',$request->get('valueNominal'));
+                $paket->discount = $nmlValue;
+                $paket->discount_type = $request->get('discount_type');
+            }
+        }else{
+            $paket->discount = NULL;
+            $paket->discount_type = NULL;
+        }
         $paket->save();
         return redirect()->route('paket.edit', [$vendor,\Crypt::encrypt($id)])->with('status',
         'Paket successfully update');

@@ -18,6 +18,8 @@ class order_product extends Model
                             'group_id',
                             'paket_id',
                             'bonus_cat',
+                            'discount_pkt',
+                            'discount_pkt_type',
                             'available',
                             'preoder',
                             'deliveryQty',

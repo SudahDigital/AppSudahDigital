@@ -130,6 +130,12 @@ class OrdersThisPeriod implements FromCollection, WithMapping, WithHeadings, Wit
             }else{
                 $reasons = null;
             }
+
+            if($order->customers->status == 'NONACTIVE'){
+                $storeStatus = 'INACTIVE';
+            }else{
+                $storeStatus = $order->customers->status;
+            }
             
             $podNumber = \App\Http\Controllers\OrderController::getPodNumber($p->pivot->order_id,$p->pivot->id);
             if($podNumber){
@@ -152,6 +158,7 @@ class OrdersThisPeriod implements FromCollection, WithMapping, WithHeadings, Wit
                             $order->customers->store_key,
                             $order->customers->store_code,
                             $order->customers->store_name,
+                            $storeStatus,
                             $order->customers->group_code,
                             $order->customers->name,
                             $order->users()->first()['name'],
@@ -188,6 +195,7 @@ class OrdersThisPeriod implements FromCollection, WithMapping, WithHeadings, Wit
                             $order->customers->store_key,
                             $order->customers->store_code,
                             $order->customers->store_name,
+                            $storeStatus,
                             $order->customers->group_code,
                             $order->customers->name,
                             $order->users()->first()['name'],
@@ -227,6 +235,7 @@ class OrdersThisPeriod implements FromCollection, WithMapping, WithHeadings, Wit
                     $order->customers->store_key,
                     $order->customers->store_code,
                     $order->customers->store_name,
+                    $storeStatus,
                     $order->customers->group_code,
                     $order->customers->name,
                     $order->users()->first()['name'],
@@ -266,6 +275,7 @@ class OrdersThisPeriod implements FromCollection, WithMapping, WithHeadings, Wit
            'Cust. Key',
            'Cust. Code',
            'Name',
+           'Cust. Status',
            'Cust. Group Code',
            'Contact Person',
            'Sales Rep',

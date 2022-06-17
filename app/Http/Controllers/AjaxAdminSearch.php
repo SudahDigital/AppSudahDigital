@@ -107,6 +107,19 @@ class AjaxAdminSearch extends Controller
       }
   }
 
+  public function PaketEditNameSearch(Request $request){
+    $key_old = $request->get('old_code');
+    $keyword = $request->get('code');
+    $pakets = \App\Paket::where('client_id','=',auth()->user()->client_id)
+              ->where('id','!=',$key_old)
+              ->where('paket_name','=',"$keyword")->count();
+    if ($pakets > 0) {
+        echo "taken";	
+      }else{
+        echo 'not_taken';
+      }
+  }
+
   public function CustomerajaxUserSearch(Request $request){
     $keyword = $request->get('q');
     $user = \App\User::where('roles','=','SALES')

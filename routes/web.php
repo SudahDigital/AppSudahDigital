@@ -91,6 +91,7 @@ Route::group(['middleware' => ['auth','checkRole:SALES']],function(){
         Route::post('/delete_kr/paket','CustomerPaketController@delete_kr_pkt');
         Route::post('/deleteCartPkt','CustomerPaketController@deleteCartPkt');
         Route::post('/paket/product_search','CustomerPaketController@search_paket')->name('live.search.paket');
+
         //bonus
         Route::post('/bonus/simpan','CustomerPaketController@simpan_bonus');
         Route::post('/bonus/totalquantity','CustomerPaketController@get_total_qty_bns');
@@ -419,6 +420,7 @@ Route::get('/orders/change_status_attach', 'AjaxAdminSearch@OnOffOrderAttach');
 Route::get('/orders/change_noorder_attach', 'AjaxAdminSearch@OnOffNoOrderAttach');
 Route::get('/ajax/groups/search', 'AjaxAdminSearch@GroupNameSearch');
 Route::get('/ajax/paket/search', 'AjaxAdminSearch@PaketNameSearch');
+Route::get('/ajax/edit/paket/search', 'AjaxAdminSearch@PaketEditNameSearch');
 Route::get('/ajax/users/search', 'AjaxAdminSearch@CustomerajaxUserSearch');
 Route::get('/customer/ajax/city_search', 'AjaxAdminSearch@CustomerajaxCitySearch');
 Route::get('/ajax/code_cust/search', 'AjaxAdminSearch@CustomerCodeSearch');
