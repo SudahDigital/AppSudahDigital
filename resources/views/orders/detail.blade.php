@@ -328,8 +328,15 @@
                                             @endphp
                                             <b>{{$paket->discount_pkt. ' %'}}</b>
                                         @else
-                                            @php$afterDiscPkt = $pkt_pirce - $paket->discount_pkt;@endphp
-                                            {{'Rp. '.number_format($paket->discount_pkt, 2, ',', '.')}}
+                                            @php
+                                                if($paket->discount_pkt){
+                                                    $discNominal = $paket->discount_pkt;
+                                                }else{
+                                                    $discNominal = 0;
+                                                }
+                                                $afterDiscPkt = $pkt_pirce - $discNominal; 
+                                            @endphp
+                                            {{'Rp. '.number_format($discNominal, 2, ',', '.')}}
                                         @endif
                                         <br>
                                         <b>{{'Rp. '.number_format( $afterDiscPkt, 2, ',', '.')}}</b>
