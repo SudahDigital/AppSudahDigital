@@ -263,6 +263,7 @@
               //$total_ach_ppn += $p->total_price;
               $total_ach_ppn +=  $PriceTotal;
             }
+            //total achievement with ppn
             $total_ach = $total_ach_ppn / 1.1;
             /*if($target->ppn == 1){
               $total_ach = $total_ach_ppn/1.1;

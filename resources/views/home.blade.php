@@ -293,7 +293,7 @@
                                                         @include('dashboardSpv-sales')
                                                     </div>
                                                 </div>
-                                        @elseif($type_targetSls && $type_targetSls->target_type == 2)
+                                            @elseif($type_targetSls && $type_targetSls->target_type == 2)
                                                 <div class="flip-box-front">
                                                     <div class="well">
                                                         @include('dashboardSpv-sales-nml')
