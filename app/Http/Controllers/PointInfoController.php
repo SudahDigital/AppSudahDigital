@@ -70,7 +70,7 @@ class PointInfoController extends Controller
                             o.customer_id = '$customer_id' AND
                             pr.created_at = (SELECT MAX(created_at) FROM 
                                             product_rewards GROUP BY product_id HAVING 
-                                            product_id = pr.product_id) 
+                                            product_id = op.product_id) 
                             AND
                             (
                             date(o.created_at) between '$last_period->starts_at' and '$last_period->expires_at'
@@ -208,7 +208,7 @@ class PointInfoController extends Controller
                                     customer_points.customer_id = o.customer_id) AND*/
                             pr.created_at = (SELECT MAX(created_at) FROM 
                                             product_rewards GROUP BY product_id HAVING 
-                                            product_id = pr.product_id) 
+                                            product_id = op.product_id) 
                             AND
                             (
                             date(o.created_at) between '$prev_period->starts_at' and '$prev_period->expires_at'
@@ -371,7 +371,7 @@ class PointInfoController extends Controller
                                             
                                             pr.created_at = (SELECT MAX(created_at) FROM 
                                                             product_rewards GROUP BY product_id HAVING 
-                                                            product_id = pr.product_id) 
+                                                            product_id = op.product_id) 
                                             AND
                                             (
                                                 date(o.created_at) between '$period_cek->starts_at' and '$period_cek->expires_at' 
@@ -481,7 +481,7 @@ class PointInfoController extends Controller
                                             
                                             pr.created_at = (SELECT MAX(created_at) FROM 
                                                             product_rewards GROUP BY product_id HAVING 
-                                                            product_id = pr.product_id) 
+                                                            product_id = op.product_id) 
                                             AND
                                             (
                                                 date(o.created_at) between '$period_cek->starts_at' and '$period_cek->expires_at' 
@@ -554,18 +554,18 @@ class PointInfoController extends Controller
                                             JOIN partial_deliveries as pd on op.id = pd.op_id
                                             WHERE
                                             o.status = 'PARTIAL-SHIPMENT' AND
-                                            ( (date(o.created_at) between '$period->starts_at' and '$period->expires_at'
+                                            ( date(o.created_at) between '$period->starts_at' and '$period->expires_at'
                                                AND  
                                                date(pd.created_at) between '$period->starts_at' AND DATE_ADD(date('$period->expires_at'), INTERVAL 14 DAY)
-                                              )
-                                              OR
-                                              date(pd.created_at) between '$dateSt' AND DATE_ADD(date('$period->expires_at'), INTERVAL 14 DAY)
+                                              
+                                              /*OR
+                                              date(pd.created_at) between '$dateSt' AND DATE_ADD(date('$period->expires_at'), INTERVAL 14 DAY)*/
                                             )
                                             AND
                                             o.customer_id = $csid AND
                                             pr.created_at = (SELECT MAX(created_at) FROM 
                                                             product_rewards GROUP BY product_id HAVING 
-                                                            product_id = pr.product_id)"
+                                                            product_id = op.product_id)"
                                 );
         
         return $customers[0]->totalpoint;
@@ -599,19 +599,19 @@ class PointInfoController extends Controller
                                                 o.status = 'FINISH' AND
                                                 date(o.finish_time) between '$startTime' AND DATE_ADD(date('$afterPeriod->expires_at'), INTERVAL 14 DAY) 
                                                 AND 
-                                                (   (
+                                                (   
                                                     date(o.created_at) between '$period->starts_at' and '$period->expires_at'
                                                     AND  
                                                     date(pd.created_at) between '$period->starts_at' AND DATE_ADD(date('$period->expires_at'), INTERVAL 14 DAY)
-                                                    )
-                                                    OR
-                                                    date(pd.created_at) between '$dateSt' AND DATE_ADD(date('$period->expires_at'), INTERVAL 14 DAY)
+                                                    
+                                                    /*OR
+                                                    date(pd.created_at) between '$dateSt' AND DATE_ADD(date('$period->expires_at'), INTERVAL 14 DAY)*/
                                                 )
                                                 AND
                                                 o.customer_id = $csid AND
                                                 pr.created_at = (SELECT MAX(created_at) FROM 
                                                                 product_rewards GROUP BY product_id HAVING 
-                                                                product_id = pr.product_id)"
+                                                                product_id = op.product_id)"
                                     );
 
             return $customers[0]->totalpoint;
@@ -649,18 +649,18 @@ class PointInfoController extends Controller
                                         o.status = 'FINISH' AND
                                         date(o.finish_time) between '$startTime' AND DATE_ADD(date('$period->expires_at'), INTERVAL 14 DAY) 
                                         AND 
-                                        ( (date(o.created_at) between '$PrevPeriodCheck->starts_at' and '$PrevPeriodCheck->expires_at'
+                                        ( date(o.created_at) between '$PrevPeriodCheck->starts_at' and '$PrevPeriodCheck->expires_at'
                                             AND  
                                             date(pd.created_at) between '$PrevPeriodCheck->starts_at' AND DATE_ADD(date('$PrevPeriodCheck->expires_at'), INTERVAL 14 DAY)
-                                            )
-                                            OR
-                                            date(pd.created_at) between '$dateSt' AND DATE_ADD(date('$PrevPeriodCheck->expires_at'), INTERVAL 14 DAY)
+                                            
+                                            /*OR
+                                            date(pd.created_at) between '$dateSt' AND DATE_ADD(date('$PrevPeriodCheck->expires_at'), INTERVAL 14 DAY)*/
                                         )
                                         AND 
                                         o.customer_id = $csid AND
                                         pr.created_at = (SELECT MAX(created_at) FROM 
                                                         product_rewards GROUP BY product_id HAVING 
-                                                        product_id = pr.product_id)");
+                                                        product_id = op.product_id)");
             $pointPrevPartial = $customers[0]->totalpoint; 
             
         }else{
