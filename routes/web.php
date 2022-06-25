@@ -182,6 +182,14 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::get('/banner/{id}/restore', 'BannerController@restore')->name('banner.restore');
     Route::delete('/banner/{id}/delete-permanent','BannerController@deletePermanent')->name('banner.delete-permanent');
 
+    //catalog
+    Route::get('/catalog', 'catalogController@index')->name('catalog.index');
+    Route::get('/catalog/create', 'catalogController@create')->name('catalog.create');
+    Route::post('/catalog/store', 'catalogController@store')->name('catalog.store');
+    Route::get('/catalog/{id}/edit', 'catalogController@edit')->name('catalog.edit');
+    Route::get('/catalog/{id}/update', 'catalogController@update')->name('catalog.update');
+    Route::delete('/catalog/{id}/destroy', 'catalogController@destroy')->name('catalog.destroy');
+
     //Categories
     Route::get('/categories', 'CategoryController@index')->name('categories.index');
     Route::get('/categories/create', 'CategoryController@create')->name('categories.create');
@@ -411,6 +419,7 @@ Route::group(['prefix' => '/{vendor}'], function()
 Route::get('/ajax/users_email/search', 'AjaxAdminSearch@email_search');
 Route::get('/ajax/cities/search', 'AjaxAdminSearch@CitySearch');
 Route::post('/ajax/post-sortable','AjaxAdminSearch@post_sortable');
+Route::post('/ajax/catalog/sortable','AjaxAdminSearch@post_sortable_catalog');
 Route::post('/ajax/post-sortable-pareto','AjaxAdminSearch@post_sortable_pareto');
 Route::post('/ajax/post-sortable-reasons','AjaxAdminSearch@post_sortable_reasons');
 Route::get('/ajax/products/code/search', 'AjaxAdminSearch@CodeProductSearch');

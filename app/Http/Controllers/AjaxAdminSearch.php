@@ -32,6 +32,20 @@ class AjaxAdminSearch extends Controller
       return $cities;
     }
 
+    public function post_sortable_catalog(Request $request){
+      $catalog = \App\Catalog::all();
+
+      foreach ($catalog as $ban) {
+          foreach ($request->posit as $order) {
+              if ($order['id'] == $ban->id) {
+                  $ban->update(['position' => $order['position']]);
+              }
+          }
+      }
+      
+      return response('Update Successfully.', 200);
+    }
+
     public function post_sortable(Request $request){
       $banners= \App\Banner::all();
 

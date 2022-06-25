@@ -15,6 +15,10 @@ class CreateCatalogsTable extends Migration
     {
         Schema::create('catalogs', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('client_id');
+            $table->string('name');
+            $table->string('type');
+            $table->text('url');
             $table->timestamps();
         });
     }

@@ -1057,6 +1057,15 @@
 </head>
 <body>
     <div id="message" class="row justify-content-center"></div>
+    <!--catalog query-->
+    @php
+        $catalog = App\Http\Controllers\SalesHomeController::catalog(\Auth::user()->client_id); 
+    @endphp
+
+    @if($catalog)
+        @include('customer.layouts.catalog')
+    @endif
+
     <!-- Modal loaction-->
     @if (!session()->has('ses_order'))
     <div class="modal fade right" id="LocationForm" tabindex="-1" role="dialog" aria-labelledby="exampleModalPreviewLabel" aria-hidden="true">
@@ -1289,7 +1298,7 @@
             </div>
         @endif
     @endif
-
+    
     <!-- Modal new store form-->
     <div class="modal fade right" id="storeForm" tabindex="-1" role="dialog" aria-labelledby="exampleModalPreviewLabel" aria-hidden="true">
         <div class="modal-dialog-full-width modal-dialog momodel modal-fluid" role="document">
@@ -1746,11 +1755,18 @@
                     <a href="{{URL::route('pesanan',[$vendor])}}">Pesanan</a>
                 </li>
 
+                <!--catalog menu-->
+                @if($catalog->count() > 0)
+                    <li>
+                        <a href="#" data-toggle="modal" data-target="#catalogModal" 
+                        onclick="show_catalog()">Katalog</a>
+                    </li>
+                @endif
+
                 <li>
                     <a class="btn logout mt-4" data-toggle="modal" onclick="show_modal_chekout()">
                         Check Out 
                     </a>
-                    
                 <li>
 
                 <li class="mt-4">
@@ -1911,6 +1927,7 @@
         
     
     </div>
+
     <!-- jQuery CDN - Slim version (=without AJAX) -->
     <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <!-- Popper.JS -->
@@ -6993,6 +7010,11 @@
                 console.log('Error:', response);
                 }
             });
+        }
+
+        function show_catalog(){
+            $('#sidebar').removeClass('active');
+            $('.overlay').removeClass('active');
         }
 
         function logout_record(){

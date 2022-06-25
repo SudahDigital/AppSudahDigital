@@ -194,5 +194,14 @@ class SalesHomeController extends Controller
         }else{
             return view('customer.content_customer',$data);
         }
-    } 
+    }
+    
+    public static function catalog($client_id){
+        $catalog = \App\Catalog::where('client_id',$client_id)
+                    ->orderBy('position', 'ASC')
+                    ->get();
+        
+        return $catalog;
+    }
+    
 }
