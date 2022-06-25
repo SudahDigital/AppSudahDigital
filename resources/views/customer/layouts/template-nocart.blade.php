@@ -765,7 +765,7 @@
                 </li>
 
                 <!--catalog menu-->
-                @if($catalog->count() > 0)
+                @if($catalog)
                     <li>
                         <a href="#" data-toggle="modal" data-target="#catalogModal" 
                         onclick="show_catalog()">Katalog</a>
