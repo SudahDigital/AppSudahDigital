@@ -139,6 +139,7 @@ class DashboardController extends Controller
     public function store_message(Request $request, $vendor){
         $m_setting = new \App\Message();
         $m_setting->client_id = \Auth::user()->client_id;
+        $m_setting->msgs_receiver = $request->get('msgs_receiver');
         $m_setting->m_tittle =$request->get('m_tittle');
         $m_setting->s_tittle =$request->get('s_tittle');
         $m_setting->c_tittle =$request->get('c_tittle');
