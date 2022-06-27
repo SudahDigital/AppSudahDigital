@@ -1756,7 +1756,7 @@
                 </li>
 
                 <!--catalog menu-->
-                @if($catalog)
+                @if(count($catalog) > 0)
                     <li>
                         <a href="#" data-toggle="modal" data-target="#catalogModal" 
                         onclick="show_catalog()">Katalog</a>
