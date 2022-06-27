@@ -359,7 +359,7 @@ class CustomerKeranjangController extends Controller
         $user_id = \Auth::user()->id;
         $client_id =\Auth::user()->client_id;
         $client_name = \App\B2b_client::findOrfail($client_id);
-        $wa_numb=$client_name->phone_whatsapp;
+        
         $id = $request->get('id');
         /*$cek_order = DB::select("SELECT order_product.order_id, order_product.product_id,
                     sum(order_product.quantity), products.stock, products.Product_name FROM products,order_product 
@@ -476,6 +476,20 @@ class CustomerKeranjangController extends Controller
             //$total_ongkir  = 15000;
             //$total_bayar  = $total_pesanan;
 $message = \App\Message::where('client_id',$client_id)->first();
+if($message->msgs_receiver == 'ADMIN'){
+    $wa_numb = $client_name->phone_whatsapp;
+}else{
+    if($customer->phone){
+        if(substr(trim($customer->phone), 0, 1)=='0'){
+            $wa_numb = substr(trim($customer->phone), 1);
+        }else{
+            $wa_numb = $customer->phone;
+        }
+    }else{
+        $wa_numb = $client_name->phone_whatsapp;
+    }
+}
+
 
 $txt_descwa='*'.$message->m_tittle.'*,
 
