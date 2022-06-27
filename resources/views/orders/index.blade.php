@@ -266,7 +266,7 @@
 						@php
 							$PriceTotal = App\Http\Controllers\OrderController::cekDiscountVolume($order->id);
 						@endphp
-						{{number_format($PriceTotal)}}
+						{{number_format($PriceTotal, 2, ',', '.')}}
 						<!--{{number_format($order->total_price)}}-->
 					</td>
 					

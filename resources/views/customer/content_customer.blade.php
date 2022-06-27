@@ -751,22 +751,40 @@ Home
                                                     <td width="60%" class="td-desc-detail" align="left" valign="top" style="padding-top:3%;">
                                                         <p style="color: #000">{{ $paket_name->display_name}},</p>
                                                         <p style="color: #000">{{ $group_name->display_name}}</p>
+                                                        <!--
+                                                        @if($paket_name->discount)
+                                                            <span class="badge badge-warning">
+                                                                <small>Diskon {{$paket_name->discount_type == 'PERCENT' ? $paket_name->discount. ' %' : 'Rp. '.number_format($paket_name->discount, 0, ',', '.').',-'}}</small>
+                                                            </span>
+                                                        @endif
+                                                        -->
                                                         @php
                                                             if($item){
                                                             $pkt_total_krj = \App\order_product::where('order_id',$item->id)
-                                                            ->where('group_id',$dtl_pkt->group_id)
-                                                            ->where('paket_id',$dtl_pkt->paket_id)
-                                                            ->whereNull('bonus_cat')
-                                                            ->sum('quantity');
+                                                                ->where('group_id',$dtl_pkt->group_id)
+                                                                ->where('paket_id',$dtl_pkt->paket_id)
+                                                                ->whereNull('bonus_cat')
+                                                                ->sum('quantity');
                                                             $pkt_pirce = \App\order_product::where('order_id',$item->id)
-                                                            ->where('group_id',$dtl_pkt->group_id)
-                                                            ->where('paket_id',$dtl_pkt->paket_id)
-                                                            ->whereNull('bonus_cat')
-                                                            ->sum(\DB::raw('price_item * quantity'));
+                                                                ->where('group_id',$dtl_pkt->group_id)
+                                                                ->where('paket_id',$dtl_pkt->paket_id)
+                                                                ->whereNull('bonus_cat')
+                                                                ->sum(\DB::raw('price_item * quantity'));
                                                             }
                                                         @endphp
+
+                                                        @php
+                                                           /* if($paket_name->discount){
+                                                                if($paket_name->discount_type == 'PERCENT'){
+                                                                    $amountPktDisc = ($paket_name->discount / 100) * $pkt_pirce;
+                                                                    $pricePktDisc = $pkt_pirce - $amountPktDisc;
+                                                                }else{
+                                                                    $pricePktDisc = $pkt_pirce - $paket_name->discount;
+                                                                }
+                                                            }*/
+                                                        @endphp
+
                                                         <h2 style="font-weight:700;color: #153651;font-family: Montserrat;">Rp. {{ number_format($pkt_pirce, 0, ',', '.') }},-</h2>
-                                                        
                                                         <p style="color: #000"><span>Qty</span><span class="d-inline ml-2" style="color: #153651;font-weight:900;">{{$pkt_total_krj}}</span></p>
                                                         <a onclick="open_detail_pkt('{{$item->id}}','{{$dtl_pkt->paket_id}}','{{$dtl_pkt->group_id}}')" style="cursor: pointer"><span class="badge badge-secondary">Detail Paket</span></a>
 

@@ -392,8 +392,29 @@ $no=$count_nt_paket;
             $totalPriceNoDisc += $amNoDisc->quantity * $amNoDisc->price_item;
         }
 
+        //cekdiscount pkt
+        $totalDiscPkt = 0;
+        $selectDiscPaket = \DB::select("SELECT paket_id,discount_pkt,discount_pkt_type, 
+                                        SUM(price_item * quantity) AS sumPrice 
+                                        FROM order_product 
+                                        WHERE order_id = '$order_id'
+                                        AND discount_pkt IS NOT NULL
+                                        GROUP BY paket_id
+                                      ");
+        
+        foreach($selectDiscPaket as $opPkt){
+            if($opPkt->discount_pkt_type == 'PERCENT'){
+                $disc = ($opPkt->discount_pkt/100) * $opPkt->sumPrice;
+                //$sumPrice = $opPkt->sumPrice - $disc; 
+            }else{
+                $disc = $opPkt->discount_pkt;
+                //$sumPrice = $opPkt->sumPrice - $opPkt->discount_pkt;
+            }
 
-        return $totalPriceNoDisc + $totalPriceDisc;
+            $totalDiscPkt +=  $disc;
+        }
+
+        return ($totalPriceNoDisc + $totalPriceDisc) - $totalDiscPkt;
     }
 
     public static function PriceNoPktTotal($order_id){

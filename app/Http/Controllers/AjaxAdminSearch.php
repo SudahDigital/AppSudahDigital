@@ -32,6 +32,20 @@ class AjaxAdminSearch extends Controller
       return $cities;
     }
 
+    public function post_sortable_catalog(Request $request){
+      $catalog = \App\Catalog::all();
+
+      foreach ($catalog as $ban) {
+          foreach ($request->posit as $order) {
+              if ($order['id'] == $ban->id) {
+                  $ban->update(['position' => $order['position']]);
+              }
+          }
+      }
+      
+      return response('Update Successfully.', 200);
+    }
+
     public function post_sortable(Request $request){
       $banners= \App\Banner::all();
 
@@ -99,6 +113,19 @@ class AjaxAdminSearch extends Controller
   public function PaketNameSearch(Request $request){
     $keyword = $request->get('code');
     $pakets = \App\Paket::where('client_id','=',auth()->user()->client_id)
+              ->where('paket_name','=',"$keyword")->count();
+    if ($pakets > 0) {
+        echo "taken";	
+      }else{
+        echo 'not_taken';
+      }
+  }
+
+  public function PaketEditNameSearch(Request $request){
+    $key_old = $request->get('old_code');
+    $keyword = $request->get('code');
+    $pakets = \App\Paket::where('client_id','=',auth()->user()->client_id)
+              ->where('id','!=',$key_old)
               ->where('paket_name','=',"$keyword")->count();
     if ($pakets > 0) {
         echo "taken";	

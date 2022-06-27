@@ -224,16 +224,20 @@
                     @if(Gate::check('isSuperadmin') || Gate::check('isAdmin') || Gate::check('isSpv'))
                         @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
                             <!--manage banners-->
-                            <li class="{{request()->routeIs('banner.index') ? 'active' : '' }}">
+                            <li class="{{request()->routeIs('banner.index') || request()->routeIs('catalog.index') ? 'active' : '' }}">
                                 <a href="javascript:void(0);" class="menu-toggle">
                                     <i class="material-icons">insert_photo</i>
-                                    <span>Manage Banner</span>
+                                    <span>Banner & Catalog</span>
                                 </a>
                                 <ul class="ml-menu">
                                     <li class="{{request()->routeIs('banner.index') ? 'active' : '' }}">
-                                        <a href="{{route('banner.index',[$vendor])}}">List Slide Banner</a>
+                                        <a href="{{route('banner.index',[$vendor])}}">Slide Banner Lists</a>
+                                    </li>
+                                    <li class="{{request()->routeIs('catalog.index') ? 'active' : '' }}">
+                                        <a href="{{route('catalog.index',[$vendor])}}">Catalog Lists</a>
                                     </li>
                                 </ul>
+                                
                             </li>
                             
                             <!--manage categories-->

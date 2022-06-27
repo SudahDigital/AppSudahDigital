@@ -293,7 +293,7 @@
                                                         @include('dashboardSpv-sales')
                                                     </div>
                                                 </div>
-                                        @elseif($type_targetSls && $type_targetSls->target_type == 2)
+                                            @elseif($type_targetSls && $type_targetSls->target_type == 2)
                                                 <div class="flip-box-front">
                                                     <div class="well">
                                                         @include('dashboardSpv-sales-nml')
@@ -818,7 +818,7 @@
                                         <a href="#profile_settings" aria-controls="settings" role="tab" data-toggle="tab">Profile Detail</a>
                                     </li>
                                     <li role="presentation" class="{{$msgs ? 'active' : ''}}">
-                                        <a href="#wa_setting" aria-controls="settings" role="tab" data-toggle="tab">WA Ordering Tittle Setting</a>
+                                        <a href="#wa_setting" aria-controls="settings" role="tab" data-toggle="tab">WA Ordering Setting</a>
                                     </li>
                                 </ul>
                                 <div class="tab-content">
@@ -1039,6 +1039,28 @@
                                             @if ($message)
                                                 <input type="hidden" name="_method" value="PUT">
                                             @endif
+
+                                            <div class="form-group">
+                                                <label for="m_tittle" class="col-sm-3 control-label">Recipient</label>
+                                                <div class="col-sm-9 p-t-5">
+                                                    <input class="form-control {{$errors->first('msgs_receiver') ? "is-invalid" : "" }} " 
+                                                        type="radio" name="msgs_receiver" id="rdo_ADMIN" value="ADMIN" required 
+                                                        checked> 
+                                                    <label for="rdo_ADMIN">ADMIN</label>
+                                                    
+                                                    <!--
+                                                    <input class="form-control {{$errors->first('msgs_receiver') ? "is-invalid" : "" }} " 
+                                                        type="radio" name="msgs_receiver" id="rdo_ADMIN" value="ADMIN" required 
+                                                        {{$message && $message->msgs_receiver == "ADMIN" ? "checked" : ""}}> 
+                                                    <label for="rdo_ADMIN">ADMIN</label>
+
+                                                    <input class="form-control {{$errors->first('msgs_receiver') ? "is-invalid" : "" }}" 
+                                                        type="radio" name="msgs_receiver" id="rdo_CUSTOMER" value="CUSTOMER" 
+                                                        {{$message && $message->msgs_receiver == "CUSTOMER" ? "checked" : ""}}> 
+                                                    <label for="rdo_CUSTOMER">CUSTOMER</label>
+                                                    -->
+                                                </div>
+                                            </div>
                                             
                                             <div class="form-group">
                                                 <label for="m_tittle" class="col-sm-3 control-label">Message Tittle</label>
@@ -1126,6 +1148,7 @@
 <script src="https://code.highcharts.com/stock/highstock.js"></script>
 <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
 <script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
     <script>
         $('.popoverData').popover();
@@ -1203,6 +1226,23 @@
             });
         });
         
+        $('#rdo_CUSTOMER').click(function(){
+            Swal.fire({
+            text: "If you choose a customer, please make sure the WhatsApp number of each customer is valid !",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirm'
+            }).then((result) => {
+            if (result.isConfirmed) {
+                $('#rdo_CUSTOMER').prop('checked', true);
+            }else{
+                $('#rdo_CUSTOMER').prop('checked', false);
+                $('#rdo_ADMIN').prop('checked', true);
+            }
+            })
+        });
     </script>
     @can('isSpv')
         <script>

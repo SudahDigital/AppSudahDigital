@@ -130,6 +130,12 @@ class OrdersThisPeriod implements FromCollection, WithMapping, WithHeadings, Wit
             }else{
                 $reasons = null;
             }
+
+            if($order->customers->status == 'NONACTIVE'){
+                $storeStatus = 'INACTIVE';
+            }else{
+                $storeStatus = $order->customers->status;
+            }
             
             $podNumber = \App\Http\Controllers\OrderController::getPodNumber($p->pivot->order_id,$p->pivot->id);
             if($podNumber){
@@ -152,6 +158,7 @@ class OrdersThisPeriod implements FromCollection, WithMapping, WithHeadings, Wit
                             $order->customers->store_key,
                             $order->customers->store_code,
                             $order->customers->store_name,
+                            $storeStatus,
                             $order->customers->group_code,
                             $order->customers->name,
                             $order->users()->first()['name'],
@@ -163,10 +170,12 @@ class OrdersThisPeriod implements FromCollection, WithMapping, WithHeadings, Wit
                             $pod->pdCreate,
                             $price,
                             $price * $qtyPart,
-                            $order->payment_method,
                             $p->pivot->paket_id,
                             $p->pivot->group_id,
                             $p->pivot->bonus_cat,
+                            $p->pivot->discount_pkt,
+                            $p->pivot->discount_pkt_type,
+                            $order->payment_method,
                             $order->notes,
                             $order->created_at,
                             $order->process_time,
@@ -188,6 +197,7 @@ class OrdersThisPeriod implements FromCollection, WithMapping, WithHeadings, Wit
                             $order->customers->store_key,
                             $order->customers->store_code,
                             $order->customers->store_name,
+                            $storeStatus,
                             $order->customers->group_code,
                             $order->customers->name,
                             $order->users()->first()['name'],
@@ -199,10 +209,12 @@ class OrdersThisPeriod implements FromCollection, WithMapping, WithHeadings, Wit
                             $order->finish_time,
                             $price,
                             $price * $p->pivot->quantity,
-                            $order->payment_method,
                             $p->pivot->paket_id,
                             $p->pivot->group_id,
                             $p->pivot->bonus_cat,
+                            $p->pivot->discount_pkt,
+                            $p->pivot->discount_pkt_type,
+                            $order->payment_method,
                             $order->notes,
                             $order->created_at,
                             $order->process_time,
@@ -227,6 +239,7 @@ class OrdersThisPeriod implements FromCollection, WithMapping, WithHeadings, Wit
                     $order->customers->store_key,
                     $order->customers->store_code,
                     $order->customers->store_name,
+                    $storeStatus,
                     $order->customers->group_code,
                     $order->customers->name,
                     $order->users()->first()['name'],
@@ -238,10 +251,12 @@ class OrdersThisPeriod implements FromCollection, WithMapping, WithHeadings, Wit
                     null,
                     $price,
                     $price * $p->pivot->quantity,
-                    $order->payment_method,
                     $p->pivot->paket_id,
                     $p->pivot->group_id,
                     $p->pivot->bonus_cat,
+                    $p->pivot->discount_pkt,
+                    $p->pivot->discount_pkt_type,
+                    $order->payment_method,
                     $order->notes,
                     $order->created_at,
                     $order->process_time,
@@ -266,6 +281,7 @@ class OrdersThisPeriod implements FromCollection, WithMapping, WithHeadings, Wit
            'Cust. Key',
            'Cust. Code',
            'Name',
+           'Cust. Status',
            'Cust. Group Code',
            'Contact Person',
            'Sales Rep',
@@ -277,10 +293,12 @@ class OrdersThisPeriod implements FromCollection, WithMapping, WithHeadings, Wit
            'Input Date Doc. No',
            'Price',
            'Price Total',
+           'Id (Paket)',
+           'Group Id (Paket)',
+           'Bonus (Paket)',
+           'Discount (Paket)',
+           'Discount Type (Paket)',
            'Payment',
-           'Paket Id',
-           'Group Id',
-           'Bonus Product',
            'Note',
            'Order Date',
            'Process Date',

@@ -109,16 +109,16 @@
                                 <td style="padding-top:5px;">{{$p->pivot->quantity}}</td>
                                 <td style="padding-top:5px;">
                                     @if($p->pivot->vol_disc_price > 0)
-                                        Rp. {{number_format($p->pivot->vol_disc_price, 0, ',', '.')}}
+                                        Rp. {{number_format($p->pivot->vol_disc_price, 2, ',', '.')}}
                                     @else
-                                        Rp. {{number_format($p->pivot->price_item, 0, ',', '.')}}
+                                        Rp. {{number_format($p->pivot->price_item, 2, ',', '.')}}
                                     @endif
                                 </td>
                                 <!--
                                     <td style="padding-top:5px;">{{$p->pivot->discount_item}}</td>
                                     <td style="padding-top:5px;">
                                         @if(($p->pivot->price_item_promo != NULL) && ($p->pivot->price_item_promo > 0))
-                                        {{number_format($p->pivot->price_item_promo, 0, ',', '.')}}
+                                        {{number_format($p->pivot->price_item_promo, 2, ',', '.')}}
                                         @else
                                         ---
                                         @endif
@@ -126,12 +126,12 @@
                                 -->
                                 <td align="right">
                                     @if($p->pivot->vol_disc_price > 0)
-                                        Rp. {{number_format($p->pivot->vol_disc_price * $p->pivot->quantity, 0, ',', '.')}}
+                                        Rp. {{number_format($p->pivot->vol_disc_price * $p->pivot->quantity, 2, ',', '.')}}
                                     @else
                                         @if(($p->pivot->discount_item != NULL) && ($p->pivot->discount_item > 0))
-                                        Rp. {{number_format($p->pivot->price_item_promo * $p->pivot->quantity, 0, ',', '.')}}
+                                        Rp. {{number_format($p->pivot->price_item_promo * $p->pivot->quantity, 2, ',', '.')}}
                                         @else
-                                        Rp. {{number_format($p->pivot->price_item * $p->pivot->quantity, 0, ',', '.')}}
+                                        Rp. {{number_format($p->pivot->price_item * $p->pivot->quantity, 2, ',', '.')}}
                                         @endif
                                     @endif
                                 </td>
@@ -184,8 +184,8 @@
                                 ->sum(\DB::raw('price_item * quantity'));*/
                                 $PriceNoPktTotal = App\Http\Controllers\OrderController::PriceNoPktTotal($order->id);
                             @endphp
-                            <td colspan="3" align="right" width="85%"><b>Total Price :</b></td>
-                            <td align="right"><b>Rp. {{number_format($PriceNoPktTotal, 0, ',', '.')}}</b></td>
+                            <td colspan="3" align="right" width="75%"><b>Total Price :</b></td>
+                            <td align="right"><b>Rp. {{number_format($PriceNoPktTotal, 2, ',', '.')}}</b></td>
                         </tr>
                     </tbody>
                 </table>
@@ -222,86 +222,94 @@
                                 //dd($cek_paket);
                             @endphp
                             @foreach($cek_paket as $p)
-                            <tr>
-                                <td style="padding-top:10px;">
-                                    @if($p->bonus_cat == NULL)
-                                        {{$p->Product_name}}
-                                    @else
-                                        {{$p->Product_name}} (<small><b>PRODUCT BONUS</b></small>)
-                                    @endif
-                                    @if( $p->deliveryQty !== null)
-                                        <br>
-                                        <span class="badge bg-orange">Outstanding : {{$p->quantity - $p->deliveryQty}}</span>
-                                        <span class="badge bg-green">Delivered : {{$p->deliveryQty}}</span>
-                                    @else
-                                        @if($p->preorder > 0)
-                                        <br>
-                                            <!--<span class="badge bg-cyan">Available : {{$p->available}}</span>-->
-                                            <span class="badge bg-orange">Pre Order : {{$p->preorder}}</span>
-                                        @endif
-                                    @endif
-                                    @php
-                                        $podNumber = App\Http\Controllers\OrderController::getPodNumber($order->id,$p->id);
-                                        //dd($podNumber)
-                                    @endphp
-                                    @if($podNumber)
-                                        <br><label class="form-label m-t-10 m-b-0">Doc. Number :</label><br>
-                                        <ul class="list-group">
-                                            @foreach($podNumber as $pn)
-                                                <li class="list-group-item" style="padding: 2px 6px; border-left:none;border-right:none">
-                                                    {{$pn->pod_number}}
-                                                    <span class="badge bg-grey">
-                                                        {{$pn->pdCreate ? $pn->pdCreate : $pn->finish_time}}
-                                                        @if($pn->partial_id) 
-                                                            (Qty : {{$pn->partial_qty ? $pn->partial_qty : $pn->quantity}})
-                                                        @else
-                                                            (Qty : {{$p->quantity}})
-                                                        @endif
-                                                    </span>
-                                                </li>
-                                            @endforeach
-                                        </ul>
-                                    @endif
-                                </td>
-                                <td style="padding-top:5px;">{{$p->quantity}}</td>
-                                <td style="padding-top:5px;">
-                                    @if($p->bonus_cat == NULL)
-                                    Rp. {{number_format($p->price_item, 0, ',', '.')}}
-                                    @endif
-                                </td>
-                                <td align="right">
-                                    @if($p->bonus_cat == NULL)
-                                        @if(($p->discount_item != NULL) && ($p->discount_item > 0))
-                                            Rp. {{number_format($p->price_item_promo * $p->quantity, 0, ',', '.')}}
+                                <tr>
+                                    <td style="padding-top:10px;">
+                                        @if($p->bonus_cat == NULL)
+                                            {{$p->Product_name}}
                                         @else
-                                            Rp. {{number_format($p->price_item * $p->quantity, 0, ',', '.')}}
+                                            {{$p->Product_name}} (<small><b>PRODUCT BONUS</b></small>)
                                         @endif
-                                    @endif
-                                </td>
-                            </tr>
-                            <tr class="dlv_qty"  style="{{$order->status == 'PARTIAL-SHIPMENT' ? 'display: table-row' : 'display:none'}}">
-                                <td colspan="4">
-                                    <input type="hidden" name="order_productId[]" value="{{$p->id}}">
-                                    <input type="hidden" name="productId[]" value="{{$p->product_id}}" id="PrId{{$p->id}}">
-                                    <input type="hidden" class="valEmpty" id="valEmpty{{$p->id}}">
-                                    <div class="form-group form-float">
-                                        <div class="form-line">
-                                            <input type="number" min="0" 
-                                            max="{{$p->deliveryQty > 0 ? ($p->quantity - $p->deliveryQty) : $p->quantity}}" 
-                                            name="deliveryQty[{{$p->id}}]" 
-                                            value="" class="form-control deliveryQty" onkeyup="input_qty('{{$p->id}}')" onblur="input_qty('{{$p->id}}')"
-                                            autocomplete="off" id="dlv{{$p->id}}" required/>
-                                            <label for="dlv{{$p->id}}" class="form-label">Delivery Quantity</label>
+                                        @if( $p->deliveryQty !== null)
+                                            <br>
+                                            <span class="badge bg-orange">Outstanding : {{$p->quantity - $p->deliveryQty}}</span>
+                                            <span class="badge bg-green">Delivered : {{$p->deliveryQty}}</span>
+                                        @else
+                                            @if($p->preorder > 0)
+                                            <br>
+                                                <!--<span class="badge bg-cyan">Available : {{$p->available}}</span>-->
+                                                <span class="badge bg-orange">Pre Order : {{$p->preorder}}</span>
+                                            @endif
+                                        @endif
+                                        @php
+                                            $podNumber = App\Http\Controllers\OrderController::getPodNumber($order->id,$p->id);
+                                            //dd($podNumber)
+                                        @endphp
+                                        @if($podNumber)
+                                            <br><label class="form-label m-t-10 m-b-0">Doc. Number :</label><br>
+                                            <ul class="list-group">
+                                                @foreach($podNumber as $pn)
+                                                    <li class="list-group-item" style="padding: 2px 6px; border-left:none;border-right:none">
+                                                        {{$pn->pod_number}}
+                                                        <span class="badge bg-grey">
+                                                            {{$pn->pdCreate ? $pn->pdCreate : $pn->finish_time}}
+                                                            @if($pn->partial_id) 
+                                                                (Qty : {{$pn->partial_qty ? $pn->partial_qty : $pn->quantity}})
+                                                            @else
+                                                                (Qty : {{$p->quantity}})
+                                                            @endif
+                                                        </span>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
+                                    </td>
+                                    <td style="padding-top:5px;">{{$p->quantity}}</td>
+                                    <td style="padding-top:5px;">
+                                        @if($p->bonus_cat == NULL)
+                                        Rp. {{number_format($p->price_item, 2, ',', '.')}}
+                                        @endif
+                                    </td>
+                                    <td align="right">
+                                        @if($p->bonus_cat == NULL)
+                                            @if(($p->discount_item != NULL) && ($p->discount_item > 0))
+                                                Rp. {{number_format($p->price_item_promo * $p->quantity, 2, ',', '.')}}
+                                            @else
+                                                Rp. {{number_format($p->price_item * $p->quantity, 2, ',', '.')}}
+                                            @endif
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr class="dlv_qty"  style="{{$order->status == 'PARTIAL-SHIPMENT' ? 'display: table-row' : 'display:none'}}">
+                                    <td colspan="4">
+                                        <input type="hidden" name="order_productId[]" value="{{$p->id}}">
+                                        <input type="hidden" name="productId[]" value="{{$p->product_id}}" id="PrId{{$p->id}}">
+                                        <input type="hidden" class="valEmpty" id="valEmpty{{$p->id}}">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="number" min="0" 
+                                                max="{{$p->deliveryQty > 0 ? ($p->quantity - $p->deliveryQty) : $p->quantity}}" 
+                                                name="deliveryQty[{{$p->id}}]" 
+                                                value="" class="form-control deliveryQty" onkeyup="input_qty('{{$p->id}}')" onblur="input_qty('{{$p->id}}')"
+                                                autocomplete="off" id="dlv{{$p->id}}" required/>
+                                                <label for="dlv{{$p->id}}" class="form-label">Delivery Quantity</label>
+                                            </div>
+                                            <label id="dlv{{$p->id}}-error" class="error" for="dlv{{$p->id}}"></label>
+                                            <small class="err_exist{{$p->id}}"></small>
                                         </div>
-                                        <label id="dlv{{$p->id}}-error" class="error" for="dlv{{$p->id}}"></label>
-                                        <small class="err_exist{{$p->id}}"></small>
-                                    </div>
-                                </td>
-                            </tr>
+                                    </td>
+                                </tr>
                             @endforeach
                             
                             <tr>
-                                <td colspan="3" align="right" width="85%"><b>Total Price :</b></td>
+                                <td colspan="3" align="right" width="75%">
+                                    <b> {{$paket->discount_pkt ? 'Price :' : 'Total Price :'}}</b>
+                                    @if($paket->discount_pkt)
+                                        <br>
+                                        <b>Discount :</b>
+                                        <br>
+                                        <b>Total Price :</b>
+                                    @endif
+                                </td>
                                 @php
                                     $pkt_pirce = \App\order_product::where('order_id',$order->id)
                                     ->where('group_id',$paket->group_id)
@@ -309,7 +317,31 @@
                                     ->whereNull('bonus_cat')
                                     ->sum(\DB::raw('price_item * quantity'));
                                 @endphp
-                                <td align="right"><b>Rp. {{number_format($pkt_pirce, 0, ',', '.')}}</b></td>
+                                <td align="right">
+                                    <b>Rp. {{number_format($pkt_pirce, 2, ',', '.')}}</b>
+                                    @if ($paket->discount_pkt)
+                                        <br>
+                                        @if($paket->discount_pkt_type == 'PERCENT')
+                                            @php
+                                                $jmlDiscPkt = ($paket->discount_pkt/100) * $pkt_pirce;
+                                                $afterDiscPkt = $pkt_pirce - $jmlDiscPkt;
+                                            @endphp
+                                            <b>{{$paket->discount_pkt. ' %'}}</b>
+                                        @else
+                                            @php
+                                                if($paket->discount_pkt){
+                                                    $discNominal = $paket->discount_pkt;
+                                                }else{
+                                                    $discNominal = 0;
+                                                }
+                                                $afterDiscPkt = $pkt_pirce - $discNominal; 
+                                            @endphp
+                                            {{'Rp. '.number_format($discNominal, 2, ',', '.')}}
+                                        @endif
+                                        <br>
+                                        <b>{{'Rp. '.number_format( $afterDiscPkt, 2, ',', '.')}}</b>
+                                    @endif
+                                </td>
                             </tr>
                             
                         .</tbody>
@@ -321,12 +353,12 @@
         <div style="margin-top:-20px;">
             <table width="100%" class="table">
                 <thead>
-                    <th width="85%" class="text-right">Grand Total :</th>
+                    <th width="75%" class="text-right">Grand Total :</th>
                     <th width="" class="text-right">
                         @php
                             $PriceTotal = App\Http\Controllers\OrderController::cekDiscountVolume($order->id);
                         @endphp
-                        Rp. {{number_format($PriceTotal, 0, ',', '.')}}
+                        Rp. {{number_format($PriceTotal, 2, ',', '.')}}
                     </th>
                 </thead>
             </table>

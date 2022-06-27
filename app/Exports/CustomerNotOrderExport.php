@@ -77,6 +77,12 @@ class CustomerNotOrderExport implements FromCollection, WithMapping, WithHeading
             $pareto = '';
         }
 
+        if($notOrder->status == 'NONACTIVE'){
+            $storeStatus = 'INACTIVE';
+        }else{
+            $storeStatus = $notOrder->status;
+        }
+
         //store target
         $thisMonth = date('m');
         $thisYear = date('Y');
@@ -109,6 +115,7 @@ class CustomerNotOrderExport implements FromCollection, WithMapping, WithHeading
             $notOrder->store_key,
             $notOrder->store_code,
             $notOrder->store_name,
+            $storeStatus,
             $notOrder->group_code,
             $notOrder->address,
             $pareto,
@@ -124,6 +131,7 @@ class CustomerNotOrderExport implements FromCollection, WithMapping, WithHeading
             'Customer Key',
             'Customer Code',
             'Customer Name',
+            'Cust. Status',
             'Group Code',
             'Address',
             'Pareto',

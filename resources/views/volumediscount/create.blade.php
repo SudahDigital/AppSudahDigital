@@ -20,33 +20,33 @@
         </div>
 
         <h2 class="card-inside-title">Type</h2>
-            <div class="form-group">
-                <input class="form-control" type="radio" 
-                    name="type" id="1" value="1" required
-                    @if($vDiscounts)
-                        @if($vDiscounts->type == 1)
-                            {{'checked'}}
-                        @else
-                            {{'disabled'}}
-                        @endif
+        <div class="form-group">
+            <input class="form-control" type="radio" 
+                name="type" id="1" value="1" required
+                @if($vDiscounts)
+                    @if($vDiscounts->type == 1)
+                        {{'checked'}}
+                    @else
+                        {{'disabled'}}
                     @endif
-                > 
-                <label for="1">Combine</label>
-                <input class="form-control" type="radio" 
-                    name="type" id="2" value="2"
-                    @if($vDiscounts){
-                        @if($vDiscounts->type == 2)
-                            {{'checked'}}
-                        @else
-                            {{'disabled'}}
-                        @endif
+                @endif
+            > 
+            <label for="1">Combine</label>
+            <input class="form-control" type="radio" 
+                name="type" id="2" value="2"
+                @if($vDiscounts){
+                    @if($vDiscounts->type == 2)
+                        {{'checked'}}
+                    @else
+                        {{'disabled'}}
                     @endif
-                > 
-                <label for="2">Item</label>
-                <div class="invalid-feedback">
-                    {{$errors->first('type')}}
-                </div>
+                @endif
+            > 
+            <label for="2">Item</label>
+            <div class="invalid-feedback">
+                {{$errors->first('type')}}
             </div>
+        </div>
         
         <div class="form-group form-float">
             <div class="form-line">

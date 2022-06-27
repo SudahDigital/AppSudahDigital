@@ -359,7 +359,7 @@ class CustomerKeranjangController extends Controller
         $user_id = \Auth::user()->id;
         $client_id =\Auth::user()->client_id;
         $client_name = \App\B2b_client::findOrfail($client_id);
-        
+        $wa_numb=$client_name->phone_whatsapp;
         $id = $request->get('id');
         /*$cek_order = DB::select("SELECT order_product.order_id, order_product.product_id,
                     sum(order_product.quantity), products.stock, products.Product_name FROM products,order_product 
@@ -455,10 +455,7 @@ class CustomerKeranjangController extends Controller
                 })->save();*/
                 
                 $orders->po_file = $path;
-            }
-
-
-            //save order
+              }
             $orders->save();
 
             $total_pesanan = $request->get('total_pesanan');
@@ -476,20 +473,6 @@ class CustomerKeranjangController extends Controller
             //$total_ongkir  = 15000;
             //$total_bayar  = $total_pesanan;
 $message = \App\Message::where('client_id',$client_id)->first();
-if($message->msgs_receiver == 'ADMIN'){
-    $wa_numb = $client_name->phone_whatsapp;
-}else{
-    if($customer->phone){
-        if(substr(trim($customer->phone), 0, 1)=='0'){
-            $wa_numb = substr(trim($customer->phone), 1);
-        }else{
-            $wa_numb = $customer->phone;
-        }
-    }else{
-        $wa_numb = $client_name->phone_whatsapp;
-    }
-}
-
 
 $txt_descwa='*'.$message->m_tittle.'*,
 
@@ -516,9 +499,9 @@ Email            : '.$customer->email.',
                 //$href=urlencode($txt_wa);
                 if($orders->save()){
                 
-                //$orders_ach = Order::findOrfail($id);
-                $month = date('m',strtotime($orders->created_at));
-                $year = date('Y',strtotime($orders->created_at));
+                $orders_ach = Order::findOrfail($id);
+                $month = date('m',strtotime($orders_ach->created_at));
+                $year = date('Y',strtotime($orders_ach->created_at));
                 $target_ach = \App\Sales_Targets::where('user_id',$user_id)
                             ->where('client_id',$client_id)
                             ->whereMonth('period', $month)
@@ -526,7 +509,7 @@ Email            : '.$customer->email.',
                 //dd($month);
                 if($target_ach){
                     
-                    $target_ach->target_achievement +=  $orders->total_price;
+                    $target_ach->target_achievement +=  $orders_ach->total_price;
                     $target_ach->save();
                 }
 
@@ -594,23 +577,9 @@ $no=$count_nt_paket;
                                     ->first();
                         $group_name =\App\Group::where('id',$dtl_pkt->group_id)
                                     ->first();
-
-                        //if diskon paket
-                        if($paket_name->discount){
-                            if($paket_name->discount_type = 'PERCENT'){
-                                $discPktName = '(Diskon '.$paket_name->discount.' %)';
-                            }else{
-                                $discPktName = '(Diskon Rp. '.number_format($paket_name->discount, 2, ',', '.').')';
-                            }
-                        }else{
-                            $discPktName = '';
-                        }
-
-                        //for wa text
-                        $newline= urldecode('%0A');
-                        $ttle_pesan_pkt.=$newline.$no.'. '.$paket_name->display_name.' - '.$group_name->display_name.' '.$discPktName.':
+                        $ttle_pesan_pkt.= $no.'. '.$paket_name->display_name.' - '.$group_name->display_name.' :
 ';
-                        //for email text
+                        
                         $ttl_email_pkt .='<tr><td height="1" colspan="3">'. $no.'. '.$paket_name->display_name.' - '.$group_name->display_name.' :</td></tr>';
 
                         $data_paket = DB::table('order_product')
@@ -619,21 +588,10 @@ $no=$count_nt_paket;
                                     ->where('group_id','=',$dtl_pkt->group_id)
                                     ->where('paket_id','=',$dtl_pkt->paket_id)
                                     ->whereNull('bonus_cat')
-                                    ->get(['order_product.*','products.Product_name']);
+                                    ->get();
 
-                        //dd($data_paket);
-                        
                         $no_pkt = 0;
                         foreach($data_paket as $key=>$dp){
-
-                            //isert discount on order product
-                            if($paket_name->discount){
-                                $updateDisc = \App\order_product::findOrFail($dp->id);
-                                $updateDisc->discount_pkt =  $paket_name->discount;
-                                $updateDisc->discount_pkt_type =  $paket_name->discount_type;
-                                $updateDisc->save();
-                            }
-
                             $no_pkt++;
                             $ttle_pesan_pkt.=strtolower($this->number_to_alphabet($no_pkt)).'. '.$dp->Product_name.' = ( Qty :'.$dp->quantity.')
 ';
@@ -693,8 +651,8 @@ $no=$count_nt_paket;
                     $list_text = urlencode($txt_descwa).'%0A'.urlencode($ttle_nonpkt);
                 }
 
-                if($orders->po_file){
-                    $polink = 'File PO          : '.asset('storage/'.$orders->po_file);       
+                if($orders_ach->po_file){
+                    $polink = 'File PO          : '.asset('storage/'.$orders_ach->po_file);       
                 }else{
                     $polink = '';
                 }
@@ -1654,13 +1612,19 @@ $no=$count_nt_paket;
                             
                             
                             echo'
-                            <td width="50%" align="right" >
+                            <td width="50%" align="right">
                                 <small>
                                     <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;"><b>Total :</b></p></small>
                                 </small>
                             </td>
-                            
-                            <td width="40%" align="right" style="padding-bottom:0;" class="pl-0" colspan="2">
+                            <td align="left">
+                                <small>
+                                    <small><p style="line-height:1.2;color:#000;text-align:left;font-weight:400;">
+                                        <b>'.$order->TotalQtyDiscVolume.'</b></p>
+                                    </small>
+                                </small>
+                            </td>
+                            <td width="40%" align="right" style="padding-bottom:0;" class="pl-0">
                                 <small>
                                     <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;">';
                                         if($cekCombineDisc){
@@ -1714,7 +1678,6 @@ $no=$count_nt_paket;
             }
             
             if(count( $paket_list) > 0){
-                $grandDiscPkt = 0;
                 foreach($paket_list as $paket){
                     $paket_name =\App\Paket::where('id',$paket->paket_id)
                                     ->first();
@@ -1747,12 +1710,12 @@ $no=$count_nt_paket;
                         </thead>
                         <tbody>';
                                 $cek_paket=\DB::table('order_product')
-                                                ->join('products','products.id','=','order_product.product_id')
-                                                ->where('order_id',$order->id)
-                                                ->where('paket_id',$paket->paket_id)
-                                                ->where('group_id',$paket->group_id)
-                                                ->orderBy('bonus_cat','ASC')
-                                                ->get();
+                                            ->join('products','products.id','=','order_product.product_id')
+                                            ->where('order_id',$order->id)
+                                            ->where('paket_id',$paket->paket_id)
+                                            ->where('group_id',$paket->group_id)
+                                            ->orderBy('bonus_cat','ASC')
+                                            ->get();
                             foreach($cek_paket as $p){
                             
                             echo'<tr>
@@ -1798,68 +1761,29 @@ $no=$count_nt_paket;
                             echo '<tr>
                             <td width="50%" align="right">
                                 <small>
-                                    <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;">
-                                            <b>';
-                                                if($paket_name->discount){
-                                                    echo 'Jml Harga :';
-                                                }else{
-                                                    echo 'Total :';
-                                                }
-                                            echo'</b>
-                                        </p>
+                                    <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;"><b>Total :</b></p></small>
+                                </small>
+                            </td>
+                            <td align="left">
+                                <small>
+                                    <small><p style="line-height:1.2;color:#000;text-align:left;font-weight:400;">
+                                        <b>'.$order->TotalQtyPaket.'</b></p>
                                     </small>
-                                </small>';
-                                if($paket_name->discount){
-                                    echo '<small>
-                                        <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;">
-                                                <b>Diskon :</b>
-                                            </p>
-                                        </small>
-                                    </small>
-                                    <small>
-                                        <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;">
-                                                <b>Total :</b>
-                                            </p>
-                                        </small>
-                                    </small>';
-                                }
-                            echo'</td>';
+                                </small>
+                            </td>';
                                     $pkt_pirce = \App\order_product::where('order_id',$order->id)
                                     ->where('group_id',$paket->group_id)
                                     ->where('paket_id',$paket->paket_id)
                                     ->whereNull('bonus_cat')
                                     ->sum(\DB::raw('price_item * quantity'));
-                            echo'<td width="40%" align="right" style="padding-bottom:0;" class="pl-0" colspan="2">
+                            echo'<td width="40%" align="right" style="padding-bottom:0;" class="pl-0">
                                     <small>
                                         <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;"><b>Rp. '.number_format($pkt_pirce, 2, ',', '.').'</b></p></small>
-                                    </small>';
-                                    
-                                    //diskon paket
-                                    if($paket_name->discount){
-                                        if($paket_name->discount_type == 'PERCENT'){
-                                            $discPkt = ($paket_name->discount/100) * $pkt_pirce;
-                                            $priceAfterDiscPkt = $pkt_pirce - $discPkt;
-                                            echo'<small>
-                                                <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;"><b>'.$paket_name->discount.' %</b></p></small>
-                                            </small>
-                                            <small>
-                                                <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;"><b>Rp. '.number_format($priceAfterDiscPkt, 2, ',', '.').'</b></p></small>
-                                            </small>';
-                                        }else{
-                                            $discPkt = $paket_name->discount;
-                                            $priceAfterDiscPkt = $pkt_pirce - $discPkt;
-                                            echo'<small>
-                                                <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;"><b>Rp. '.number_format($paket_name->discount, 2, ',', '.').'</b></p></small>
-                                            </small>
-                                            <small>
-                                                <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;"><b>Rp. '.number_format($priceAfterDiscPkt, 2, ',', '.').'</b></p></small>
-                                            </small>';
-                                        }
-                                    }
-                                echo'</td>
+                                    </small>
+                                </td>
                             </tr>';
 
-                            //grand total if paket < 2
+                            //grand total < 2
                             if(count( $paket_list) < 2){
                                 echo'<tr>
                                     <td width="50%" align="right">
@@ -1878,39 +1802,23 @@ $no=$count_nt_paket;
                                         <small>
                                             <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;">';
                                                 if($cekCombineDisc){
-                                                    if($paket_name->discount){
-                                                        echo '<b>Rp. '.number_format($grandDiscVolume-$discPkt, 2, ',', '.').'</b></p>';
-                                                    }else{
-                                                        echo '<b>Rp. '.number_format($grandDiscVolume, 2, ',', '.').'</b></p>';
-                                                    }
+                                                    echo '<b>Rp. '.number_format($grandDiscVolume, 2, ',', '.').'</b></p>';
                                                 }elseif((count($order->products_nonpaket) > 0) && ($totl_param > 0)){
                                                     $mingrandItem = $pirce_r - $totalPlusDiscItem;
                                                     $grandItem = $order->total_price - $mingrandItem;
-                                                    if($paket_name->discount){
-                                                        echo '<b>Rp. '.number_format($grandItem-$discPkt, 2, ',', '.').'</b></p>';
-                                                    }else{
-                                                        echo '<b>Rp. '.number_format($grandItem, 2, ',', '.').'</b></p>';
-                                                    }
+                                                    echo '<b>Rp. '.number_format($grandItem, 2, ',', '.').'</b></p>';
                                                 }else{
-                                                    if($paket_name->discount){
-                                                        echo '<b>Rp. '.number_format($order->total_price-$discPkt, 2, ',', '.').'</b></p>';
-                                                    }else{
-                                                        echo '<b>Rp. '.number_format($order->total_price, 2, ',', '.').'</b></p>';
-                                                    }
+                                                    echo '<b>Rp. '.number_format($order->total_price, 2, ',', '.').'</b></p>';
                                                 }
                                             echo'</small>
                                         </small>
                                     </td>
                                 </tr>';
                             }
-
-                            if($paket_name->discount){
-                                $grandDiscPkt += $discPkt;
-                            }
                         echo'</tbody>
                     </table>';
                 }
-                //grand total if paket > 1
+                //grand total > 1
                 if(count( $paket_list) > 1){
                     echo' <table width="100%" class="table table-hover">
                         <tbody>
@@ -1931,13 +1839,13 @@ $no=$count_nt_paket;
                                     <small>
                                         <small><p style="line-height:1.2;color:#000;text-align:right;font-weight:400;">';
                                             if($cekCombineDisc){
-                                                echo '<b>Rp. '.number_format($grandDiscVolume - $grandDiscPkt, 2, ',', '.').'</b></p>';
+                                                echo '<b>Rp. '.number_format($grandDiscVolume, 2, ',', '.').'</b></p>';
                                             }elseif((count($order->products_nonpaket) > 0) && ($totl_param > 0)){
                                                 $mingrandItem = $pirce_r - $totalPlusDiscItem;
                                                 $grandItem = $order->total_price - $mingrandItem;
-                                                echo '<b>Rp. '.number_format($grandItem - $grandDiscPkt, 2, ',', '.').'</b></p>';
+                                                echo '<b>Rp. '.number_format($grandItem, 2, ',', '.').'</b></p>';
                                             }else{
-                                                echo '<b>Rp. '.number_format($order->total_price- $grandDiscPkt, 2, ',', '.').'</b></p>';
+                                                echo '<b>Rp. '.number_format($order->total_price, 2, ',', '.').'</b></p>';
                                             }
                                         echo'</small>
                                     </small>

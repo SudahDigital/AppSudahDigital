@@ -91,6 +91,7 @@ Route::group(['middleware' => ['auth','checkRole:SALES']],function(){
         Route::post('/delete_kr/paket','CustomerPaketController@delete_kr_pkt');
         Route::post('/deleteCartPkt','CustomerPaketController@deleteCartPkt');
         Route::post('/paket/product_search','CustomerPaketController@search_paket')->name('live.search.paket');
+
         //bonus
         Route::post('/bonus/simpan','CustomerPaketController@simpan_bonus');
         Route::post('/bonus/totalquantity','CustomerPaketController@get_total_qty_bns');
@@ -180,6 +181,14 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::get('/banner/trash', 'BannerController@trash')->name('banner.trash');
     Route::get('/banner/{id}/restore', 'BannerController@restore')->name('banner.restore');
     Route::delete('/banner/{id}/delete-permanent','BannerController@deletePermanent')->name('banner.delete-permanent');
+
+    //catalog
+    Route::get('/catalog', 'catalogController@index')->name('catalog.index');
+    Route::get('/catalog/create', 'catalogController@create')->name('catalog.create');
+    Route::post('/catalog/store', 'catalogController@store')->name('catalog.store');
+    Route::get('/catalog/{id}/edit', 'catalogController@edit')->name('catalog.edit');
+    Route::get('/catalog/{id}/update', 'catalogController@update')->name('catalog.update');
+    Route::delete('/catalog/{id}/destroy', 'catalogController@destroy')->name('catalog.destroy');
 
     //Categories
     Route::get('/categories', 'CategoryController@index')->name('categories.index');
@@ -410,6 +419,7 @@ Route::group(['prefix' => '/{vendor}'], function()
 Route::get('/ajax/users_email/search', 'AjaxAdminSearch@email_search');
 Route::get('/ajax/cities/search', 'AjaxAdminSearch@CitySearch');
 Route::post('/ajax/post-sortable','AjaxAdminSearch@post_sortable');
+Route::post('/ajax/catalog/sortable','AjaxAdminSearch@post_sortable_catalog');
 Route::post('/ajax/post-sortable-pareto','AjaxAdminSearch@post_sortable_pareto');
 Route::post('/ajax/post-sortable-reasons','AjaxAdminSearch@post_sortable_reasons');
 Route::get('/ajax/products/code/search', 'AjaxAdminSearch@CodeProductSearch');
@@ -419,6 +429,7 @@ Route::get('/orders/change_status_attach', 'AjaxAdminSearch@OnOffOrderAttach');
 Route::get('/orders/change_noorder_attach', 'AjaxAdminSearch@OnOffNoOrderAttach');
 Route::get('/ajax/groups/search', 'AjaxAdminSearch@GroupNameSearch');
 Route::get('/ajax/paket/search', 'AjaxAdminSearch@PaketNameSearch');
+Route::get('/ajax/edit/paket/search', 'AjaxAdminSearch@PaketEditNameSearch');
 Route::get('/ajax/users/search', 'AjaxAdminSearch@CustomerajaxUserSearch');
 Route::get('/customer/ajax/city_search', 'AjaxAdminSearch@CustomerajaxCitySearch');
 Route::get('/ajax/code_cust/search', 'AjaxAdminSearch@CustomerCodeSearch');

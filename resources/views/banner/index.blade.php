@@ -139,7 +139,7 @@
 			order.push({
 				id: $(this).attr('data-id'),
 				position: index+1
-			});
+				});
 			});
 
 			$.ajax({

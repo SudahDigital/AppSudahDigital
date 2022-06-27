@@ -623,6 +623,14 @@
     </script>
 </head>
 <body>
+     <!--catalog query-->
+    @php
+        $catalog = App\Http\Controllers\SalesHomeController::catalog(\Auth::user()->client_id); 
+    @endphp
+
+    @if($catalog)
+        @include('customer.layouts.catalog')
+    @endif
     <!--Modal confirm cekout tanpa order-->
     <div class="modal fade right" id="cekOut" tabindex="-1" role="dialog" aria-labelledby="exampleModalPreviewLabel" aria-hidden="true">
         <div class="modal-dialog-full-width modal-dialog momodel modal-fluid" role="document">
@@ -755,6 +763,14 @@
                 <li>
                     <a href="{{URL::route('pesanan',[$vendor])}}">Pesanan</a>
                 </li>
+
+                <!--catalog menu-->
+                @if($catalog)
+                    <li>
+                        <a href="#" data-toggle="modal" data-target="#catalogModal" 
+                        onclick="show_catalog()">Katalog</a>
+                    </li>
+                @endif
 
                 <li class="mt-4">
                     @if (!session()->has('ses_order'))
@@ -1057,6 +1073,11 @@
                 console.log('Error:', response);
                 }
             });
+        }
+
+        function show_catalog(){
+            $('#sidebar').removeClass('active');
+            $('.overlay').removeClass('active');
         }
 
         function logout_record(){

@@ -11,7 +11,14 @@
 		{{session('error_edit')}}
 	</div>
 @endif
-
+@php
+	function currency($angka){
+	
+		$hasil ='Rp. '. number_format($angka, 0, ".", ",");
+		return $hasil;
+	
+	}
+@endphp
 <form action="{{route('products.index',[$vendor])}}">
 	<div class="row">
 		
@@ -29,10 +36,11 @@
 				<th>No</th>
 				<th>Name</th>
 				<th>Display Name</th>
-				<th>Bonus Quantity</th>
-				<th>Purchase Quantity</th>
+				<th>Bonus Qty</th>
+				<th>Purchase Qty</th>
+				<th>Extra Disc.</th>
 				<th>Status</th>
-				<th width="25%">Action</th>
+				<th width="20%">Action</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -45,6 +53,11 @@
 				<td>{{$p->display_name}}</td>
 				<td>{{$p->bonus_quantity}}</td>
 				<td>{{$p->purchase_quantity}}</td>
+				<td>
+					@if($p->discount)
+						{{$p->discount_type == 'NOMINAL' ? currency($p->discount) : $p->discount. ' %'}}
+					@endif
+				</td>
 				<td>
 					@if($p->status=="INACTIVE")
 					<span class="badge bg-dark text-white">{{$p->status}}</span>

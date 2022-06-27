@@ -154,6 +154,7 @@ class CustNotOrderThisPeriod implements FromCollection, WithMapping, WithHeading
             $notOrder->store_key,
             $notOrder->store_code,
             $notOrder->store_name,
+            $notOrder->status,
             $notOrder->address,
             $salesName,
         ];
