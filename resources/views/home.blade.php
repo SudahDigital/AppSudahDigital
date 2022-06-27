@@ -1045,6 +1045,12 @@
                                                 <div class="col-sm-9 p-t-5">
                                                     <input class="form-control {{$errors->first('msgs_receiver') ? "is-invalid" : "" }} " 
                                                         type="radio" name="msgs_receiver" id="rdo_ADMIN" value="ADMIN" required 
+                                                        checked> 
+                                                    <label for="rdo_ADMIN">ADMIN</label>
+                                                    
+                                                    <!--
+                                                    <input class="form-control {{$errors->first('msgs_receiver') ? "is-invalid" : "" }} " 
+                                                        type="radio" name="msgs_receiver" id="rdo_ADMIN" value="ADMIN" required 
                                                         {{$message && $message->msgs_receiver == "ADMIN" ? "checked" : ""}}> 
                                                     <label for="rdo_ADMIN">ADMIN</label>
 
@@ -1052,6 +1058,7 @@
                                                         type="radio" name="msgs_receiver" id="rdo_CUSTOMER" value="CUSTOMER" 
                                                         {{$message && $message->msgs_receiver == "CUSTOMER" ? "checked" : ""}}> 
                                                     <label for="rdo_CUSTOMER">CUSTOMER</label>
+                                                    -->
                                                 </div>
                                             </div>
                                             
