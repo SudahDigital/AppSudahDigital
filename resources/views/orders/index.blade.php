@@ -234,8 +234,16 @@
 							</small>	
 						@else
 							@if($order->customers->status == 'NEW' )
-								<a href="{{route('orders.addnew_customer',[$vendor,Crypt::encrypt($order->customers->id),$order->payment_method])}}"><span class="badge bg-pink">New Customer</span></a><br>
-							
+								@if($periodFilter)
+									<a href="{{route('customers.edit',[$vendor,Crypt::encrypt($order->customers->id),$order->payment_method,$periodFilter])}}">
+										<span class="badge bg-pink">New Customer</span>
+									</a>
+								@else
+									<a href="{{route('customers.edit',[$vendor,Crypt::encrypt($order->customers->id),$order->payment_method])}}">
+										<span class="badge bg-pink">New Customer</span>
+									</a>
+								@endif
+								<br>
 							@endif
 							<small><b>Code :</b> {{$order->customers->store_code}}</small><br>
 							<small><b>Name :</b> {{$order->customers->store_name}}</small><br>
