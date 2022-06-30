@@ -1,7 +1,7 @@
 @extends('layouts.master')
 @section('title') 
     @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
-        @if($payment)Add New Customer @else Edit Customer @endif
+        @if($payment || $cust->status == 'NEW')Add New Customer @else Edit Customer @endif
     @else
         @if(Gate::check('isSpv'))
         Edit Customer Type
@@ -156,7 +156,7 @@
             <br>
             -->
             <h2 class="card-inside-title">Term Of Payment</h2>
-            @if($payment)
+            @if($payment || $cust->status == 'NEW')
                 <div class="col-sm-2" style="padding-left:0;padding-right:0;">
                     <div class="form-group">
                         <input class="form-control {{$errors->first('payment_term') ? "is-invalid" : "" }}" 
@@ -247,7 +247,7 @@
                 </select>
             </div>
 
-            @if($payment)
+            @if($payment || $cust->status == 'NEW')
                 <input type="hidden" name="status" value="ACTIVE">
                 <input type="hidden" name="statusAddNew" value="1">
                 <input type="hidden" name="periodOrder" value="{{$periodFilter}}">
@@ -277,7 +277,7 @@
             -->
         @endif
         
-        <button class="btn btn-primary waves-effect" name="save_action" value="SAVE" type="submit" style="margin-top: 20px;">{{$payment ? 'ACTIVATE NEW CUSTOMER' : 'UPDATE'}}</button>
+        <button class="btn btn-primary waves-effect" name="save_action" value="SAVE" type="submit" style="margin-top: 20px;">{{($payment || $cust->status == 'NEW') ? 'ACTIVATE NEW CUSTOMER' : 'UPDATE'}}</button>
     </form>
     <!-- #END#  -->
     		
