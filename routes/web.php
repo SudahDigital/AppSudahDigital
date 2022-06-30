@@ -270,7 +270,7 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::get('/customers/create', 'CustomerController@create')->name('customers.create');
     Route::post('/customers/store', 'CustomerController@store')->name('customers.store');
     Route::put('/customers/{id}/update', 'CustomerController@update')->name('customers.update');
-    Route::get('/customers/{id}/edit', 'CustomerController@edit')->name('customers.edit');
+    Route::get('/customers/{id}/edit/{payment?}/{periodFilter?}', 'CustomerController@edit')->name('customers.edit');
     Route::delete('/customers/{id}/destroy', 'CustomerController@destroy')->name('customers.destroy');
     Route::get('/customers/{id}/detail', 'CustomerController@detail')->name('customers.detail');
     Route::get('/customers/export_city', 'CustomerController@exportCity')->name('cities.export');
@@ -343,7 +343,7 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::get('/orders/{id}/detail', 'OrderController@detail')->name('orders.detail');
     //Route::post('/orders/exportThisPeriod', 'OrderController@exportThisPeriod')->name('orders.exportThisPeriod') ;
     Route::post('/orders/export_mapping', 'OrderController@export_mapping')->name('orders.export_mapping') ;
-    Route::get('/orders/add-new-customer/{id}/{payment?}', 'OrderController@new_customer')->name('orders.addnew_customer') ;
+    //Route::get('/orders/add-new-customer/{id}/{payment?}', 'OrderController@new_customer')->name('orders.addnew_customer') ;
     //Route::get('/orders/add-new-no-order/{id}', 'OrderController@new_no_order')->name('orders.addnew_no_order') ;
     Route::put('/orders/new-customer/{id}/update', 'OrderController@save_new_customer')->name('orders.newcustomer.update');
     

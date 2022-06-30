@@ -318,7 +318,7 @@ class CustomerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($vendor,$id)
+    public function edit($vendor, $id, $payment = null, $periodFilter = null)
     {
         $id = \Crypt::decrypt($id);
         $custPrice = \App\CustomerDiscount::where('client_id','=',auth()->user()->client_id)->get();
@@ -354,7 +354,9 @@ class CustomerController extends Controller
                         'pareto'=>$pareto,
                         'user'=>$user,
                         'type'=>$type,
-                        'custPrice'=>$custPrice]
+                        'custPrice'=>$custPrice,
+                        'payment'=>$payment,
+                        'periodFilter'=>$periodFilter]
                     );
         }
         
@@ -392,6 +394,11 @@ class CustomerController extends Controller
                 "store_name" => "required",
                 "address" => "required"
             ])->validate();
+
+            if($cust->store_key == '' || $cust->store_key == NULL){
+                $cust->store_key = 'KY-'.hash('crc32b',$id);
+            }
+            
             $cust->store_code = $request->get('store_code');
             $cust->name = $request->get('contact_person');
             $cust->email = $request->get('email');
@@ -444,7 +451,14 @@ class CustomerController extends Controller
             $cust->cust_type = $request->get('cust_type');
         }   
         $cust->save();
-        return redirect()->route('customers.edit',[$vendor,\Crypt::encrypt($id)])->with('status','Customer Succsessfully Update');
+        if($request->get('statusAddNew') == 1){
+            return redirect()->route('orders.index',[$vendor,$request->get('periodOrder')])
+                    ->with('status','Customer Succsessfully Activate');
+        }else{
+            return redirect()->route('customers.edit',[$vendor,\Crypt::encrypt($id)])
+                    ->with('status','Customer Succsessfully Update');
+        }
+        
     }
 
     public function update_type(Request $request, $vendor,$id)

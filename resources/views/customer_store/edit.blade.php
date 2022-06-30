@@ -1,7 +1,7 @@
 @extends('layouts.master')
 @section('title') 
     @if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
-        Edit Customer
+        @if($payment)Add New Customer @else Edit Customer @endif
     @else
         @if(Gate::check('isSpv'))
         Edit Customer Type
@@ -156,19 +156,35 @@
             <br>
             -->
             <h2 class="card-inside-title">Term Of Payment</h2>
-            <div class="col-sm-2" style="padding-left:0;padding-right:0;">
-                <div class="form-group">
-                    <input class="form-control {{$errors->first('payment_term') ? "is-invalid" : "" }}" 
-                        type="radio" name="payment_term" id="cash" value="Cash" required onclick="checkstate()"
-                        {{old('payment_term',$cust_term)== 'Cash' ? 'checked' : ''}} > 
-                    <label for="cash">Cash</label>
-                    &nbsp;&nbsp;
-                    <input class="form-control {{$errors->first('payment_term') ? "is-invalid" : "" }}" 
-                        type="radio" name="payment_term" id="top" value="TOP" onclick="checkstate()"
-                        {{{old('payment_term',$cust_term)=='TOP' ? 'checked' : ''}}}> 
-                    <label for="top">TOP</label>
+            @if($payment)
+                <div class="col-sm-2" style="padding-left:0;padding-right:0;">
+                    <div class="form-group">
+                        <input class="form-control {{$errors->first('payment_term') ? "is-invalid" : "" }}" 
+                            type="radio" name="payment_term" id="cash" value="Cash" required onclick="checkstate()"
+                            {{old('payment_term',$payment)== 'Cash' ? 'checked' : ''}} > 
+                        <label for="cash">Cash</label>
+                        &nbsp;&nbsp;
+                        <input class="form-control {{$errors->first('payment_term') ? "is-invalid" : "" }}" 
+                            type="radio" name="payment_term" id="top" value="TOP" onclick="checkstate()"
+                            {{{old('payment_term',$payment)== 'TOP' ? 'checked' : ''}}}> 
+                        <label for="top">TOP</label>
+                    </div>
                 </div>
-            </div>
+            @else
+                <div class="col-sm-2" style="padding-left:0;padding-right:0;">
+                    <div class="form-group">
+                        <input class="form-control {{$errors->first('payment_term') ? "is-invalid" : "" }}" 
+                            type="radio" name="payment_term" id="cash" value="Cash" required onclick="checkstate()"
+                            {{old('payment_term',$cust_term)== 'Cash' ? 'checked' : ''}} > 
+                        <label for="cash">Cash</label>
+                        &nbsp;&nbsp;
+                        <input class="form-control {{$errors->first('payment_term') ? "is-invalid" : "" }}" 
+                            type="radio" name="payment_term" id="top" value="TOP" onclick="checkstate()"
+                            {{{old('payment_term',$cust_term)=='TOP' ? 'checked' : ''}}}> 
+                        <label for="top">TOP</label>
+                    </div>
+                </div>
+            @endif
             
             <div class="col-sm-10" style="padding-left:0;">
                 <div class="input-group">
@@ -231,18 +247,24 @@
                 </select>
             </div>
 
-            <h2 class="card-inside-title">Status</h2>
-            <div class="form-group">
-                <input type="radio" value="NEW" name="status" id="NEW" {{$cust->status == 'NEW' ? 'checked' : ''}} disabled>
-                <label for="NEW">NEW</label>
-                    &nbsp;
-                <input type="radio" value="ACTIVE" name="status" id="ACTIVE" {{$cust->status == 'ACTIVE' ? 'checked' : ''}}>
-                <label for="ACTIVE">ACTIVE</label>
-                                &nbsp;
-                <input type="radio" value="NONACTIVE" name="status" id="INACTIVE" {{$cust->status == 'NONACTIVE' ? 'checked' : ''}}>
-                <label for="INACTIVE">INACTIVE</label>
-            </div>
-
+            @if($payment)
+                <input type="hidden" name="status" value="ACTIVE">
+                <input type="hidden" name="statusAddNew" value="1">
+                <input type="hidden" name="periodOrder" value="{{$periodFilter}}">
+            @else
+                <input type="hidden" name="statusAddNew" value="0">
+                <h2 class="card-inside-title">Status</h2>
+                <div class="form-group">
+                    <input type="radio" value="NEW" name="status" id="NEW" {{$cust->status == 'NEW' ? 'checked' : ''}} disabled>
+                    <label for="NEW">NEW</label>
+                        &nbsp;
+                    <input type="radio" value="ACTIVE" name="status" id="ACTIVE" {{$cust->status == 'ACTIVE' ? 'checked' : ''}}>
+                    <label for="ACTIVE">ACTIVE</label>
+                                    &nbsp;
+                    <input type="radio" value="NONACTIVE" name="status" id="INACTIVE" {{$cust->status == 'NONACTIVE' ? 'checked' : ''}}>
+                    <label for="INACTIVE">INACTIVE</label>
+                </div>
+            @endif
             <!--
             <h2 class="card-inside-title">Registered Points</h2>
             <div class="form-group">
@@ -255,7 +277,7 @@
             -->
         @endif
         
-        <button class="btn btn-primary waves-effect" name="save_action" value="SAVE" type="submit" style="margin-top: 20px;">UPDATE</button>
+        <button class="btn btn-primary waves-effect" name="save_action" value="SAVE" type="submit" style="margin-top: 20px;">{{$payment ? 'ACTIVATE NEW CUSTOMER' : 'UPDATE'}}</button>
     </form>
     <!-- #END#  -->
     		
