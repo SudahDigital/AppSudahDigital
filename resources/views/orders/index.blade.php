@@ -320,12 +320,12 @@
 				$(".datepicker").hide();
 			});
 
-		$(document).ready(function() {
-			$('.aniimated-thumbnials').lightGallery({
-				thumbnail: true,
-				selector: 'a'
-			});
+		
+		$('.aniimated-thumbnials').lightGallery({
+			thumbnail: true,
+			selector: 'a'
 		});
+		
 
 		//on/off attachment submit(Order)
 		$("#orderAttachOnOff").change(function() {
