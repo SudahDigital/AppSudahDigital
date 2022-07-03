@@ -91,6 +91,10 @@ class Order extends Model
         return $this->belongsTo('App\Sales_Targets','user_id','user_id');
     }
 
+    public function orderFile(){
+        return $this->hasMany('App\OrderFile','order_id');
+    }
+
     public function getTotalQuantityAttribute(){
         $total_quantity = 0;
         foreach($this->products as $p){
@@ -138,4 +142,5 @@ class Order extends Model
         }
         return $total;
     }
+    
 }

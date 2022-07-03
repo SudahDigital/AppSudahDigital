@@ -221,6 +221,7 @@ class DashboardController extends Controller
                             });
                         })
                         ->count();
+        //dd(date($date_now);
 
         return $count_pareto;
     }

@@ -522,4 +522,10 @@ class OrderController extends Controller
 
     }
 
+    public static function imageOrder($orderId){
+        $imageUpld = \App\OrderFile::where('order_id',$orderId)->get();
+
+        return $imageUpld;
+    }
+
 }

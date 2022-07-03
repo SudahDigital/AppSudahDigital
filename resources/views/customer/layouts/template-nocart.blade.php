@@ -14,6 +14,10 @@
     <link rel="stylesheet" href="{{asset('assets/css/style-r_1.css')}}">
     <link rel="stylesheet" href="{{asset('assets/css/responsive-r_1.css')}}">
     <link rel="stylesheet" href="{{asset('assets/css/select2.min.css')}}">
+
+    <!--image upload css-->
+    <link rel="stylesheet" href="{{asset('css/images_upload.css')}}">
+
     <!-- Scrollbar Custom CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
     <!-- Font Awesome JS -->
@@ -623,81 +627,17 @@
     </script>
 </head>
 <body>
-     <!--catalog query-->
+     <!--catalog & attachment query-->
     @php
-        $catalog = App\Http\Controllers\SalesHomeController::catalog(\Auth::user()->client_id); 
+        $catalog = App\Http\Controllers\SalesHomeController::catalog(\Auth::user()->client_id);
+        $nAttach = App\Http\Controllers\SalesHomeController::attachOrder(\Auth::user()->client_id); 
     @endphp
 
     @if($catalog)
         @include('customer.layouts.catalog')
     @endif
-    <!--Modal confirm cekout tanpa order-->
-    <div class="modal fade right" id="cekOut" tabindex="-1" role="dialog" aria-labelledby="exampleModalPreviewLabel" aria-hidden="true">
-        <div class="modal-dialog-full-width modal-dialog momodel modal-fluid" role="document">
-            <div class="modal-content-full-width modal-content ">
-                <div class="modal-body">
-                    <button type="button" class="btn btn-warning btn-circle" data-dismiss="modal" style="position:absolute;z-index:99999;background:#fff;"><i class="fa fa-times text-primary"></i></button>
-                    <img src="{{ asset('assets/image/dot-top-right.png') }}" class="dot-top-right"  
-                    style="" alt="dot-top-right">
-                    <img src="{{ asset('assets/image/dot-bottom-left.png') }}" class="dot-bottom-left"  
-                    style="" alt="dot-bottom-left">
-                    <img src="{{ asset('assets/image/shape-bottom-right.png') }}" class="shape-bottom-right"  
-                    style="" alt="shape-bottom-right">
-                    <div class="container">
-                        <div class="d-flex justify-content-center mx-auto">
-                            <div class="col-md-2 image-logo-login" style="z-index: 2">
-                                <img src="{{asset('assets/image'.$client->client_image)}}" class="img-thumbnail pt-4 img-logo-loc" style="background-color:transparent; border:none;" alt="VENDOR LOGO">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-12 login-label pt-4" style="z-index: 2">
-                        <h5 class="text-center text-white">Konfirmasi Check Out</h5>
-                    </div>
-                    
-                    <div class="row justify-content-center  d-flex">
-                        <div class="col-md-5 login-label" style="z-index: 2">
-                            
-                            <div id="PreviewToko_CheckOut" style="overflow: hidden;">
-                                
-                            </div>
-                            <form method="POST" action="{{route('checkout.no_order',[$vendor])}}">
-                                @csrf
-                                
-                                <div class="row mt-3">
-                                    
-                                    <div class="col-select col-lg-12 pl-3">
-                                        <div class="form-group">
-                                            <select name="reasons_id"  id="reasons_id" class="form-control" style="width:100%;" required></select>
-                                        </div>
-                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-select col-lg-12 pl-3">
-                                        <div class="form-group">
-                                            <div class="form-group">
-                                                <textarea name="notes_no_order" class="form-control p-3" rows="3" placeholder="Catatan..."
-                                                style="width: 100%;
-                                                border-top-left-radius:25px;
-                                                border-top-right-radius:25px;
-                                                border-bottom-right-radius:0;
-                                                border-bottom-left-radius:0;
-                                                font-weight: 500;" required></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="mx-auto text-center">
-                                    <button type="submit" id="ga_checkout"class="btn btn_login_form" >{{ __('Konfirmasi') }}</button>
-                                </div>
-                                
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    
+    @include('customer.modal-checkout-no-order')
 
     <!--preloader-->
     <div class="preloader" id="preloader">
@@ -746,9 +686,11 @@
                     </ul>
                 </li>
                 -->
-                <li>
-                    <a href="{{$paket != null ? URL::route('home_paket',[$vendor]) : '' }}">Paket</a>
-                </li>
+                @if($paket != null)
+                    <li>
+                        <a href="{{URL::route('home_paket',[$vendor])}}">Paket</a>
+                    </li>
+                @endif
                 
                 <li>
                    <a href="{{URL::route('profil.index',[$vendor])}}">Profile</a>
@@ -847,6 +789,8 @@
     <!-- Light Gallery Plugin Js -->
     <script src="{{asset('bsb/js/pages/medias/image-gallery.js')}}"></script>
     <script src="{{asset('bsb/plugins/light-gallery/js/lightgallery-all.js')}}"></script>
+
+    <script src="{{ asset('js/fileinput.js')}}" type="text/javascript"></script>
     @yield('footer-scripts')
 
     
@@ -857,6 +801,11 @@
     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"></script>-->
     
     <script type="text/javascript">
+        $(function () {
+            $('.popoverDokumen').popover({
+                container: 'body'
+            })
+        });
 
         $(document).ready(function(){
             $(window).scroll(function(){
@@ -1114,6 +1063,60 @@
                 console.log('Error:', response);
                 }
             });
+        }
+
+        //validate  No Order
+        var _validFileExtensions = [".jpg", ".jpeg", ".png"];
+        function ValidateNoOdr(oForm) {
+            var arrInputs = oForm.getElementsByClassName("imageNoOdr");
+            //var file = document.getElementById('imagePo').files[0].name;
+            for (var i = 0; i < arrInputs.length; i++) {
+                var oInput = arrInputs[i];
+                if (oInput.type == "file") {
+                    var sFileName = oInput.value;
+                    if (sFileName.length > 0) {
+                        var blnValid = false;
+                        for (var j = 0; j < _validFileExtensions.length; j++) {
+                            var sCurExtension = _validFileExtensions[j];
+                            if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
+                                blnValid = true;
+                                break;
+                            }
+                        }
+                        
+                        if (!blnValid) {
+                            //alert("Sorry, " + sFileName + " is invalid, allowed extensions are: " + _validFileExtensions.join(", "));
+                            Swal.fire({
+                                icon: 'error',
+                                text: 'Maaf,  Jenis file dokumen tidak diizinkan...(ekstensi yang diizinkan adalah'+ _validFileExtensions.join(", ")+') ',
+                                
+                                });
+                            return false;
+                        }else{
+                            Swal.fire({
+                                title: 'Berhasil',
+                                text: "Anda sudah checkout tanpa order",
+                                icon: 'success',
+                                showCancelButton: false,
+                                confirmButtonText: "OK",
+                                confirmButtonColor: '#4db849'
+                                });
+                        }
+                    }else{
+                            Swal.fire({
+                                title: 'Berhasil',
+                                text: "Anda sudah checkout tanpa order",
+                                icon: 'success',
+                                showCancelButton: false,
+                                confirmButtonText: "OK",
+                                confirmButtonColor: '#4db849'
+                                });
+                        }
+                }
+            }
+            
+            return true;
+            
         }
 
     /*

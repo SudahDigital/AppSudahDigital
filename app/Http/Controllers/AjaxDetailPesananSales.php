@@ -37,9 +37,6 @@ class AjaxDetailPesananSales extends Controller
                     ->get();
         }
 
-        
-        
-
         if($orders != null ){
             $total_row = count($orders);
         }
@@ -48,6 +45,7 @@ class AjaxDetailPesananSales extends Controller
         }
         if($total_row > 0){
             foreach($orders as $order){
+                $imageUpld = \App\OrderFile::where('order_id',$order->id)->get();
                 if($query != '' ){
                     $total_delivery_sum = \App\order_product::where('order_id',$order->id)
                                         ->groupBy('order_id')
@@ -167,13 +165,20 @@ class AjaxDetailPesananSales extends Controller
                             <span class="badge badge-warning">Outstanding : '.($total_quantity - $total_delivery).'</span><br>
                             <span class="badge badge-info">Delivered : '.$total_delivery.'</span>';
                         }
-                        if($order->po_file){
+                        if($order->po_file || $imageUpld){
                             echo'<br>
-                            <div class="aniimated-thumbnials list-unstyled row clearfix">
-                                <a href="'.asset('storage/'.$order->po_file).'" data-sub-html="PO-DOC-'.$order->invoice_number.'">
-                                    <img  src="'.asset('storage/'.$order->po_file).'" width="50px" height="50px" style="margin-left:15px;margin-top:10px;">
-                                </a>
-                            </div>';
+                            <div class="aniimated-thumbnials list-unstyled row clearfix">';
+                                if($order->po_file){
+                                    echo'<a href="'.asset('storage/'.$order->po_file).'" data-sub-html="PO-DOC-'.$order->invoice_number.'">
+                                        <img  src="'.asset('storage/'.$order->po_file).'" width="50px" height="50px" style="margin-left:15px;margin-top:10px;">
+                                    </a>';
+                                }
+                                foreach($imageUpld as $oFile){
+                                    echo'<a href="'.asset('storage/'.$oFile->order_file).'" data-sub-html="PO-DOC-'.$order->invoice_number.'">
+                                        <img  src="'.asset('storage/'.$oFile->order_file).'" width="50px" height="50px" style="margin-left:15px;margin-top:10px;">
+                                    </a>';
+                                }
+                            echo'</div>';
                         }
                     echo'</td>';
                     echo "<script>

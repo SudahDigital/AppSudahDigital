@@ -203,5 +203,19 @@ class SalesHomeController extends Controller
         
         return $catalog;
     }
+
+    public static function attachOrder($client_id){
+        $no_orderAttach = \App\OrderAttachment::where('client_id',$client_id)
+                        ->where('attach_status','NO-ORDER')
+                        ->first();
+
+        if($no_orderAttach){
+            $nAttach = $no_orderAttach->attachment;
+        }else{
+            $nAttach = 'NO_ATTACH';
+        }
+
+        return $nAttach;
+    }
     
 }

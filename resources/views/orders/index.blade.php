@@ -1,6 +1,12 @@
 @extends('layouts.master')
 @section('title') Order Lists ({{date("M", mktime(0, 0, 0, $thisMonth, 10))}}, {{$thisYear}})@endsection
 @section('menuHeader')
+<style>
+	a:link { text-decoration: none; }
+	a:visited { text-decoration: none; }
+	a:hover { text-decoration: none; }
+	a:active { text-decoration: none; }
+</style>
 	@if(Gate::check('isSuperadmin') || Gate::check('isAdmin'))
 			
 		<div class="dropdown pull-right m-t--20">
@@ -176,7 +182,7 @@
 			<thead>
 				
 				<tr>
-					<th width="20%">#Order</th>
+					<th width="18%">#Order</th>
 					<th>Status</th>
 					<th >Customer</th>
 					<!--<th width="15%">Order Product</th>-->
@@ -189,18 +195,25 @@
 			<tbody>
 				
 				@foreach($orders as $order)
-				
+				<?php $imageUpld =  App\Http\Controllers\OrderController::imageOrder($order->id);?>
 				<tr>
 					<td>
 						{{$order->invoice_number}}<br>
-						@if($order->po_file)
+						@if($order->po_file || $imageUpld)
 							<div class="aniimated-thumbnials list-unstyled row clearfix">
-								<a href="{{asset('storage/'.$order->po_file)}}" 
-									data-sub-html="{{$order->status == 'NO-ORDER' ? 'NO-ORDER-DOC-'.$order->invoice_number : 'PO-DOC-'.$order->invoice_number}}">
-									<img class="m-l-15 m-b--50" src="{{asset('storage/'.$order->po_file)}}" width="50px" height="50px">
-								</a>
+								@if($order->po_file)
+									<a href="{{asset('storage/'.$order->po_file)}}" 
+										data-sub-html="{{$order->status == 'NO-ORDER' ? 'NO-ORDER-DOC-'.$order->invoice_number : 'PO-DOC-'.$order->invoice_number}}">
+										<img class="m-l-15 m-b--50" src="{{asset('storage/'.$order->po_file)}}" width="50px" height="50px">
+									</a>
+								@endif
+								@foreach($imageUpld as $oFile)
+									<a href="{{asset('storage/'.$oFile->order_file)}}" 
+										data-sub-html="{{$order->status == 'NO-ORDER' ? 'NO-ORDER-DOC-'.$order->invoice_number : 'PO-DOC-'.$order->invoice_number}}">
+										<img class="m-l-15 {{count($imageUpld) > 2 ? 'm-t-20' : 'm-b--50'}}" src="{{asset('storage/'.$oFile->order_file)}}" width="50px" height="50px">
+									</a>
+								@endforeach
 							</div>
-							
 						@endif
 					</td>
 					<td>
