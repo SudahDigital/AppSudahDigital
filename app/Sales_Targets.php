@@ -34,4 +34,5 @@ class Sales_Targets extends Model
     public function updated_of(){
         return $this->belongsTo('App\User','updated_by');
     }
+
 }

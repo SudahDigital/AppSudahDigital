@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 
-	@section('title') Sales Target List @endsection
+	@section('title') Sales Target Lists ({{date("M", mktime(0, 0, 0, $thisMonth, 10))}}, {{$thisYear}})@endsection
 	@section('content')
 	@if(session('status'))
 		<div class="alert alert-success">
@@ -10,9 +10,26 @@
 	@endif
 
 	<div class="row">
-		<div class="col-md-12">
-			<a href="{{route('sales.create_target',[$vendor])}}" class="btn bg-cyan ">Create Target</a>
-		</div>
+		
+			<form id="form_validation" action="{{route('salesTarget.filter',[$vendor])}}" method="POST">
+				@csrf 
+				<div class="col-md-4 m-t-5">
+					<div class="form-group">
+						<div class="form-line">
+							<input type="text" id="dateFilterList" name="listFilter" class="date-picker form-control" 
+							placeholder="Select order list period  ..." autocomplete="off" required>
+						</div>
+					</div>
+				</div>	
+				<div class="col-md-2">
+					<button class="btn btn-primary waves-effect m-t-10" type="submit">Filter</button>
+					@if ($periodFilter)
+						<a href="{{route('target.index',[$vendor])}}" class="btn btn-danger waves-effect m-t-10">Reset</a>
+					@endif
+				</div>
+			</form>
+			<a href="{{route('sales.create_target',[$vendor])}}" class="btn bg-cyan m-t-10 m-r-10 pull-right">Create Target</a>
+		
 	</div>
 		
 	
@@ -86,7 +103,8 @@
 								$month= date('m', strtotime($u->period));
 								$year= date('Y', strtotime($u->period));
 								//dd($month);
-								$order_ach = \App\Order::where('user_id',$u->user_id)
+								$order_ach = \App\Order::select('id','user_id','customer_id','created_at','status')
+										->where('user_id',$u->user_id)
 										->whereNotNull('customer_id')
 										->whereMonth('created_at', '=', $month)
 										->whereYear('created_at', '=', $year)
@@ -111,7 +129,8 @@
 							{{date('M-Y', strtotime($u->period))}}
 							<br>
 							@php
-								$customer = \App\Customer::where('user_id',$u->user_id)->count();
+								$customer = \App\Customer::select('user_id')
+											->where('user_id',$u->user_id)->count();
 							@endphp
 							<small><b>{{$customer.' Customers'}}</b></small>
 						</td>
@@ -143,7 +162,19 @@
 		
 		
 	</div>
+@endsection
+@section('footer-scripts')
+<script type="text/javascript">
+	var dp=$("#bs_datepicker_container,#dateFilterList").datepicker( {
+		format: "yyyy-mm",
+		startView: "months", 
+		minViewMode: "months",
+	});
 
-
-
+	dp.on('changeMonth', function (e) {
+		//var dateObject = $("#datepicker").val();    
+		//do something here
+		$(".datepicker").hide();
+	});
+</script>
 @endsection
