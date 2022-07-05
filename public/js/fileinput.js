@@ -1,5 +1,6 @@
 $(document).ready(function() {
     $(document).on('change', '.file-upload input[type="file"]', function() {
+        $('.imagePreview').css("background-image", "url(../assets/image/photo-camera-gray.svg)");
         var filename = $(this).val();
         if (/^\s*$/.test(filename)) {
             $(this).parents(".file-upload").find(".file-select-name").text("No file chosen...");
