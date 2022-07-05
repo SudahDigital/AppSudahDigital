@@ -56,7 +56,7 @@
                                                 <i class="fa fa-camera" aria-hidden="true"></i>
                                             </button>
                                             -->
-                                            <div class="file-select-name text-dark">Dokumen PO</div>
+                                            <div class="file-select-name text-dark">Select Camera/File</div>
                                             <input type="file" 
                                                     id="imagePo" 
                                                     name="imagePo[]"  

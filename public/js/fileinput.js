@@ -38,7 +38,7 @@ $(document).ready(function() {
             '<div class="file-select">' +
             '<div class="imagePreview mb-1 img-thumbnail"></div>' +
 
-            '<div class="file-select-name text-dark">Dokumen PO</div>' +
+            '<div class="file-select-name text-dark">Select Camera/File</div>' +
             '<input type="file" id="imagePo" name="imagePo[]" class="profileimg imagePo"  accept="image/*;capture=camera">' +
             '</div>' +
             '<button class="btn btn-danger btn-sm file-remove"><i class="fas fa-trash"></i></button>' +
