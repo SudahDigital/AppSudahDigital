@@ -441,20 +441,40 @@ class CustomerKeranjangController extends Controller
                 $orders->id_voucher = NULL;
             }
             $images = $request->file('imagePo');
+            //dd($images);
             if($images){
                 
+                foreach ($request->file('imagePo') as $i => $imagefile){
+                    
+                    $path = $imagefile->hashName('po-images');
+                    $image = \Image::make($imagefile);
+                    $image->resize(350, null, function ($const) {
+                        $const->aspectRatio();
+                    });
+                    \Storage::put('public/'.$path, (string) $image->encode());
+
+                    $imageOrder = new \App\OrderFile;
+                    $imageOrder->order_id = $orders->id;
+                    $imageOrder->order_file = $path;
+                    $imageOrder->save();
+                }
+                
+
+                /*
                 $path = $images->hashName('po-images');
                 $image = \Image::make($images);
                 $image->resize(350, null, function ($const) {
                     $const->aspectRatio();
                 });
                 \Storage::put('public/'.$path, (string) $image->encode());
+                */
+                
                 /*$image_path = $image->store('po-images', 'public');
                 Image::make(storage_path($image_path))->resize(350, null, function ($const) {
                     $const->aspectRatio();
                 })->save();*/
                 
-                $orders->po_file = $path;
+                //$orders->po_file = $path;
             }
 
 
@@ -692,16 +712,29 @@ $no=$count_nt_paket;
                 else{
                     $list_text = urlencode($txt_descwa).'%0A'.urlencode($ttle_nonpkt);
                 }
-
-                if($orders->po_file){
-                    $polink = 'File PO          : '.asset('storage/'.$orders->po_file);       
+                
+                //get po document
+                $haveimage = \App\OrderFile::where('order_id',$id)->get();
+                //dd(count($haveimage));
+                if($haveimage){
+                    if(count($haveimage) > 1){
+                        $newlineFile= urldecode('%0A%0A');
+                    }else{
+                        $newlineFile= '';
+                    }
+                    $polink = '';
+                    $noFilePo = 0;
+                    foreach($haveimage as $arr => $poImg){
+                        $noFilePo++;
+                        $polink .= 'File PO - '.$noFilePo.'     : '.asset('storage/'.$poImg->order_file).$newlineFile;
+                    }
                 }else{
                     $polink = '';
                 }
-
+                $infoPo = urlencode($polink);
                 $note_sales = 'Notes            : '.$notes_wa;
                 
-                $text_wa=$list_text.'%0A'.$info_harga.'%0A'.$note_sales.'%0A'.$polink;
+                $text_wa=$list_text.'%0A'.$info_harga.'%0A'.$note_sales.'%0A'.$infoPo;
 
 
                 //=============send mail =================//

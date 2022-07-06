@@ -26,11 +26,28 @@ class TargetController extends Controller
 
     }
 
-    public function index(Request $request, $vendor){
+    public function index(Request $request, $vendor, $periodFilter = null){
         //\DB::connection()->enableQueryLog();
+        if($periodFilter != null){
+            //dd($periodFilter);
+            $period_explode = explode('-',$periodFilter);
+            
+            $year = $period_explode[0];
+            $month = $period_explode[1];
+            
+            $thisMonth = $month;
+            $thisYear = $year;
+            
+        }else{
+            $thisMonth = date('m');
+            $thisYear = date('Y');
+        }
+
         if(Gate::check('isSuperadmin') || Gate::check('isAdmin')){
             $targets = \App\Sales_Targets::where('client_id',auth()->user()->client_id)
-                        ->orderBy('period','ASC')
+                        ->whereMonth('period',$thisMonth)
+                        ->whereYear('period',$thisYear)
+                        //->orderBy('period','ASC')
                         ->get();
         }else{
             $user_id = \Auth::user()->id;
@@ -39,8 +56,10 @@ class TargetController extends Controller
                 {
                     return $q->where('spv_id','=',"$user_id");
                 })
+                ->whereMonth('period',$thisMonth)
+                ->whereYear('period',$thisYear)
                 //->whereIn('group_id', $user)
-                ->orderBy('period','ASC')
+                //->orderBy('period','ASC')
                 ->get();
         }
         
@@ -49,7 +68,18 @@ class TargetController extends Controller
         //$queries = \DB::getQueryLog();
         //dd($targets);
         
-        return view ('target.index',['targets'=>$targets,'vendor'=>$vendor]);
+        return view ('target.index',
+                ['targets'=>$targets,
+                'vendor'=>$vendor,
+                'thisMonth'=>$thisMonth,
+                'thisYear'=>$thisYear,
+                'periodFilter'=>$periodFilter]);
+    }
+
+    public function filter(Request $request, $vendor){
+        $periodFilter = $request->get('listFilter');
+        
+        return redirect()->route('target.index', [$vendor,$periodFilter]);
     }
 
     public function cust_index(Request $request, $vendor){

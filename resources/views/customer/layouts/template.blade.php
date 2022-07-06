@@ -10,10 +10,15 @@
     <link rel="icon" href="{{asset('storage/'.$client->client_image)}}" type="image/x-icon">
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css" >
+    
     <!-- Our Custom CSS -->
     <link rel="stylesheet" href="{{asset('assets/css/style-r_1.css')}}">
     <link rel="stylesheet" href="{{asset('assets/css/responsive-r_1.css')}}">
     <link rel="stylesheet" href="{{asset('assets/css/select2.min.css')}}">
+
+    <!--image upload css-->
+    <link rel="stylesheet" href="{{asset('css/images_upload.css')}}">
+    
     <!-- Scrollbar Custom CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
     <!-- Font Awesome JS -->
@@ -1400,103 +1405,7 @@
         </div>
     </div>
 
-    <!--Modal confirm cekout tanpa order-->
-    <div class="modal fade right" id="cekOut" tabindex="-1" role="dialog" aria-labelledby="exampleModalPreviewLabel" aria-hidden="true">
-        <div class="modal-dialog-full-width modal-dialog momodel modal-fluid" role="document">
-            <div class="modal-content-full-width modal-content ">
-                <div class="modal-body">
-                    <button type="button" class="btn  btn-circle" data-dismiss="modal" style="position:absolute;z-index:99999;background:#fff;"><i class="fa fa-times text-primary"></i></button>
-                    <img src="{{ asset('assets/image/dot-top-right.png') }}" class="dot-top-right"  
-                    style="" alt="dot-top-right">
-                    <img src="{{ asset('assets/image/dot-bottom-left.png') }}" class="dot-bottom-left"  
-                    style="" alt="dot-bottom-left">
-                    <img src="{{ asset('assets/image/shape-bottom-right.png') }}" class="shape-bottom-right"  
-                    style="" alt="shape-bottom-right">
-                    <div class="container">
-                        <div class="d-flex justify-content-center mx-auto">
-                            <div class="col-md-2 image-logo-login" style="z-index: 2">
-                                <img src="{{asset('storage/'.$client->client_image)}}" class="img-thumbnail pt-4 img-logo-loc" style="background-color:transparent; border:none;" alt="VENDOR LOGO">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-12 login-label pt-4" style="z-index: 2">
-                        <h5 class="text-center text-white">Konfirmasi Check Out</h5>
-                    </div>
-                    
-                    <div class="row justify-content-center  d-flex">
-                        <div class="col-md-5 login-label" style="z-index: 2">
-                            
-                            <div id="PreviewToko_CheckOut" style="overflow: hidden;">
-                                
-                            </div>
-                            <form method="POST" enctype="multipart/form-data"
-                            action="{{route('checkout.no_order',[$vendor])}}"
-                            onsubmit="return ValidateNoOdr(this);">
-                                @csrf
-                                
-                                <div class="row mt-3">
-                                    
-                                    <div class="col-select col-lg-12 pl-3">
-                                        <div class="form-group">
-                                            <select name="reasons_id"  id="reasons_id" class="form-control" style="width:100%;" required></select>
-                                        </div>
-                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-select col-lg-12 pl-3">
-                                        <div class="form-group">
-                                            <div class="form-group">
-                                                <textarea name="notes_no_order" class="form-control p-3" rows="3" placeholder="Catatan..."
-                                                style="width: 100%;
-                                                border-top-left-radius:25px;
-                                                border-top-right-radius:25px;
-                                                border-bottom-right-radius:0;
-                                                border-bottom-left-radius:0;
-                                                font-weight: 500;" required></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-select col-lg-12 pl-3 mb-1">
-                                        <img id="preview-imageNoOdr-before-upload" src="{{asset('assets/image/2428676_frame_gallery_image_landscape_mobile_icon.png')}}"
-                                            alt="preview image" class="img-thumbnail">
-                                    </div>
-                                    <div class="col-select col-lg-12 pl-3">
-                                        <label class="float-left" for="imageNoOdr" 
-                                                style="color: #ffff !important;
-                                                    cursor:pointer;">
-                                            <i class="fa fa-camera fa-2x" aria-hidden="true"></i>
-                                        </label>
-                                        <p class="text-left mt-2" style="color: #ffff !important; margin-left:50px;">
-                                            Unggah dokumen
-                                        </p>
-                                        <input type="file" 
-                                                {{$nAttach == 'ON' ? 'required' : ''}}
-                                                accept="image/*;capture=camera" 
-                                                class="imageNoOdr form-control" 
-                                                id="imageNoOdr"
-                                                name="imageNoOdr" 
-                                                style="width:100%;
-                                                        border-top-right-radius:20px;
-                                                        border-top-left-radius:20px;
-                                                        visibility:none;
-                                                        display:none;">
-                                        <input type="hidden" id="attachParamNoOrder" value="{{$nAttach}}">
-                                    </div>
-                                </div>
-
-                                <div class="mx-auto text-center">
-                                    <button type="submit" id="ga_checkout" onclick="CkNoOdr()" class="btn btn_login_form" >{{ __('Konfirmasi') }}</button>
-                                </div>
-                                
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    @include('customer.modal-checkout-no-order')
     
     <!--preloader-->
     <div class="preloader" id="preloader">
@@ -1737,9 +1646,11 @@
                     </ul>
                 </li>
                 -->
-                <li>
-                    <a href="{{$paket != null ? URL::route('home_paket',[$vendor]) : '' }}">Paket</a>
-                </li>
+                @if($paket != null)
+                    <li>
+                        <a href="{{URL::route('home_paket',[$vendor])}}">Paket</a>
+                    </li>
+                @endif
                 
                 <li>
                    <a href="{{URL::route('profil.index',[$vendor])}}">Profile</a>
@@ -1941,6 +1852,10 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
     <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
     <!--<script src="{{ asset('assets/js/jquery.firstVisitPopup.js')}}"></script>-->
+
+    <!--<script src="{{ asset('js/fileinput_theme.js')}}" type="text/javascript"></script>-->
+    <script src="{{ asset('js/fileinput.js')}}" type="text/javascript"></script>
+    
 
     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"></script>-->
     <!--@include('sweetalert::alert')-->
@@ -2734,9 +2649,10 @@
                 
             
         //}
-
+        
+        /*
         function pesan_wa(){
-            let imgPo = $('#imagePo').val();
+            let imgPo = $('.imagePo').val();
             let attach = $('#attachParam').val();
             if(attach == 'ON' && imgPo == ''){
                 Swal.fire({
@@ -2746,18 +2662,19 @@
                 });
             }
         }
+        */
 
-        function CkNoOdr(){
-            let imgNoOdr = $('#imageNoOdr').val();
-            let attachNoOdr = $('#attachParamNoOrder').val();
-            if(attachNoOdr == 'ON' && imgNoOdr == ''){
-                Swal.fire({
-                    icon: 'error',
-                    text: 'Wajib menyertakan dokumen keterangan tidak order',
+        // function CkNoOdr(){
+        //     let imgNoOdr = $('#imageNoOdr').val();
+        //     let attachNoOdr = $('#attachParamNoOrder').val();
+        //     if(attachNoOdr == 'ON' && imgNoOdr == ''){
+        //         Swal.fire({
+        //             icon: 'error',
+        //             text: 'Wajib menyertakan dokumen keterangan tidak order',
                     
-                });
-            }
-        }
+        //         });
+        //     }
+        // }
 
         function cancel_wa()
         {
@@ -7031,26 +6948,26 @@
         }, 6000);*/
         
         //upload PO
-        $(document).ready(function (e) {
-            $('#imagePo').change(function(){
-                let reader = new FileReader();
-                reader.onload = (e) => { 
-                        $('#preview-image-before-upload').attr('src', e.target.result); 
-                }
-                reader.readAsDataURL(this.files[0]); 
-            });
-        });
+        // $(document).ready(function (e) {
+        //     $('.imagePoPar').change(function(){
+        //         let reader = new FileReader();
+        //         reader.onload = (e) => { 
+        //                 $('#preview-image-before-upload').attr('src', e.target.result); 
+        //         }
+        //         reader.readAsDataURL(this.files[0]); 
+        //     });
+        // });
 
         //upload No Order
-        $(document).ready(function (e) {
-            $('#imageNoOdr').change(function(){
-                let readerNo = new FileReader();
-                readerNo.onload = (e) => { 
-                        $('#preview-imageNoOdr-before-upload').attr('src', e.target.result); 
-                }
-                readerNo.readAsDataURL(this.files[0]); 
-            });
-        });
+        // $(document).ready(function (e) {
+        //     $('#imageNoOdr').change(function(){
+        //         let readerNo = new FileReader();
+        //         readerNo.onload = (e) => { 
+        //                 $('#preview-imageNoOdr-before-upload').attr('src', e.target.result); 
+        //         }
+        //         readerNo.readAsDataURL(this.files[0]); 
+        //     });
+        // });
 
         //validate upload PO & No Order
         var _validFileExtensions = [".jpg", ".jpeg", ".png"];    
@@ -7135,8 +7052,26 @@
                                 
                                 });
                             return false;
+                        }else{
+                            Swal.fire({
+                                title: 'Berhasil',
+                                text: "Anda sudah checkout tanpa order",
+                                icon: 'success',
+                                showCancelButton: false,
+                                confirmButtonText: "OK",
+                                confirmButtonColor: '#4db849'
+                                });
                         }
-                    }
+                    }else{
+                            Swal.fire({
+                                title: 'Berhasil',
+                                text: "Anda sudah checkout tanpa order",
+                                icon: 'success',
+                                showCancelButton: false,
+                                confirmButtonText: "OK",
+                                confirmButtonColor: '#4db849'
+                                });
+                        }
                 }
             }
             

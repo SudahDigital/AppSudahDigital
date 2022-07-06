@@ -731,6 +731,7 @@
                             </div>
                           </div>
 
+                          <!--
                           <div class="ml-1" style="margin-top:34px;">
                             <div class="page-header">
                               <div class="float-left">
@@ -739,6 +740,21 @@
                               <div class="float-right">
                                 
                               </div>
+                            </div>
+                          </div>
+                        -->
+
+                          <div class=" mt-4">
+                            <h6 class="">Prediksi Pencapaian <span class="float-right">{{($target && $work_plan) ? round((($prediksi_qty/$target->target_quantity)  * 100) ,2) : '0'}}%</span></h6>
+                            <div class="progress progress-sm m-0" style="height: 10px;">
+                              
+                                <div class="progress-bar bg-info" role="progressbar" 
+                                    aria-valuenow="{{$target && $work_plan ? round((($prediksi_qty/$target->target_quantity)  * 100),2): '0'}}" 
+                                    aria-valuemin="0" aria-valuemax="100" style="width: {{$target && $work_plan ? round((($prediksi_qty/$target->target_quantity)  * 100),2): '0'}}%;background-color: #95E0F9 !important;">
+                                    <span class="sr-only">{{$target && $work_plan ? round((($prediksi_qty/$target->target_quantity)  * 100),2): '0'}}% Complete</span>
+                                    <!--<i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>-->
+                                    <i class="fas fa-running  text-danger progress-icon" style="font-size:16px;background-color: #95E0F9"></i>
+                                </div>
                             </div>
                           </div>
 
@@ -766,7 +782,7 @@
                               </div>
                             </div>
                           </div>
-
+                          <!--
                           <div class="ml-1" style="margin-top:34px;">
                             <div class="page-header">
                               <div class="float-left">
@@ -775,6 +791,20 @@
                               <div class="float-right">
                                 
                               </div>
+                            </div>
+                          </div>
+                          -->
+                          <div class=" mt-4">
+                            <h6 class="">Prediksi Pencapaian <span class="float-right">{{($target && $work_plan) ? round((($prediksi/$target->target_values)  * 100) ,2) : '0'}}%</span></h6>
+                            <div class="progress progress-sm m-0" style="height: 10px;">
+                              
+                                <div class="progress-bar bg-info" role="progressbar" 
+                                    aria-valuenow="{{$target && $work_plan ? round((($prediksi/$target->target_values)  * 100),2): '0'}}" 
+                                    aria-valuemin="0" aria-valuemax="100" style="width: {{$target && $work_plan ? round((($prediksi/$target->target_values)  * 100),2): '0'}}%;background-color: #95E0F9 !important;">
+                                    <span class="sr-only">{{$target && $work_plan ? round((($prediksi/$target->target_values)  * 100),2): '0'}}% Complete</span>
+                                    <!--<i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>-->
+                                    <i class="fas fa-running  text-danger progress-icon" style="font-size:16px;background-color: #95E0F9"></i>
+                                </div>
                             </div>
                           </div>
 
@@ -805,6 +835,7 @@
                                   </div>
                                 </div>
 
+                                <!--
                                 <div class="ml-1" style="margin-top:34px;">
                                   <div class="page-header">
                                     <div class="float-left">
@@ -813,6 +844,21 @@
                                     <div class="float-right">
                                       
                                     </div>
+                                  </div>
+                                </div>
+                                -->
+
+                                <div class=" mt-4">
+                                  <h6 class="">Prediksi Pencapaian <span class="float-right">{{($target && $work_plan) ? round((($prediksi_qty/$target->target_quantity)  * 100) ,2) : '0'}}%</span></h6>
+                                  <div class="progress progress-sm m-0" style="height: 10px;">
+                                    
+                                      <div class="progress-bar bg-info" role="progressbar" 
+                                          aria-valuenow="{{$target && $work_plan ? round((($prediksi_qty/$target->target_quantity)  * 100),2): '0'}}" 
+                                          aria-valuemin="0" aria-valuemax="100" style="width: {{$target && $work_plan ? round((($prediksi_qty/$target->target_quantity)  * 100),2): '0'}}%;background-color: #95E0F9 !important;">
+                                          <span class="sr-only">{{$target && $work_plan ? round((($prediksi_qty/$target->target_quantity)  * 100),2): '0'}}% Complete</span>
+                                          <!--<i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>-->
+                                          <i class="fas fa-running  text-danger progress-icon" style="font-size:16px;background-color: #95E0F9"></i>
+                                      </div>
                                   </div>
                                 </div>
 
@@ -840,6 +886,7 @@
                                   </div>
                                 </div>
 
+                                <!--
                                 <div class="ml-1" style="margin-top:34px;">
                                   <div class="page-header">
                                     <div class="float-left">
@@ -848,6 +895,21 @@
                                     <div class="float-right">
                                       
                                     </div>
+                                  </div>
+                                </div>
+                                -->
+
+                                <div class=" mt-4">
+                                  <h6 class="">Prediksi Pencapaian <span class="float-right">{{($target && $work_plan) ? round((($prediksi/$target->target_values)  * 100) ,2) : '0'}}%</span></h6>
+                                  <div class="progress progress-sm m-0" style="height: 10px;">
+                                    
+                                      <div class="progress-bar bg-info" role="progressbar" 
+                                          aria-valuenow="{{$target && $work_plan ? round((($prediksi/$target->target_values)  * 100),2): '0'}}" 
+                                          aria-valuemin="0" aria-valuemax="100" style="width: {{$target && $work_plan ? round((($prediksi/$target->target_values)  * 100),2): '0'}}%;background-color: #95E0F9 !important;">
+                                          <span class="sr-only">{{$target && $work_plan ? round((($prediksi/$target->target_values)  * 100),2): '0'}}% Complete</span>
+                                          <!--<i class="fas fa-star bg-danger progress-icon fa-xs" style=""></i>-->
+                                          <i class="fas fa-running  text-danger progress-icon" style="font-size:16px;background-color: #95E0F9"></i>
+                                      </div>
                                   </div>
                                 </div>
 
@@ -1566,6 +1628,22 @@
         //var colors1 = ['#1A4066'];
         //var colors2 = ['#08f3ff'];
 
+        var maxaAhievement= Math.max.apply(null, achievement);
+        var maxaAhievementQty= Math.max.apply(null, achievement_qty);
+        //var max nml sls
+        if(maxaAhievement > 0){
+            var maxChartNml = maxaAhievement+10;
+        }else{
+            var maxChartNml = 0;
+        }
+
+        //var max qty sls
+        if(maxaAhievementQty > 0){
+            var maxChartQty = maxaAhievementQty+10;
+        }else{
+            var maxChartQty = 0;
+        }
+
         if ($(window).width() <= 600) {
           var type_ = 'bar';
           var plot = {
@@ -1605,7 +1683,7 @@
             categories: sales
           },
           yAxis: {
-            max: 250,
+            max: maxChartNml,
               title: {
                 text: 'Persentase'
             },
@@ -1650,7 +1728,7 @@
             categories: sales
           },
           yAxis: {
-            max: 250,
+            max:maxChartQty,
               title: {
                 text: 'Persentase'
             },

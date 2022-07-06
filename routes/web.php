@@ -157,7 +157,8 @@ Route::group(['prefix' => '/{vendor}'], function()
     Route::get('/sales/export', 'SalesController@export')->name('sales.export');
     
     //sales target
-    Route::get('/sales/target', 'TargetController@index')->name('target.index');
+    Route::get('/sales/target/{periodFilter?}', 'TargetController@index')->name('target.index');
+    Route::post('/sales/target-post-filter', 'TargetController@filter')->name('salesTarget.filter');
     Route::get('/sales/create-target', 'TargetController@create_target')->name('sales.create_target');
     Route::post('/sales/store-target', 'TargetController@store_target')->name('sales.store_target');
     Route::get('/sales/edit-target/{id}', 'TargetController@edit_target')->name('sales.edit_target');

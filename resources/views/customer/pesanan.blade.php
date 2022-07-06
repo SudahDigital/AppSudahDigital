@@ -286,12 +286,21 @@
                                                 <span class="badge badge-warning">Outstanding : {{$order->TotalQuantity - $order->TotalDelivery}}</span><br>
                                                 <span class="badge badge-info">Delivered : {{$order->TotalDelivery}}</span>
                                             @endif
-                                            @if($order->po_file)
+                                            
+                                            @if($order->po_file || $order->orderFile)
                                                 <br>
                                                 <div class="aniimated-thumbnials list-unstyled row clearfix">
+                                                    @if($order->po_file)
                                                     <a href="{{asset('storage/'.$order->po_file)}}" data-sub-html="PO-DOC-{{$order->invoice_number}}">
                                                         <img  src="{{asset('storage/'.$order->po_file)}}" width="50px" height="50px" style="margin-left:15px;margin-top:10px;">
                                                     </a>
+                                                    @endif
+                                                    @foreach($order->orderFile as $oFile)
+                                                        
+                                                        <a href="{{asset('storage/'.$oFile->order_file)}}" data-sub-html="PO-DOC-{{$order->invoice_number}}">
+                                                            <img  src="{{asset('storage/'.$oFile->order_file)}}" width="50px" height="50px" style="margin-left:15px;margin-top:10px;">
+                                                        </a>
+                                                    @endforeach
                                                 </div>
                                             @endif
                                         </td>

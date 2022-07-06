@@ -154,30 +154,45 @@ class SessionStore extends Controller
         $order->status = 'NO-ORDER';
         $order->reasons_id = $request->get('reasons_id');
 
-        $images = $request->file('imageNoOdr');
-        if($images){
-            
-            $path = $images->hashName('po-images');
-            $image = \Image::make($images);
-            $image->resize(350, null, function ($const) {
-                $const->aspectRatio();
-            });
-            \Storage::put('public/'.$path, (string) $image->encode());
-            /*$image_path = $image->store('po-images', 'public');
-            Image::make(storage_path($image_path))->resize(350, null, function ($const) {
-                $const->aspectRatio();
-            })->save();*/
-            
-            $order->po_file = $path;
-        }
-
         $order->save();
-
+        
         //attcah pivot
         $order->products()->attach($id_pr_check);
 
         if($order->save()){
+
+            //insert image po
+            $images = $request->file('imageNoOdr');
+            if($images){
+                foreach ($request->file('imageNoOdr') as $i => $imagefile){
+                    
+                    $path = $imagefile->hashName('po-images');
+                    $image = \Image::make($imagefile);
+                    $image->resize(350, null, function ($const) {
+                        $const->aspectRatio();
+                    });
+                    \Storage::put('public/'.$path, (string) $image->encode());
+
+                    $imageOrder = new \App\OrderFile;
+                    $imageOrder->order_id = $order->id;
+                    $imageOrder->order_file = $path;
+                    $imageOrder->save();
+                }
+                // $path = $images->hashName('po-images');
+                // $image = \Image::make($images);
+                // $image->resize(350, null, function ($const) {
+                //     $const->aspectRatio();
+                // });
+                // \Storage::put('public/'.$path, (string) $image->encode());
+                // /*$image_path = $image->store('po-images', 'public');
+                // Image::make(storage_path($image_path))->resize(350, null, function ($const) {
+                //     $const->aspectRatio();
+                // })->save();*/
+                
+                // $order->po_file = $path;
+            }
             
+            //forget session
             $request->session()->forget('ses_order');
             return redirect()->route('home_customer',[$vendor]);
         }
