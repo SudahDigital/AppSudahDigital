@@ -22,6 +22,7 @@ $(document).ready(function() {
             }
         }
     });
+
     $(document).on('click', '.file-remove', function(e) {
         e.preventDefault();
         $(this).closest('.file-upload').remove();
