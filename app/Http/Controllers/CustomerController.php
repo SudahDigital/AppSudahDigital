@@ -343,7 +343,13 @@ class CustomerController extends Controller
                     ->get();
         if(Gate::check('isSpv')){
            
-            return view('customer_store.edit',['cust' => $cust,'vendor'=>$vendor,'type'=>$type]);
+            return view('customer_store.edit',
+                        [
+                            'cust' => $cust,
+                            'vendor'=>$vendor,
+                            'type'=>$type,
+                            'payment'=>$payment,
+                        ]);
         }else{
             return view('customer_store.edit',
                         ['cust' => $cust,
