@@ -33,6 +33,7 @@ class PointInfoController extends Controller
                         customer_points.customer_id = '$customer_id'");
             if($cust_exists){
                 $dateSt =date('Y-m-15', strtotime($last_period->starts_at));
+                $yearPeriod = date('Y', strtotime($last_period->starts_at));
                 $customers =\DB::select("SELECT *, points.totalpoint +ifnull( pointsRewards.Pointreward,0) as grand_total
                 FROM
                 (SELECT o.id as oid, o.customer_id csid, pr.created_at,
@@ -44,7 +45,9 @@ class PointInfoController extends Controller
                                     )
                                     OR
                                     (
-                                    date(o.finish_time) between '$dateSt' AND DATE_ADD(date('$last_period->expires_at'), INTERVAL 14 DAY)
+                                        (date(o.created_at) <= '$last_period->expires_at' AND YEAR(o.created_at) = '$yearPeriod') 
+                                            AND
+                                        date(o.finish_time) between '$dateSt' AND DATE_ADD(date('$last_period->expires_at'), INTERVAL 14 DAY)
                                     )
                                 )
                             then 
@@ -173,6 +176,7 @@ class PointInfoController extends Controller
                                 customer_points.customer_id = '$customer_id'");
                     if($cust_exists){
                         $dateSt =date('Y-m-15', strtotime($prev_period->starts_at));
+                        $yearPeriod = date('Y', strtotime($prev_period->starts_at));
                         $customers =\DB::select("SELECT *, points.totalpoint +ifnull( pointsRewards.Pointreward,0) as grand_total
                         FROM
                         (SELECT o.id as oid, cs.id csid, pr.created_at,
@@ -183,7 +187,9 @@ class PointInfoController extends Controller
                                 )
                                 OR
                                 (
-                                date(o.finish_time) between '$dateSt' AND DATE_ADD(date('$prev_period->expires_at'), INTERVAL 14 DAY)
+                                    (date(o.created_at) <= '$prev_period->expires_at' AND YEAR(o.created_at) = '$yearPeriod') 
+                                        AND
+                                    date(o.finish_time) between '$dateSt' AND DATE_ADD(date('$prev_period->expires_at'), INTERVAL 14 DAY)
                                 )
                             )
                             then 
@@ -337,6 +343,7 @@ class PointInfoController extends Controller
                         break;
                     }
                     $dateSt = date('Y-m-15', strtotime($period_cek->starts_at));
+                    $yearPeriod = date('Y', strtotime($period_cek->starts_at));
                     $customers_cek =\DB::select("SELECT *, points.totalpoint +ifnull( pointsRewards.Pointreward,0) as grand_total
                                 FROM
                                 (SELECT o.id as oid, cs.id csid,  cs.store_name, cs.user_id , u.name as sales_name, pr.created_at,
@@ -348,7 +355,11 @@ class PointInfoController extends Controller
                                                                 date(o.finish_time) between '$period_cek->starts_at' AND DATE_ADD(date('$period_cek->expires_at'), INTERVAL 14 DAY)
                                                             )
                                                             OR
-                                                            (date(o.finish_time) between '$dateSt' AND DATE_ADD(date('$period_cek->expires_at'), INTERVAL 14 DAY))
+                                                            (
+                                                                (date(o.created_at) <= '$period_cek->expires_at' AND YEAR(o.created_at) = '$yearPeriod') 
+                                                                    AND
+                                                                date(o.finish_time) between '$dateSt' AND DATE_ADD(date('$period_cek->expires_at'), INTERVAL 14 DAY)
+                                                            )
                                                         )
                                                     then 
                                                     (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end
@@ -452,6 +463,7 @@ class PointInfoController extends Controller
                     }*/
                     if($cust_exists){
                         $dateSt = date('Y-m-15', strtotime($period_cek->starts_at));
+                        $yearPeriod = date('Y', strtotime($period_cek->starts_at));
                         $customers_cek=\DB::select("SELECT *, points.totalpoint +ifnull( pointsRewards.Pointreward,0) as grand_total
                                 FROM
                                 (SELECT o.id as oid, cs.id csid,  cs.store_name, cs.user_id , u.name as sales_name, pr.created_at,
@@ -463,7 +475,11 @@ class PointInfoController extends Controller
                                                             date(o.finish_time) between '$period_cek->starts_at' AND DATE_ADD(date('$period_cek->expires_at'), INTERVAL 14 DAY)
                                                         )
                                                         OR
-                                                        (date(o.finish_time) between '$dateSt' AND DATE_ADD(date('$period_cek->expires_at'), INTERVAL 14 DAY))
+                                                        (
+                                                            (date(o.created_at) <= '$period_cek->expires_at' AND YEAR(o.created_at) = '$yearPeriod') 
+                                                                AND
+                                                            date(o.finish_time) between '$dateSt' AND DATE_ADD(date('$period_cek->expires_at'), INTERVAL 14 DAY)
+                                                        )
                                                     )
                                                 then 
                                                 (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end
@@ -649,10 +665,14 @@ class PointInfoController extends Controller
                                         o.status = 'FINISH' AND
                                         date(o.finish_time) between '$startTime' AND DATE_ADD(date('$period->expires_at'), INTERVAL 14 DAY) 
                                         AND 
-                                        ( date(o.created_at) between '$PrevPeriodCheck->starts_at' and '$PrevPeriodCheck->expires_at'
+                                        (   
+                                            date(o.created_at) <= '$PrevPeriodCheck->expires_at'
+                                                AND  
+                                            date(pd.created_at) <= DATE_ADD(date('$PrevPeriodCheck->expires_at'), INTERVAL 14 DAY)
+
+                                            /*date(o.created_at) between '$PrevPeriodCheck->starts_at' and '$PrevPeriodCheck->expires_at'
                                             AND  
                                             date(pd.created_at) between '$PrevPeriodCheck->starts_at' AND DATE_ADD(date('$PrevPeriodCheck->expires_at'), INTERVAL 14 DAY)
-                                            
                                             /*OR
                                             date(pd.created_at) between '$dateSt' AND DATE_ADD(date('$PrevPeriodCheck->expires_at'), INTERVAL 14 DAY)*/
                                         )
