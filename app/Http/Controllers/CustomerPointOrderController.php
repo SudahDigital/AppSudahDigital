@@ -71,7 +71,7 @@ class CustomerPointOrderController extends Controller
                 ->where('starts_at', $period_start)
                 ->first();
         $dateSt =date('Y-m-15', strtotime($period->starts_at));
-        
+        $yearPeriod = date('Y', strtotime($period->starts_at));
         $points =\DB::select("SELECT *, points.totalpoint +ifnull( pointsRewards.Pointreward,0) as grand_total,
                                         points.potencyPoint as potency
             FROM
@@ -79,13 +79,15 @@ class CustomerPointOrderController extends Controller
                     
                         /*cp.id,*/ 
                         sum(case when(
-                                        (   date(o.created_at) between '$period->starts_at' and '$period->expires_at'
+                                        ( date(o.created_at) between '$period->starts_at' and '$period->expires_at'
                                             AND  
-                                            date(o.finish_time) between '$period->starts_at' AND DATE_ADD(date('$period->expires_at'), INTERVAL 14 DAY)
+                                          date(o.finish_time) between '$period->starts_at' AND DATE_ADD(date('$period->expires_at'), INTERVAL 14 DAY)
                                         )
                                         OR
                                         (
-                                        date(o.finish_time) between '$dateSt' AND DATE_ADD(date('$period->expires_at'), INTERVAL 14 DAY)
+                                            (date(o.created_at) <= '$period->expires_at' AND YEAR(o.created_at) = '$yearPeriod') 
+                                                AND
+                                            date(o.finish_time) between '$dateSt' AND DATE_ADD(date('$period->expires_at'), INTERVAL 14 DAY)
                                         )
                                     )
                                 then 
@@ -109,9 +111,9 @@ class CustomerPointOrderController extends Controller
                                         product_id = op.product_id) 
                         AND  
                         (
-                        date(o.created_at) between '$period->starts_at' and '$period->expires_at'
-                            OR
-                         date(o.finish_time) between '$dateSt' AND DATE_ADD(date('$period->expires_at'), INTERVAL 14 DAY)
+                            date(o.created_at) between '$period->starts_at' and '$period->expires_at'
+                                OR
+                            date(o.finish_time) between '$dateSt' AND DATE_ADD(date('$period->expires_at'), INTERVAL 14 DAY)
                         )
                          AND
                         o.status != 'CANCEL' AND o.status != 'NO-ORDER'
@@ -179,6 +181,7 @@ class CustomerPointOrderController extends Controller
                 $total_start_point = 0;
                 $totalPotency = 0;
                 foreach($prd_cek as $key => $period_cek){
+                    $yearPeriod = date('Y', strtotime($period_cek->starts_at));
                     $dateSt = date('Y-m-15', strtotime($period_cek->starts_at));
                     $cust_exists = \DB::select("SELECT * FROM customer_points 
                                     WHERE period_id = $period_cek->id AND
@@ -196,7 +199,11 @@ class CustomerPointOrderController extends Controller
                                                                 date(o.finish_time) between '$period_cek->starts_at' AND DATE_ADD(date('$period_cek->expires_at'), INTERVAL 14 DAY)
                                                             )
                                                             OR
-                                                            (date(o.finish_time) between '$dateSt' AND DATE_ADD(date('$period_cek->expires_at'), INTERVAL 14 DAY))
+                                                            (
+                                                                (date(o.created_at) <= '$period_cek->expires_at' AND YEAR(o.created_at) = '$yearPeriod') 
+                                                                    AND
+                                                                date(o.finish_time) between '$dateSt' AND DATE_ADD(date('$period_cek->expires_at'), INTERVAL 14 DAY)
+                                                            )
                                                         )
                                                     then 
                                                     (pr.prod_point_val/pr.quantity_rule) * op.quantity  else 0 end
@@ -401,6 +408,7 @@ class CustomerPointOrderController extends Controller
                     ->first();
         $startTime = date('Y-m-15', strtotime($period_start));
         //$yPeriodPrev = date('Y',strtotime($period_start));
+        
         $PrevPeriodCheck = \App\PointPeriod::where('client_id',\Auth::user()->client_id)
                             ->whereDate('expires_at', '<', $period_start)
                             //->whereYear('expires_at',$yPeriodPrev)
@@ -409,6 +417,7 @@ class CustomerPointOrderController extends Controller
 
         if($PrevPeriodCheck){
             $dateSt = date('Y-m-15', strtotime($PrevPeriodCheck->starts_at));
+            $yearPeriod = date('Y', strtotime($PrevPeriodCheck->starts_at));
             $customers =\DB::select("SELECT o.id, 
                                         
                                         sum(case when date(pd.created_at) between '$PrevPeriodCheck->starts_at' AND DATE_ADD(date('$PrevPeriodCheck->expires_at'), INTERVAL 14 DAY)
@@ -422,15 +431,15 @@ class CustomerPointOrderController extends Controller
                                         WHERE
                                         o.status = 'FINISH' 
                                         AND
-                                        date(o.finish_time) between '$startTime' AND DATE_ADD(date('$period->expires_at'), INTERVAL 14 DAY) 
-                                        AND 
-                                        ( date(o.created_at) between '$PrevPeriodCheck->starts_at' and '$PrevPeriodCheck->expires_at'
-                                            AND  
-                                            date(pd.created_at) between '$PrevPeriodCheck->starts_at' AND DATE_ADD(date('$PrevPeriodCheck->expires_at'), INTERVAL 14 DAY)
-                                            
-                                            /*OR
-                                            date(pd.created_at) between '$dateSt' AND DATE_ADD(date('$PrevPeriodCheck->expires_at'), INTERVAL 14 DAY)*/
-                                        )
+                                            date(o.finish_time) between '$startTime' AND DATE_ADD(date('$period->expires_at'), INTERVAL 14 DAY) 
+                                            AND 
+                                            ( date(o.created_at) <= '$PrevPeriodCheck->expires_at'
+                                                AND  
+                                              date(pd.created_at) <= DATE_ADD(date('$PrevPeriodCheck->expires_at'), INTERVAL 14 DAY)
+                                                
+                                                /*OR
+                                                date(pd.created_at) between '$dateSt' AND DATE_ADD(date('$PrevPeriodCheck->expires_at'), INTERVAL 14 DAY)*/
+                                            )
                                         AND
                                         o.customer_id = $csid AND
                                         pr.created_at = (SELECT MAX(created_at) FROM 
