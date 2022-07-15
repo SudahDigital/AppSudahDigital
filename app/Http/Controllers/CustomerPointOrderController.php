@@ -131,7 +131,8 @@ class CustomerPointOrderController extends Controller
         //dd($points);
         $point = $points[0]->grand_total;
         $potencyPoint = $points[0]->potency;
-        return [$point,$potencyPoint];
+        $pointPeriod = $points[0]->totalpoint;
+        return [$pointPeriod , $point,$potencyPoint];
             
     }
 
@@ -248,7 +249,13 @@ class CustomerPointOrderController extends Controller
                             $partPoint[$key] = $_this->pointPartial($period_cek->starts_at,$customer);
                             $startPartPoint[$key] = $_this->startPointPartial($period_cek->starts_at,$customer);
                             $partPrevPoint[$key] = $_this->pointPrevPartial($period_cek->starts_at,$customer);
-                            $restpoints[$key] = ($customers_cek[0]->grand_total - $partPrevPoint[$key]) + $startPartPoint[$key] + $partPoint[$key];
+                            $claim[$key] = $_this->pointsClaim($period_cek->starts_at,$customer);
+                            if($customers_cek[0]->totalpoint){
+                                $restpoints[$key] = ($customers_cek[0]->grand_total - $partPrevPoint[$key]) + $startPartPoint[$key] + $partPoint[$key];
+                            }else{
+                                $restpoints[$key] = (($customers_cek[0]->grand_total - $partPrevPoint[$key]) + $startPartPoint[$key] + $partPoint[$key])-$claim[$key];
+                            }
+                            
                                 
                             if($restpoints[$key] == null){
                                 $pointstart[$key] = 0;

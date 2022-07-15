@@ -99,7 +99,13 @@ class PointInfoController extends Controller
                 $partPoint = $_this->pointPartial($last_period->starts_at,$customer_id);
                 $startPartPoint = $_this->startPointPartial($last_period->starts_at,$customer_id);
                 $pointPrevPartial = $_this->pointPrevPartial($last_period->starts_at,$customer_id);
-                $c_point = ($customers[0]->grand_total - $pointPrevPartial) + $startPartPoint + $partPoint;
+                $claim = $_this->pointsClaim($last_period->starts_at,$customer_id);
+                if($customers[0]->totalpoint){
+                    $c_point = ($customers[0]->grand_total - $pointPrevPartial) + $startPartPoint + $partPoint;
+                }else{
+                    $c_point = (($customers[0]->grand_total - $pointPrevPartial) + $startPartPoint + $partPoint)-$claim;
+                } 
+                //$c_point = ($customers[0]->grand_total - $pointPrevPartial) + $startPartPoint + $partPoint;
                 
                 if($c_point == null){
                     $total = 0;
@@ -239,7 +245,13 @@ class PointInfoController extends Controller
                         $partPoint = $_this->pointPartial($prev_period->starts_at,$customer_id);
                         $startPartPoint = $_this->startPointPartial($prev_period->starts_at,$customer_id);
                         $pointPrevPartial = $_this->pointPrevPartial($prev_period->starts_at,$customer_id);
-                        $c_point = ($customers[0]->grand_total - $pointPrevPartial) + $startPartPoint + $partPoint;
+                       
+                        $claim = $_this->pointsClaim($prev_period->starts_at,$customer_id);
+                        if($customers[0]->totalpoint){
+                            $c_point = ($customers[0]->grand_total - $pointPrevPartial) + $startPartPoint + $partPoint;
+                        }else{
+                            $c_point = (($customers[0]->grand_total - $pointPrevPartial) + $startPartPoint + $partPoint)-$claim;
+                        } 
                         
                         if($c_point == null){
                             $total = 0;
@@ -406,8 +418,14 @@ class PointInfoController extends Controller
                     $_this = new self;
                     $partPoint[$key] = $_this->pointPartial($period_cek->starts_at,$customer);
                     $startPartPoint[$key] = $_this->startPointPartial($period_cek->starts_at,$customer);
-                    $pointPrevPartial[$key] = $_this->pointPrevPartial($period_cek->starts_at,$customer);            
-                    $restpoints[$key] = ($customers_cek[0]->grand_total-$pointPrevPartial[$key]) + $startPartPoint[$key] + $partPoint[$key];
+                    $pointPrevPartial[$key] = $_this->pointPrevPartial($period_cek->starts_at,$customer); 
+                    $claim[$key] = $_this->pointsClaim($period_cek->starts_at,$customer);
+                    if($customers_cek[0]->totalpoint){
+                        $restpoints[$key] = ($customers_cek[0]->grand_total-$pointPrevPartial[$key]) + $startPartPoint[$key] + $partPoint[$key];
+                    }else{
+                        $restpoints[$key] = (($customers_cek[0]->grand_total-$pointPrevPartial[$key]) + $startPartPoint[$key] + $partPoint[$key])-$claim[$key];
+                    }           
+                    
                     
                     if($restpoints[$key] == null){
                         $pointstart[$key] = 0;
@@ -458,9 +476,9 @@ class PointInfoController extends Controller
                     $cust_exists = \DB::select("SELECT * FROM customer_points 
                                     WHERE period_id = $period_cek->id AND
                                     customer_points.customer_id = '$customer'");
-                   /* if(!$cust_exists){
-                        break;
-                    }*/
+                    // if(!$cust_exists){
+                    //     break;
+                    // }
                     if($cust_exists){
                         $dateSt = date('Y-m-15', strtotime($period_cek->starts_at));
                         $yearPeriod = date('Y', strtotime($period_cek->starts_at));
@@ -518,19 +536,27 @@ class PointInfoController extends Controller
                                         AND pc.custpoint_id = '$customer') pointsRewards
                                 on points.csid = pointsRewards.custpoint_id;");
                         //$restpoints = $customers_cek[0]->grand_total;
-
+                        //dd($customers_cek[0]->totalpoint);
                         $_this = new self;
+                        $claim[$key] = $_this->pointsClaim($period_cek->starts_at,$customer);
                         $partPoint[$key] = $_this->pointPartial($period_cek->starts_at,$customer);
                         $startPartPoint[$key] = $_this->startPointPartial($period_cek->starts_at,$customer);
                         $pointPrevPartial[$key] = $_this->pointPrevPartial($period_cek->starts_at,$customer);
-                        $pointstart[$key] = ($customers_cek[0]->grand_total - $pointPrevPartial[$key]) + $startPartPoint[$key] + $partPoint[$key];
+                        if($customers_cek[0]->totalpoint){
+                            $pointstart[$key] = ($customers_cek[0]->grand_total - $pointPrevPartial[$key]) + $startPartPoint[$key] + $partPoint[$key];
+                        }else{
+                            $pointstart[$key] = (($customers_cek[0]->grand_total - $pointPrevPartial[$key]) + $startPartPoint[$key] + $partPoint[$key])-$claim[$key];
+                        }
+                        
                     }else{
                         $pointstart[$key] = 0;
                     }
                     $total_start_point += $pointstart[$key];
+                    //dd($pointstart[$key]);
                 }
+                
                 //if($thisYear != $Year){
-                    $dateExpired =  date('Y-m-d', strtotime("+14 day", strtotime($lastExpPeriod)));
+                    $dateExpired =  date('Y-m-d', strtotime("+18 day", strtotime($lastExpPeriod)));
                     //dd($dateExpired);
                     if($date <= $dateExpired){
                         $total_start_point = $total_start_point;
@@ -688,6 +714,32 @@ class PointInfoController extends Controller
         }
 
         return $pointPrevPartial;
+    }
+
+    public static function pointsClaim($periodStart,$customerId){
+        $client_id = \Auth::user()->client_id;
+        $period = \App\PointPeriod::where('client_id',\Auth::user()->client_id)
+                    ->whereDate('starts_at',$periodStart)
+                    ->first();
+
+        $claim = \DB::select("SELECT pc.id, pc.custpoint_id, pc.reward_id, pc.type,
+                                pc.created_at, pr.point_rule, pr.bonus_amount, 
+                                cs.store_name, cs.client_id
+                                FROM point_claims as pc 
+                                JOIN point_rewards as pr ON pc.reward_id = pr.id
+                                JOIN customers as cs ON cs.id = pc.custpoint_id
+                                WHERE cs.client_id = '$client_id'
+                                AND pr.period_id = '$period->id'
+                                AND pc.custpoint_id = '$customerId'
+                                AND pc.type = 1;"
+                            );
+        
+        $total_claim = 0;
+        foreach($claim as $cm){
+            $total_claim += $cm->point_rule;
+        }
+
+        return $total_claim;
     }
 
 }
