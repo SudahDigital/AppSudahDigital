@@ -37,7 +37,7 @@ class PointThisPeriodExport implements FromCollection, WithMapping, WithHeadings
                     ->whereDate('starts_at', '<=', $date)
                     ->whereDate('expires_at', '>=', $date)->first();
 
-            [$point,$potencyPoint] = \App\Http\Controllers\CustomerPointOrderController::getPoints($period->starts_at,$pn->id);
+            [$pointPeriod,$point,$potencyPoint] = \App\Http\Controllers\CustomerPointOrderController::getPoints($period->starts_at,$pn->id);
             $claim = \App\Http\Controllers\CustomerPointOrderController::pointsClaim($period->starts_at,$pn->id);
             [$rest,$totalPotency] = \App\Http\Controllers\CustomerPointOrderController::starting_point($period->starts_at,$pn->id);
             $pointPartial = \App\Http\Controllers\CustomerPointOrderController::pointPartial($period->starts_at,$pn->id);
@@ -45,10 +45,15 @@ class PointThisPeriodExport implements FromCollection, WithMapping, WithHeadings
             $afterPointPartial = \App\Http\Controllers\CustomerPointOrderController::startPointPartial($period->starts_at,$pn->id);
 
             $start_point = number_format($rest,2);
-            $pointInPeriod = number_format(($point-$pointPrevPartial) + $afterPointPartial + $pointPartial + $claim,2);
-            $potencyPoints = number_format(($potencyPoint) + ($totalPotency),2);
+            if($pointPeriod){
+                $pointInPeriod = number_format(($point-$pointPrevPartial) + $afterPointPartial + $pointPartial + $claim,2);
+                $pointTotal = number_format(($point-$pointPrevPartial) + $afterPointPartial + $pointPartial + $rest ,2);
+            }else{
+                $pointInPeriod = number_format(0,2);
+                $pointTotal = number_format(((($point-$pointPrevPartial) + $afterPointPartial + $pointPartial + $rest ) - $claim) ,2);
+            }
+            $potencyPoints = number_format(($potencyPoint)+($totalPotency),2);
             $pointClaim = number_format($claim,2);
-            $pointTotal = number_format(($point-$pointPrevPartial) + $afterPointPartial + $pointPartial + $rest ,2);
             if($pn->user_id){
                 $salesName = $pn->users->name;
             }

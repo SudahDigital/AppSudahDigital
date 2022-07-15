@@ -82,7 +82,7 @@
 			@if($period != null)
 				@foreach($customers as $c)
 					@php
-						[$point,$potencyPoint] = App\Http\Controllers\CustomerPointOrderController::getPoints($period_start,$c->id);
+						[$pointPeriod,$point,$potencyPoint] = App\Http\Controllers\CustomerPointOrderController::getPoints($period_start,$c->id);
 						[$rest,$totalPotency] = App\Http\Controllers\CustomerPointOrderController::starting_point($period_start,$c->id);
 						$claim = App\Http\Controllers\CustomerPointOrderController::pointsClaim($period_start,$c->id);
 						$pointPartial = App\Http\Controllers\CustomerPointOrderController::pointPartial($period_start,$c->id);
@@ -106,9 +106,13 @@
 							{{number_format($rest,2)}}
 						</td>
 						<td>
-							{{
-								//number_format((($c->grand_total-$pointPrevPartial) + $pointPartial + $claim),2)
+							
+							{{	
+								$pointPeriod ?
 								number_format((($point-$pointPrevPartial)  + $afterPointPartial + $pointPartial + $claim),2)
+								//number_format((($c->grand_total-$pointPrevPartial) + $pointPartial + $claim),2)
+								:
+								number_format(0,2)
 							}}
 						</td>
 						<td>
@@ -123,7 +127,11 @@
 							{{number_format($claim,2)}}
 						</td>
 						<td>
-							{{number_format((($point-$pointPrevPartial) + $afterPointPartial + $pointPartial + $rest) ,2)}}	
+							{{ $pointPeriod ?
+								number_format((($point-$pointPrevPartial) + $afterPointPartial + $pointPartial + $rest) ,2)
+								:
+								number_format(((($point-$pointPrevPartial) + $afterPointPartial + $pointPartial + $rest ) - $claim) ,2)
+							}}
 						</td>
 					</tr>
 				@endforeach
