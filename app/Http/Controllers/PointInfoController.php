@@ -556,7 +556,7 @@ class PointInfoController extends Controller
                 }
                 
                 //if($thisYear != $Year){
-                    $dateExpired =  date('Y-m-d', strtotime("+19 day", strtotime($lastExpPeriod)));
+                    $dateExpired =  date('Y-m-d', strtotime("+14 day", strtotime($lastExpPeriod)));
                     //dd($dateExpired);
                     if($date <= $dateExpired){
                         $total_start_point = $total_start_point;
